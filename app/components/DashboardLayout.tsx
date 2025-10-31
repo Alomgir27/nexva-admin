@@ -4,7 +4,7 @@ import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { LayoutDashboard, Key, Globe, BookOpen, LogOut, Menu, X, Sparkles, Volume2, MessageCircle } from "lucide-react";
+import { LayoutDashboard, Key, Globe, BookOpen, LogOut, Menu, X, Sparkles, Volume2, MessageCircle, Code } from "lucide-react";
 
 interface NavItem {
   label: string;
@@ -15,6 +15,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { label: "Overview", path: "/dashboard", icon: <LayoutDashboard className="h-5 w-5" /> },
   { label: "Domains", path: "/dashboard/domains", icon: <Globe className="h-5 w-5" /> },
+  { label: "Widget Setup", path: "/dashboard/widget-setup", icon: <Code className="h-5 w-5" /> },
   { label: "Support", path: "/dashboard/support", icon: <MessageCircle className="h-5 w-5" /> },
   { label: "Voice Characters", path: "/dashboard/voices", icon: <Volume2 className="h-5 w-5" /> },
   { label: "API Tokens", path: "/dashboard/tokens", icon: <Key className="h-5 w-5" /> },

@@ -7,6 +7,17 @@ export const API_ENDPOINTS = {
   },
   chatbots: `${API_BASE_URL}/api/chatbots`,
   domains: `${API_BASE_URL}/api/domains`,
+  documents: {
+    list: (domainId: number) => `${API_BASE_URL}/api/domains/${domainId}/documents`,
+    upload: (domainId: number) => `${API_BASE_URL}/api/domains/${domainId}/documents`,
+    download: (documentId: number) => `${API_BASE_URL}/api/documents/${documentId}/download`,
+    delete: (documentId: number) => `${API_BASE_URL}/api/documents/${documentId}`,
+  },
+  billing: {
+    subscription: `${API_BASE_URL}/api/billing/subscription`,
+    createCheckoutSession: `${API_BASE_URL}/api/billing/create-checkout-session`,
+    portalSession: `${API_BASE_URL}/api/billing/portal-session`,
+  },
   support: {
     tickets: `${API_BASE_URL}/api/support/tickets`,
     team: `${API_BASE_URL}/api/support-team`,
@@ -16,4 +27,5 @@ export const API_ENDPOINTS = {
   },
   widget: `${API_BASE_URL}/widget.js`,
 };
+
 

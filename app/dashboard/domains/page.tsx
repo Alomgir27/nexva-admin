@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Globe, Loader, ExternalLink, Trash2, Users } from "lucide-react";
+import { Plus, Globe, Loader, ExternalLink, Trash2, Users, FileText } from "lucide-react";
 import AddDomainModal from "@/app/components/AddDomainModal";
 import DeleteDomainModal from "@/app/components/DeleteDomainModal";
 import InviteSupportModal from "@/app/components/InviteSupportModal";
+import DocumentsModal from "@/app/components/DocumentsModal";
 import Link from "next/link";
 import { API_BASE_URL, API_ENDPOINTS } from "@/app/config/api";
   
@@ -45,6 +46,7 @@ export default function DomainsPage() {
   const [showInviteSupport, setShowInviteSupport] = useState(false);
   const [supportMembers, setSupportMembers] = useState<SupportMember[]>([]);
   const [showSupportTeam, setShowSupportTeam] = useState(false);
+  const [showDocuments, setShowDocuments] = useState<{ domainId: number; url: string } | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -59,14 +61,22 @@ export default function DomainsPage() {
     if (selectedChatbot) {
       fetchDomains(selectedChatbot);
       fetchSupportTeam(selectedChatbot);
-      
+    }
+  }, [selectedChatbot]);
+
+  useEffect(() => {
+    if (!selectedChatbot) return;
+    
+    const hasScrapingDomain = domains.some(d => d.status === 'scraping');
+    
+    if (hasScrapingDomain) {
       const interval = setInterval(() => {
         fetchDomainsForPolling(selectedChatbot);
       }, 5000);
       
       return () => clearInterval(interval);
     }
-  }, [selectedChatbot]);
+  }, [domains, selectedChatbot]);
 
   const fetchDomainsForPolling = async (chatbotId: number) => {
     try {
@@ -370,6 +380,13 @@ export default function DomainsPage() {
                               </button>
                             </Link>
                             <button
+                              onClick={() => setShowDocuments({ domainId: domain.id, url: domain.url })}
+                              className="flex items-center space-x-1 px-3 py-1 text-sm bg-[var(--bg-bg-overlay-l2)] hover:bg-[var(--bg-bg-overlay-l3)] rounded text-[var(--text-text-secondary)] transition-all"
+                            >
+                              <FileText className="h-3 w-3" />
+                              <span>Documents</span>
+                            </button>
+                            <button
                               onClick={() => setDomainToDelete({ id: domain.id, url: domain.url })}
                               disabled={deletingDomain === domain.id}
                               className="p-2 text-red-500 hover:bg-red-500/10 rounded transition-all disabled:opacity-50"
@@ -424,6 +441,15 @@ export default function DomainsPage() {
         domainUrl={domainToDelete?.url || ""}
         isDeleting={!!deletingDomain}
       />
+
+      {showDocuments && (
+        <DocumentsModal
+          isOpen={!!showDocuments}
+          onClose={() => setShowDocuments(null)}
+          domainId={showDocuments.domainId}
+          domainUrl={showDocuments.url}
+        />
+      )}
     </div>
   );
 }

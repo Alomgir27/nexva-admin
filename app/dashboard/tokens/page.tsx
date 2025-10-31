@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Copy, Check, Trash2, Loader, Key } from "lucide-react";
+import { Plus, Copy, Check, Trash2, Loader, Key, AlertCircle } from "lucide-react";
 import { API_ENDPOINTS } from "@/app/config/api";
+import UpgradeModal from "@/app/components/UpgradeModal";
 
 interface Chatbot {
   id: number;
@@ -12,13 +13,23 @@ interface Chatbot {
   created_at: string;
 }
 
+interface SubscriptionInfo {
+  plan_tier: string;
+  status: string;
+  chatbot_count: number;
+  chatbot_limit: number;
+}
+
 export default function TokensPage() {
   const router = useRouter();
   const [chatbots, setChatbots] = useState<Chatbot[]>([]);
+  const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [newChatbotName, setNewChatbotName] = useState("");
   const [creating, setCreating] = useState(false);
+  const [showUpgrade, setShowUpgrade] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -26,8 +37,12 @@ export default function TokensPage() {
       router.push("/login");
       return;
     }
-    fetchChatbots();
+    fetchData();
   }, []);
+
+  const fetchData = async () => {
+    await Promise.all([fetchChatbots(), fetchSubscription()]);
+  };
 
   const fetchChatbots = async () => {
     try {
@@ -51,9 +66,34 @@ export default function TokensPage() {
     }
   };
 
+  const fetchSubscription = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(API_ENDPOINTS.billing.subscription, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setSubscription(data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch subscription");
+    }
+  };
+
   const createChatbot = async () => {
     if (!newChatbotName.trim()) return;
+    
+    if (subscription) {
+      const canCreate = subscription.chatbot_limit === -1 || subscription.chatbot_count < subscription.chatbot_limit;
+      if (!canCreate) {
+        setShowUpgrade(true);
+        return;
+      }
+    }
+    
     setCreating(true);
+    setError("");
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(API_ENDPOINTS.chatbots, {
@@ -64,12 +104,19 @@ export default function TokensPage() {
         },
         body: JSON.stringify({ name: newChatbotName }),
       });
-      if (response.ok) {
+      
+      if (response.status === 403) {
+        setShowUpgrade(true);
+      } else if (response.ok) {
         setNewChatbotName("");
-        fetchChatbots();
+        await fetchData();
+      } else {
+        const data = await response.json();
+        setError(data.detail || "Failed to create chatbot");
       }
     } catch (error) {
       console.error("Failed to create chatbot", error);
+      setError("Failed to create chatbot");
     } finally {
       setCreating(false);
     }
@@ -101,6 +148,38 @@ export default function TokensPage() {
         <h1 className="text-3xl font-semibold text-[var(--text-text-default)] mb-2">API Tokens</h1>
         <p className="text-[var(--text-text-secondary)]">Create and manage your chatbot API keys</p>
       </div>
+
+      {subscription && (
+        <div className="bg-[var(--bg-bg-overlay-l1)] rounded-xl border border-[var(--border-border-neutral-l1)] p-4 mb-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-[var(--text-text-secondary)]">Chatbot Usage</p>
+              <p className="text-lg font-semibold text-[var(--text-text-default)]">
+                {subscription.chatbot_count}/{subscription.chatbot_limit === -1 ? '∞' : subscription.chatbot_limit} chatbots
+              </p>
+            </div>
+            {subscription.chatbot_limit !== -1 && (
+              <div className="w-1/2">
+                <div className="w-full bg-[var(--bg-bg-base-secondary)] rounded-full h-2">
+                  <div
+                    className="bg-[var(--bg-bg-brand)] h-2 rounded-full transition-all"
+                    style={{
+                      width: `${Math.min((subscription.chatbot_count / subscription.chatbot_limit) * 100, 100)}%`
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {error && (
+        <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg flex items-center space-x-2">
+          <AlertCircle className="h-4 w-4 text-red-500" />
+          <p className="text-sm text-red-500">{error}</p>
+        </div>
+      )}
 
       <div className="bg-[var(--bg-bg-overlay-l1)] rounded-xl border border-[var(--border-border-neutral-l1)] p-6 mb-6">
         <h2 className="text-lg font-semibold text-[var(--text-text-default)] mb-4">Create New Token</h2>
@@ -160,6 +239,16 @@ export default function TokensPage() {
           </div>
         )}
       </div>
+
+      {subscription && (
+        <UpgradeModal
+          isOpen={showUpgrade}
+          onClose={() => setShowUpgrade(false)}
+          currentPlan={subscription.plan_tier}
+          chatbotLimit={subscription.chatbot_limit}
+          currentCount={subscription.chatbot_count}
+        />
+      )}
     </div>
   );
 }

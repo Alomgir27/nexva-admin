@@ -1,10 +1,11 @@
 "use client";
 
-import { MessageSquare, BarChart3, Settings, Check, ChevronDown, Copy, Play } from "lucide-react";
+import { MessageSquare, BarChart3, Settings, Check, ChevronDown, Copy, Play, User, Loader } from "lucide-react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { API_ENDPOINTS } from "@/app/config/api";
 
 const ThreeJSBackground = dynamic(() => import('./components/ThreeJSBackground'), { 
   ssr: false 
@@ -13,13 +14,61 @@ const ThreeJSBackground = dynamic(() => import('./components/ThreeJSBackground')
 export default function Home() {
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'yearly'>('monthly');
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [copied, setCopied] = useState(false);
-  const [codeIndex, setCodeIndex] = useState(0);
-  const [scrollLocked, setScrollLocked] = useState(false);
+  const [copied, setCopied] = useState<number | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [purchasingPlan, setPurchasingPlan] = useState<string | null>(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsAuthenticated(!!token);
+  }, []);
+
+  const handlePlanClick = async (planTier: string) => {
+    if (planTier === 'free') {
+      if (isAuthenticated) {
+        window.location.href = '/dashboard';
+      } else {
+        window.location.href = '/register';
+      }
+      return;
+    }
+
+    if (!isAuthenticated) {
+      window.location.href = '/register';
+      return;
+    }
+
+    setPurchasingPlan(planTier);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(API_ENDPOINTS.billing.createCheckoutSession, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ plan_tier: planTier }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        window.location.href = data.url;
+      } else {
+        alert("Failed to create checkout session. Please try again.");
+      }
+    } catch (error) {
+      console.error("Failed to start checkout", error);
+      alert("Failed to start checkout. Please try again.");
+    } finally {
+      setPurchasingPlan(null);
+    }
+  };
 
   const codeExamples = [
     {
       title: 'CDN Script',
+      subtitle: 'Quick Start',
+      description: 'Get started instantly by adding a simple script tag to your HTML. Perfect for static sites and quick prototypes.',
       code: `<script src="https://cdn.nexva.ai/widget.js"></script>
 <script>
   NexvaChat.init('YOUR_API_KEY', {
@@ -30,6 +79,8 @@ export default function Home() {
     },
     {
       title: 'NPM Package',
+      subtitle: 'Modern Build Tools',
+      description: 'Install via npm for modern JavaScript applications. Works seamlessly with any bundler like Webpack or Vite.',
       code: `npm install @nexva/chat-widget
 
 import NexvaChat from '@nexva/chat-widget';
@@ -41,6 +92,8 @@ NexvaChat.init('YOUR_API_KEY', {
     },
     {
       title: 'React SDK',
+      subtitle: 'React Integration',
+      description: 'Native React component for seamless integration with your React applications. Full TypeScript support included.',
       code: `import { NexvaChatWidget } from '@nexva/react';
 
 export default function App() {
@@ -55,41 +108,11 @@ export default function App() {
     }
   ];
 
-  const copyCode = () => {
-    navigator.clipboard.writeText(codeExamples[codeIndex].code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const copyCode = (index: number) => {
+    navigator.clipboard.writeText(codeExamples[index].code);
+    setCopied(index);
+    setTimeout(() => setCopied(null), 2000);
   };
-
-  useEffect(() => {
-    let scrollCount = 0;
-    let lastScrollTime = 0;
-
-    const handleScroll = () => {
-      const integrationSection = document.getElementById('integration-section');
-      if (!integrationSection) return;
-
-      const rect = integrationSection.getBoundingClientRect();
-      const isInView = rect.top <= 100 && rect.bottom >= window.innerHeight / 2;
-
-      if (isInView && codeIndex < codeExamples.length - 1) {
-        const now = Date.now();
-        if (now - lastScrollTime > 100) {
-          scrollCount++;
-          lastScrollTime = now;
-
-          if (scrollCount >= 3) {
-            setCodeIndex((prev) => Math.min(prev + 1, codeExamples.length - 1));
-            scrollCount = 0;
-            window.scrollTo({ top: window.scrollY, behavior: 'instant' });
-          }
-        }
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [codeIndex, codeExamples.length]);
   
   return (
     <div className="min-h-screen">
@@ -122,15 +145,28 @@ export default function App() {
               <Link href="/playground" className="text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors">
                 Playground
               </Link>
-              <Link href="/login" className="text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors">
-                Sign in
-              </Link>
-              <Link
-                href="/register"
-                className="px-5 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all font-medium"
-              >
-                Get Started
-              </Link>
+              
+              {isAuthenticated ? (
+                <Link
+                  href="/dashboard"
+                  className="flex items-center space-x-2 px-5 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all font-medium"
+                >
+                  <User className="h-4 w-4" />
+                  <span>Dashboard</span>
+                </Link>
+              ) : (
+                <>
+                  <Link href="/login" className="text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors">
+                    Sign in
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="px-5 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all font-medium"
+                  >
+                    Get Started
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -338,32 +374,9 @@ export default function App() {
               <p className="text-lg text-[var(--text-text-secondary)] mb-8">
                 Choose the perfect plan for your business
               </p>
-              
-              <div className="inline-flex items-center bg-[var(--bg-bg-overlay-l1)] rounded-lg p-1 border border-[var(--border-border-neutral-l1)]">
-                <button
-                  onClick={() => setBillingPeriod('monthly')}
-                  className={`px-6 py-2 rounded-md transition-all ${
-                    billingPeriod === 'monthly'
-                      ? 'bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)]'
-                      : 'text-[var(--text-text-secondary)]'
-                  }`}
-                >
-                  Monthly
-                </button>
-                <button
-                  onClick={() => setBillingPeriod('yearly')}
-                  className={`px-6 py-2 rounded-md transition-all ${
-                    billingPeriod === 'yearly'
-                      ? 'bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)]'
-                      : 'text-[var(--text-text-secondary)]'
-                  }`}
-                >
-                  Yearly <span className="text-xs ml-1">(Save 20%)</span>
-                </button>
-              </div>
             </div>
 
-            <div className="grid lg:grid-cols-3 gap-8">
+            <div className="grid lg:grid-cols-4 gap-8">
               <div className="bg-[var(--bg-bg-base-default)] rounded-xl border border-[var(--border-border-neutral-l1)] p-8">
                 <h3 className="text-2xl font-semibold text-[var(--text-text-default)] mb-2">Free</h3>
                 <div className="mb-6">
@@ -373,11 +386,11 @@ export default function App() {
                 <ul className="space-y-3 mb-8">
                   <li className="flex items-start">
                     <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">100 messages/month</span>
+                    <span className="text-[var(--text-text-secondary)]">1 chatbot</span>
                   </li>
                   <li className="flex items-start">
                     <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">1 domain</span>
+                    <span className="text-[var(--text-text-secondary)]">Unlimited domains</span>
                   </li>
                   <li className="flex items-start">
                     <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
@@ -385,15 +398,57 @@ export default function App() {
                   </li>
                   <li className="flex items-start">
                     <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">Standard AI model</span>
+                    <span className="text-[var(--text-text-secondary)]">Document upload</span>
                   </li>
                 </ul>
-                <Link
-                  href="/register"
-                  className="block w-full py-3 text-center bg-[var(--bg-bg-overlay-l2)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] rounded-lg hover:bg-[var(--bg-bg-overlay-l3)] transition-all"
+                <button
+                  onClick={() => handlePlanClick('free')}
+                  disabled={purchasingPlan !== null}
+                  className="w-full py-3 text-center bg-[var(--bg-bg-overlay-l2)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] rounded-lg hover:bg-[var(--bg-bg-overlay-l3)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Get Started
-                </Link>
+                  {purchasingPlan === 'free' ? (
+                    <Loader className="h-5 w-5 animate-spin mx-auto" />
+                  ) : (
+                    isAuthenticated ? "Go to Dashboard" : "Get Started"
+                  )}
+                </button>
+              </div>
+
+              <div className="bg-[var(--bg-bg-base-default)] rounded-xl border border-[var(--border-border-neutral-l1)] p-8">
+                <h3 className="text-2xl font-semibold text-[var(--text-text-default)] mb-2">Basic</h3>
+                <div className="mb-6">
+                  <span className="text-4xl font-bold text-[var(--text-text-default)]">$29</span>
+                  <span className="text-[var(--text-text-secondary)]">/month</span>
+                </div>
+                <ul className="space-y-3 mb-8">
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
+                    <span className="text-[var(--text-text-secondary)]">5 chatbots</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
+                    <span className="text-[var(--text-text-secondary)]">Unlimited domains</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
+                    <span className="text-[var(--text-text-secondary)]">Priority support</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
+                    <span className="text-[var(--text-text-secondary)]">Custom branding</span>
+                  </li>
+                </ul>
+                <button
+                  onClick={() => handlePlanClick('basic')}
+                  disabled={purchasingPlan !== null}
+                  className="w-full py-3 text-center bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {purchasingPlan === 'basic' ? (
+                    <Loader className="h-5 w-5 animate-spin mx-auto" />
+                  ) : (
+                    isAuthenticated ? "Upgrade to Basic" : "Get Started"
+                  )}
+                </button>
               </div>
 
               <div className="bg-[var(--bg-bg-base-default)] rounded-xl border-2 border-[var(--bg-bg-brand)] p-8 relative">
@@ -402,23 +457,17 @@ export default function App() {
                 </div>
                 <h3 className="text-2xl font-semibold text-[var(--text-text-default)] mb-2">Pro</h3>
                 <div className="mb-6">
-                  <span className="text-4xl font-bold text-[var(--text-text-default)]">
-                    ${billingPeriod === 'monthly' ? '29' : '24'}
-                  </span>
+                  <span className="text-4xl font-bold text-[var(--text-text-default)]">$79</span>
                   <span className="text-[var(--text-text-secondary)]">/month</span>
                 </div>
                 <ul className="space-y-3 mb-8">
                   <li className="flex items-start">
                     <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">10,000 messages/month</span>
+                    <span className="text-[var(--text-text-secondary)]">15 chatbots</span>
                   </li>
                   <li className="flex items-start">
                     <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">5 domains</span>
-                  </li>
-                  <li className="flex items-start">
-                    <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">Voice chat included</span>
+                    <span className="text-[var(--text-text-secondary)]">Unlimited domains</span>
                   </li>
                   <li className="flex items-start">
                     <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
@@ -428,24 +477,34 @@ export default function App() {
                     <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
                     <span className="text-[var(--text-text-secondary)]">Advanced analytics</span>
                   </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
+                    <span className="text-[var(--text-text-secondary)]">API access</span>
+                  </li>
                 </ul>
-                <Link
-                  href="/register"
-                  className="block w-full py-3 text-center bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all font-medium"
+                <button
+                  onClick={() => handlePlanClick('pro')}
+                  disabled={purchasingPlan !== null}
+                  className="w-full py-3 text-center bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Get Started
-                </Link>
+                  {purchasingPlan === 'pro' ? (
+                    <Loader className="h-5 w-5 animate-spin mx-auto" />
+                  ) : (
+                    isAuthenticated ? "Upgrade to Pro" : "Get Started"
+                  )}
+                </button>
               </div>
 
               <div className="bg-[var(--bg-bg-base-default)] rounded-xl border border-[var(--border-border-neutral-l1)] p-8">
                 <h3 className="text-2xl font-semibold text-[var(--text-text-default)] mb-2">Enterprise</h3>
                 <div className="mb-6">
-                  <span className="text-4xl font-bold text-[var(--text-text-default)]">Custom</span>
+                  <span className="text-4xl font-bold text-[var(--text-text-default)]">$199</span>
+                  <span className="text-[var(--text-text-secondary)]">/month</span>
                 </div>
                 <ul className="space-y-3 mb-8">
                   <li className="flex items-start">
                     <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">Unlimited messages</span>
+                    <span className="text-[var(--text-text-secondary)]">Unlimited chatbots</span>
                   </li>
                   <li className="flex items-start">
                     <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
@@ -453,27 +512,28 @@ export default function App() {
                   </li>
                   <li className="flex items-start">
                     <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">Custom voice models</span>
+                    <span className="text-[var(--text-text-secondary)]">24/7 dedicated support</span>
                   </li>
                   <li className="flex items-start">
                     <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">Dedicated support</span>
+                    <span className="text-[var(--text-text-secondary)]">White-label solution</span>
                   </li>
                   <li className="flex items-start">
                     <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">Full API access</span>
-                  </li>
-                  <li className="flex items-start">
-                    <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">SLA guarantee</span>
+                    <span className="text-[var(--text-text-secondary)]">Custom integrations</span>
                   </li>
                 </ul>
-                <Link
-                  href="/contact"
-                  className="block w-full py-3 text-center bg-[var(--bg-bg-overlay-l2)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] rounded-lg hover:bg-[var(--bg-bg-overlay-l3)] transition-all"
+                <button
+                  onClick={() => handlePlanClick('enterprise')}
+                  disabled={purchasingPlan !== null}
+                  className="w-full py-3 text-center bg-[var(--bg-bg-overlay-l2)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] rounded-lg hover:bg-[var(--bg-bg-overlay-l3)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Contact Sales
-                </Link>
+                  {purchasingPlan === 'enterprise' ? (
+                    <Loader className="h-5 w-5 animate-spin mx-auto" />
+                  ) : (
+                    isAuthenticated ? "Upgrade to Enterprise" : "Get Started"
+                  )}
+                </button>
               </div>
             </div>
           </div>
@@ -481,110 +541,99 @@ export default function App() {
 
         <section id="integration-section" className="py-24 bg-[var(--bg-bg-base-secondary)]">
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <div>
-                <h2 className="text-4xl font-semibold text-[var(--text-text-default)] mb-6">
-                  Integrate in Minutes
-                </h2>
-                <p className="text-lg text-[var(--text-text-secondary)] mb-8">
-                  Add Nexva to your website with just a few lines of code. No complex setup required.
-                </p>
-                
-                <div className="space-y-6">
-                  <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0 w-8 h-8 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-full flex items-center justify-center font-semibold">
-                      1
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-[var(--text-text-default)] mb-1">
-                        Get your API key
-                      </h3>
-                      <p className="text-[var(--text-text-secondary)]">
-                        Sign up and create your chatbot to receive your unique API key
-                      </p>
-                    </div>
-                  </div>
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-semibold text-[var(--text-text-default)] mb-6">
+                Integrate in Minutes
+              </h2>
+              <p className="text-lg text-[var(--text-text-secondary)]">
+                Add Nexva to your website with just a few lines of code. Choose your preferred method.
+              </p>
+            </div>
 
-                  <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0 w-8 h-8 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-full flex items-center justify-center font-semibold">
-                      2
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-[var(--text-text-default)] mb-1">
-                        Add the code snippet
-                      </h3>
-                      <p className="text-[var(--text-text-secondary)]">
-                        Copy and paste the snippet before the closing body tag
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0 w-8 h-8 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-full flex items-center justify-center font-semibold">
-                      3
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-[var(--text-text-default)] mb-1">
-                        Start chatting
-                      </h3>
-                      <p className="text-[var(--text-text-secondary)]">
-                        Your AI chatbot is live and ready to engage visitors
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <Link
-                  href="/docs"
-                  className="inline-block mt-8 px-6 py-3 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all font-medium"
-                >
-                  View Full Documentation
-                </Link>
+            <div className="relative">
+              <div className="absolute left-1/2 top-0 bottom-0 w-px hidden lg:block">
+                <div 
+                  className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--bg-bg-brand)]/30 to-transparent"
+                  style={{
+                    backgroundImage: 'repeating-linear-gradient(0deg, var(--bg-bg-brand), var(--bg-bg-brand) 10px, transparent 10px, transparent 20px)',
+                    opacity: 0.3
+                  }}
+                />
               </div>
 
-              <div className="bg-[var(--bg-bg-base-default)] rounded-xl border border-[var(--border-border-neutral-l1)] p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center space-x-4">
-                    <span className="text-sm font-mono text-[var(--text-text-tertiary)]">{codeExamples[codeIndex].title}</span>
-                    <div className="flex space-x-1">
-                      {codeExamples.map((_, index) => (
-                        <button
-                          key={index}
-                          onClick={() => setCodeIndex(index)}
-                          className={`w-2 h-2 rounded-full transition-all ${
-                            index === codeIndex 
-                              ? 'bg-[var(--bg-bg-brand)] w-6' 
-                              : 'bg-[var(--border-border-neutral-l1)]'
-                          }`}
-                        />
-                      ))}
+              <div className="space-y-24">
+                {codeExamples.map((example, index) => (
+                  <div key={index} className="relative">
+                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden lg:flex items-center justify-center">
+                      <div className="absolute w-16 h-16 border-2 border-[var(--bg-bg-brand)]/20 rounded-full animate-ping" style={{ animationDuration: '2s' }}></div>
+                      <div className="absolute w-12 h-12 border-2 border-[var(--bg-bg-brand)]/30 rounded-full animate-ping" style={{ animationDuration: '2s', animationDelay: '0.5s' }}></div>
+                      <div className="w-8 h-8 bg-[var(--bg-bg-base-secondary)] rounded-full border-2 border-[var(--bg-bg-brand)]/40 flex items-center justify-center relative z-10">
+                        <div className="w-3 h-3 bg-[var(--bg-bg-brand)] rounded-full animate-pulse" />
+                      </div>
+                    </div>
+
+                    <div
+                      className={`grid lg:grid-cols-2 gap-12 items-center ${
+                        index % 2 === 1 ? 'lg:flex-row-reverse' : ''
+                      }`}
+                    >
+                      <div className={index % 2 === 1 ? 'lg:order-2' : ''}>
+                        <div className="inline-block px-4 py-1 bg-[var(--bg-bg-brand)]/10 border border-[var(--bg-bg-brand)]/20 rounded-full mb-4">
+                          <span className="text-sm font-medium text-[var(--bg-bg-brand)]">{example.subtitle}</span>
+                        </div>
+                        <h3 className="text-3xl font-semibold text-[var(--text-text-default)] mb-4">
+                          {example.title}
+                        </h3>
+                        <p className="text-lg text-[var(--text-text-secondary)] leading-relaxed mb-6">
+                          {example.description}
+                        </p>
+                        <div className="flex items-center space-x-3">
+                          <div className="w-1.5 h-1.5 bg-[var(--bg-bg-brand)] rounded-full"></div>
+                          <span className="text-sm text-[var(--text-text-tertiary)]">Copy and paste to get started</span>
+                        </div>
+                      </div>
+
+                      <div className={index % 2 === 1 ? 'lg:order-1' : ''}>
+                        <div className="bg-[var(--bg-bg-base-default)] rounded-xl border border-[var(--border-border-neutral-l1)] p-6 shadow-lg">
+                          <div className="flex items-center justify-between mb-4">
+                            <span className="text-sm font-mono text-[var(--text-text-tertiary)]">{example.title}</span>
+                            <button
+                              onClick={() => copyCode(index)}
+                              className="flex items-center space-x-2 px-3 py-1.5 bg-[var(--bg-bg-overlay-l2)] hover:bg-[var(--bg-bg-overlay-l3)] rounded-lg transition-all"
+                            >
+                              {copied === index ? (
+                                <>
+                                  <Check className="h-4 w-4 text-green-500" />
+                                  <span className="text-sm text-green-500">Copied!</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Copy className="h-4 w-4 text-[var(--text-text-secondary)]" />
+                                  <span className="text-sm text-[var(--text-text-secondary)]">Copy</span>
+                                </>
+                              )}
+                            </button>
+                          </div>
+                          <pre className="bg-[var(--bg-bg-base-secondary)] p-4 rounded-lg overflow-x-auto">
+                            <code className="text-sm text-[var(--text-text-default)] font-mono">
+{example.code}
+                            </code>
+                          </pre>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <button
-                    onClick={copyCode}
-                    className="flex items-center space-x-2 px-3 py-1.5 bg-[var(--bg-bg-overlay-l2)] hover:bg-[var(--bg-bg-overlay-l3)] rounded-lg transition-all"
-                  >
-                    {copied ? (
-                      <>
-                        <Check className="h-4 w-4 text-green-500" />
-                        <span className="text-sm text-green-500">Copied!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="h-4 w-4 text-[var(--text-text-secondary)]" />
-                        <span className="text-sm text-[var(--text-text-secondary)]">Copy</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-                <div className="transition-opacity duration-300">
-                  <pre className="bg-[var(--bg-bg-base-secondary)] p-4 rounded-lg overflow-x-auto">
-                    <code className="text-sm text-[var(--text-text-default)] font-mono">
-{codeExamples[codeIndex].code}
-                    </code>
-                  </pre>
-                </div>
+                ))}
               </div>
+            </div>
+
+            <div className="text-center mt-16">
+              <Link
+                href="/docs"
+                className="inline-block px-6 py-3 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all font-medium"
+              >
+                View Full Documentation
+              </Link>
             </div>
           </div>
         </section>

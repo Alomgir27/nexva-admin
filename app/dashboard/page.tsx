@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { MessageSquare, Globe, FileText, TrendingUp, Database, Cpu, Server } from "lucide-react";
+import { MessageSquare, Globe, FileText, TrendingUp, Database, Cpu, Server, CreditCard, ArrowRight } from "lucide-react";
 import { useAuth, fetchWithAuth } from "@/app/context/AuthContext";
 import { API_ENDPOINTS } from "@/app/config/api";
+import Link from "next/link";
 
 interface Stats {
   totalChatbots: number;
@@ -11,16 +12,30 @@ interface Stats {
   totalPages: number;
 }
 
+interface SubscriptionInfo {
+  plan_tier: string;
+  status: string;
+  chatbot_count: number;
+  chatbot_limit: number;
+}
+
 export default function Dashboard() {
   const { isAuthenticated } = useAuth();
   const [stats, setStats] = useState<Stats>({ totalChatbots: 0, totalDomains: 0, totalPages: 0 });
+  const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null);
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    if (isAuthenticated) {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted) {
       fetchStats();
+      fetchSubscription();
     }
-  }, [isAuthenticated]);
+  }, [mounted]);
 
   const fetchStats = async () => {
     try {
@@ -52,6 +67,18 @@ export default function Dashboard() {
     }
   };
 
+  const fetchSubscription = async () => {
+    try {
+      const response = await fetchWithAuth(API_ENDPOINTS.billing.subscription);
+      if (response.ok) {
+        const data = await response.json();
+        setSubscription(data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch subscription");
+    }
+  };
+
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-6 py-8">
@@ -76,10 +103,10 @@ export default function Dashboard() {
             </div>
             <div className="space-y-3">
               {[
-                { name: "FastAPI", icon: Server, status: "Running", color: "green" },
-                { name: "Search Engine", icon: Database, status: "Healthy", color: "green" },
-                { name: "AI Engine", icon: Cpu, status: "Ready", color: "green" },
-                { name: "Database", icon: Database, status: "Connected", color: "green" }
+                { name: "API Server", icon: Server, status: "Running", color: "green" },
+                { name: "Vector Search", icon: Database, status: "Healthy", color: "green" },
+                { name: "AI Model", icon: Cpu, status: "Ready", color: "green" },
+                { name: "Data Storage", icon: Database, status: "Connected", color: "green" }
               ].map((service) => (
                 <div key={service.name} className="flex items-center justify-between py-2">
                   <div className="flex items-center gap-3">
@@ -115,6 +142,64 @@ export default function Dashboard() {
         </div>
 
         <div className="space-y-6">
+          {subscription && (
+            <div className={`bg-[var(--bg-bg-overlay-l1)] rounded-lg p-6 border ${subscription.plan_tier === 'free' ? 'border-[var(--bg-bg-brand)]' : 'border-[var(--border-border-neutral-l1)]'}`}>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-2">
+                  <CreditCard className="h-5 w-5 text-[var(--text-text-secondary)]" />
+                  <h2 className="text-base font-medium text-[var(--text-text-default)]">Subscription</h2>
+                </div>
+                <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${
+                  subscription.plan_tier === 'free' 
+                    ? 'bg-gray-500/10 text-gray-500'
+                    : 'bg-[var(--bg-bg-brand)]/10 text-[var(--bg-bg-brand)]'
+                }`}>
+                  {subscription.plan_tier}
+                </span>
+              </div>
+              
+              <div className="mb-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm text-[var(--text-text-secondary)]">Chatbots Used</span>
+                  <span className="text-sm font-semibold text-[var(--text-text-default)]">
+                    {subscription.chatbot_count}/{subscription.chatbot_limit === -1 ? '∞' : subscription.chatbot_limit}
+                  </span>
+                </div>
+                {subscription.chatbot_limit !== -1 && (
+                  <div className="w-full bg-[var(--bg-bg-base-secondary)] rounded-full h-2">
+                    <div
+                      className={`h-2 rounded-full transition-all ${
+                        (subscription.chatbot_count / subscription.chatbot_limit) >= 0.9 
+                          ? 'bg-yellow-500' 
+                          : 'bg-[var(--bg-bg-brand)]'
+                      }`}
+                      style={{
+                        width: `${Math.min((subscription.chatbot_count / subscription.chatbot_limit) * 100, 100)}%`
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {subscription.plan_tier === 'free' && (
+                <Link href="/dashboard/billing">
+                  <button className="w-full px-4 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all font-medium flex items-center justify-center space-x-2">
+                    <span>Upgrade Plan</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </button>
+                </Link>
+              )}
+              
+              {subscription.plan_tier !== 'free' && (
+                <Link href="/dashboard/billing">
+                  <button className="w-full px-4 py-2 bg-[var(--bg-bg-overlay-l2)] text-[var(--text-text-default)] rounded-lg hover:bg-[var(--bg-bg-overlay-l3)] transition-all text-sm">
+                    Manage Subscription
+                  </button>
+                </Link>
+              )}
+            </div>
+          )}
+          
           <div className="bg-[var(--bg-bg-overlay-l1)] rounded-lg p-6">
             <h2 className="text-base font-medium text-[var(--text-text-default)] mb-4">Getting Started</h2>
             <div className="space-y-4">

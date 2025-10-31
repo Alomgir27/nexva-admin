@@ -1,12 +1,18 @@
 "use client";
 
-import { useState } from "react";
-import { Copy, Check, Code, Smartphone, Globe } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Copy, Check, Code, Smartphone, Globe, User } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
 export default function DocsPage() {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsAuthenticated(!!token);
+  }, []);
 
   const copyToClipboard = (text: string, index: number) => {
     navigator.clipboard.writeText(text);
@@ -165,15 +171,28 @@ export default {
               <Link href="/playground" className="text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors">
                 Playground
               </Link>
-              <Link href="/login" className="text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors">
-                Sign in
-              </Link>
-              <Link
-                href="/register"
-                className="px-5 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all font-medium"
-              >
-                Get Started
-              </Link>
+              
+              {isAuthenticated ? (
+                <Link
+                  href="/dashboard"
+                  className="flex items-center space-x-2 px-5 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all font-medium"
+                >
+                  <User className="h-4 w-4" />
+                  <span>Dashboard</span>
+                </Link>
+              ) : (
+                <>
+                  <Link href="/login" className="text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors">
+                    Sign in
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="px-5 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all font-medium"
+                  >
+                    Get Started
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
