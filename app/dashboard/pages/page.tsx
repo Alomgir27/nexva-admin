@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ExternalLink, Search, ChevronLeft, ChevronRight, LayoutGrid, List, Table, ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -19,7 +19,7 @@ interface ScrapedPage {
 
 type ViewMode = "table" | "grid" | "list";
 
-export default function ScrapedPagesPage() {
+function ScrapedPagesContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const domainId = searchParams.get("domain");
@@ -304,6 +304,14 @@ export default function ScrapedPagesPage() {
         page={selectedPage}
       />
     </div>
+  );
+}
+
+export default function ScrapedPagesPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
+      <ScrapedPagesContent />
+    </Suspense>
   );
 }
 
