@@ -1,0 +1,145 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter_18pt-Regular.8f38ec04.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter_18pt-Medium.151bfc90.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter_18pt-SemiBold.bac0903e.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  :root {
+    --bg-bg-base-default: #0a0b0d;
+    --bg-bg-base-secondary: #121314;
+    --bg-bg-overlay-l1: rgba(237, 239, 242, 0.04);
+    --bg-bg-overlay-l2: rgba(237, 239, 242, 0.08);
+    --bg-bg-overlay-l3: rgba(237, 239, 242, 0.13);
+    --bg-bg-brand: #32f08c;
+    --bg-bg-brand-hover: #0fdc78;
+    --text-text-default: #f5f9fe;
+    --text-text-secondary: #a6aab5;
+    --text-text-tertiary: #787d87;
+    --text-text-onbrand: #0a0b0d;
+    --border-border-neutral-l1: rgba(255, 255, 255, 0.06);
+    --border-border-neutral-l2: rgba(255, 255, 255, 0.12);
+    --border-border-contrast: #fff;
+    --font-family-default: 'Inter';
+  }
+
+  * {
+    border-color: var(--border-border-neutral-l1);
+  }
+
+  body {
+    background: var(--bg-bg-base-default);
+    color: var(--text-text-default);
+    font-family: var(--font-family-default), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+.prose {
+  @apply text-[var(--text-text-default)];
+}
+
+.prose p {
+  @apply my-2;
+}
+
+.prose ul, .prose ol {
+  @apply my-2 ml-4;
+}
+
+.prose li {
+  @apply my-1;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  @apply font-semibold mt-4 mb-2;
+}
+
+.prose h1 {
+  @apply text-xl;
+}
+
+.prose h2 {
+  @apply text-lg;
+}
+
+.prose h3 {
+  @apply text-base;
+}
+
+.prose pre {
+  @apply my-2 rounded-lg overflow-x-auto;
+}
+
+.prose code {
+  @apply text-sm;
+}
+
+.prose strong {
+  @apply font-semibold;
+}
+
+.prose a {
+  @apply text-[var(--bg-bg-brand)] hover:underline;
+  word-break: break-all;
+}
+
+.prose a:hover {
+  @apply text-[var(--bg-bg-brand-hover)];
+}
+
+.prose blockquote {
+  @apply border-l-2 border-[var(--bg-bg-brand)] pl-3 italic my-2;
+}
+
+.prose hr {
+  @apply border-[var(--border-border-neutral-l1)] my-4;
+}
+
+.prose table {
+  @apply w-full border-collapse my-4;
+}
+
+.prose th {
+  @apply bg-[var(--bg-bg-overlay-l2)] p-2 text-left font-semibold border border-[var(--border-border-neutral-l1)];
+}
+
+.prose td {
+  @apply p-2 border border-[var(--border-border-neutral-l1)];
+}
+
