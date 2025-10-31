@@ -47,6 +47,7 @@ export default function DomainsPage() {
   const [supportMembers, setSupportMembers] = useState<SupportMember[]>([]);
   const [showSupportTeam, setShowSupportTeam] = useState(false);
   const [showDocuments, setShowDocuments] = useState<{ domainId: number; url: string } | null>(null);
+  const [pollingFailures, setPollingFailures] = useState(0);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -61,11 +62,12 @@ export default function DomainsPage() {
     if (selectedChatbot) {
       fetchDomains(selectedChatbot);
       fetchSupportTeam(selectedChatbot);
+      setPollingFailures(0);
     }
   }, [selectedChatbot]);
 
   useEffect(() => {
-    if (!selectedChatbot) return;
+    if (!selectedChatbot || pollingFailures >= 3) return;
     
     const hasScrapingDomain = domains.some(d => d.status === 'scraping');
     
@@ -76,7 +78,7 @@ export default function DomainsPage() {
       
       return () => clearInterval(interval);
     }
-  }, [domains, selectedChatbot]);
+  }, [domains, selectedChatbot, pollingFailures]);
 
   const fetchDomainsForPolling = async (chatbotId: number) => {
     try {
@@ -87,9 +89,12 @@ export default function DomainsPage() {
       if (response.ok) {
         const data = await response.json();
         setDomains(data);
+        setPollingFailures(0);
+      } else {
+        setPollingFailures(prev => prev + 1);
       }
     } catch (error) {
-      console.error("Failed to fetch domains");
+      setPollingFailures(prev => prev + 1);
     }
   };
 
@@ -129,7 +134,7 @@ export default function DomainsPage() {
         setDomains(data);
       }
     } catch (error) {
-      console.error("Failed to fetch domains");
+      
     }
   };
 
