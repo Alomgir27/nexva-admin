@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { MessageSquare, Send, CheckCircle2, Loader } from "lucide-react";
-import { API_BASE_URL, API_ENDPOINTS } from "@/app/config/api";
+import { API_BASE_URL, API_ENDPOINTS, buildWebSocketUrlWithToken } from "@/app/config/api";
 
 interface Ticket {
   id: number;
@@ -73,8 +73,13 @@ export default function SupportPage() {
       wsRef.current.close();
     }
 
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//localhost:8000/ws/support/${ticketId}?support_email=support@nexva.ai`;
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error('[Support WS] No token found');
+      return;
+    }
+
+    const wsUrl = buildWebSocketUrlWithToken(`/ws/support/${ticketId}`, token);
     
     console.log('[Support WS] Connecting to:', wsUrl);
     wsRef.current = new WebSocket(wsUrl);
@@ -166,7 +171,6 @@ export default function SupportPage() {
       } else {
         console.log('[Support API] WebSocket not ready, using REST API');
         const token = localStorage.getItem("token");
-        const userEmail = "support@nexva.ai";
 
         const response = await fetch(
           `${API_ENDPOINTS.support.tickets}/${selectedTicket}/message`,
@@ -176,7 +180,7 @@ export default function SupportPage() {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({ message, sender_email: userEmail }),
+            body: JSON.stringify({ message }),
           }
         );
 

@@ -17,7 +17,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { API_BASE_URL } from "@/app/config/api";
+import { API_BASE_URL, buildWebSocketUrl } from "@/app/config/api";
 
 export default function PlaygroundPage() {
   const [activeTab, setActiveTab] = useState<"text" | "voice">("text");
@@ -318,7 +318,7 @@ export default function PlaygroundPage() {
     setLoading(true);
 
     try {
-      const ws = new WebSocket(`ws://localhost:8000/ws/chat/${apiKey}`);
+      const ws = new WebSocket(buildWebSocketUrl(`/ws/chat/${apiKey}`));
       let assistantMessage = "";
       let assistantIndex = -1;
       
@@ -396,7 +396,7 @@ export default function PlaygroundPage() {
 
       recognitionRef.current = { recognition };
       
-      const ws = new WebSocket(`ws://localhost:8000/ws/voice-chat/${apiKey}`);
+      const ws = new WebSocket(buildWebSocketUrl(`/ws/voice-chat/${apiKey}`));
       wsRef.current = ws;
       
       let currentText = "";

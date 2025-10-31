@@ -1,5 +1,25 @@
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://yueihds3xl383a-5000.proxy.runpod.net';
 
+export const buildWebSocketUrl = (path: string) => {
+  try {
+    const base = new URL(API_BASE_URL);
+    const protocol = base.protocol === 'https:' ? 'wss:' : 'ws:';
+    const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+    return `${protocol}//${base.host}${normalizedPath}`;
+  } catch (error) {
+    const protocol = API_BASE_URL.startsWith('https') ? 'wss:' : 'ws:';
+    const host = API_BASE_URL.replace(/^https?:\/\//, '');
+    const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+    return `${protocol}//${host}${normalizedPath}`;
+  }
+};
+
+export const buildWebSocketUrlWithToken = (path: string, token: string) => {
+  const baseUrl = buildWebSocketUrl(path);
+  const separator = baseUrl.includes('?') ? '&' : '?';
+  return `${baseUrl}${separator}token=${encodeURIComponent(token)}`;
+};
+
 export const API_ENDPOINTS = {
   auth: {
     login: `${API_BASE_URL}/api/auth/login`,
