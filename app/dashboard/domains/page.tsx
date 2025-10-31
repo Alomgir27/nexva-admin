@@ -47,7 +47,6 @@ export default function DomainsPage() {
   const [supportMembers, setSupportMembers] = useState<SupportMember[]>([]);
   const [showSupportTeam, setShowSupportTeam] = useState(false);
   const [showDocuments, setShowDocuments] = useState<{ domainId: number; url: string } | null>(null);
-  const [pollingFailures, setPollingFailures] = useState(0);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -62,41 +61,22 @@ export default function DomainsPage() {
     if (selectedChatbot) {
       fetchDomains(selectedChatbot);
       fetchSupportTeam(selectedChatbot);
-      setPollingFailures(0);
     }
   }, [selectedChatbot]);
 
   useEffect(() => {
-    if (!selectedChatbot || pollingFailures >= 3) return;
+    if (!selectedChatbot) return;
     
     const hasScrapingDomain = domains.some(d => d.status === 'scraping');
     
     if (hasScrapingDomain) {
       const interval = setInterval(() => {
-        fetchDomainsForPolling(selectedChatbot);
+        fetchDomains(selectedChatbot);
       }, 5000);
       
       return () => clearInterval(interval);
     }
-  }, [domains, selectedChatbot, pollingFailures]);
-
-  const fetchDomainsForPolling = async (chatbotId: number) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(`${API_ENDPOINTS.domains}/${chatbotId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setDomains(data);
-        setPollingFailures(0);
-      } else {
-        setPollingFailures(prev => prev + 1);
-      }
-    } catch (error) {
-      setPollingFailures(prev => prev + 1);
-    }
-  };
+  }, [domains, selectedChatbot]);
 
   const fetchChatbots = async () => {
     try {
