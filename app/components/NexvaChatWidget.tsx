@@ -1,19 +1,42 @@
 "use client";
 
-import { useEffect } from 'react';
-import { API_BASE_URL } from '@/app/config/api';
+import { useEffect, useState } from 'react';
+import { API_BASE_URL, API_ENDPOINTS } from '@/app/config/api';
 
 export default function NexvaChatWidget() {
+  const [apiKey, setApiKey] = useState<string | null>(null);
+
   useEffect(() => {
-    console.log('[NexvaChatWidget] Initializing widget...');
-    console.log('[NexvaChatWidget] API_BASE_URL:', API_BASE_URL);
+    const fetchApiKey = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.chatbots}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+          const chatbots = await response.json();
+          if (chatbots.length > 0) {
+            setApiKey(chatbots[0].api_key);
+          }
+        }
+      } catch (error) {
+        console.error('[NexvaChatWidget] Failed to fetch API key:', error);
+      }
+    };
+
+    fetchApiKey();
+  }, []);
+
+  useEffect(() => {
+    if (!apiKey) return;
 
     const initWidget = () => {
-      console.log('[NexvaChatWidget] Checking for NexvaChat...');
       if (typeof window !== 'undefined' && (window as any).NexvaChat) {
-        console.log('[NexvaChatWidget] NexvaChat found, initializing...');
         try {
-          (window as any).NexvaChat.init('cvEVs2U0ek-bmTwGeZgbdBxcL7ofbZMLSPOAkMCZ50s', {
+          (window as any).NexvaChat.init(apiKey, {
             apiUrl: API_BASE_URL,
             position: 'bottom-right',
             primaryColor: '#32f08c',
@@ -39,41 +62,27 @@ export default function NexvaChatWidget() {
               animation: 'pulse'
             }
           });
-          console.log('[NexvaChatWidget] Widget initialized successfully!');
         } catch (error) {
           console.error('[NexvaChatWidget] Error initializing widget:', error);
         }
-      } else {
-        console.error('[NexvaChatWidget] NexvaChat not found on window object');
       }
     };
 
-    // Create script element with type="module"
     const script = document.createElement('script');
     script.type = 'module';
     script.src = `${API_BASE_URL}/widget.js?v=${Date.now()}`;
-    console.log('[NexvaChatWidget] Loading script from:', script.src);
     
-    script.onload = () => {
-      console.log('[NexvaChatWidget] Script loaded successfully');
-      // Wait a bit for module to initialize
-      setTimeout(initWidget, 200);
-    };
-    
-    script.onerror = (error) => {
-      console.error('[NexvaChatWidget] Failed to load script:', error);
-    };
+    script.onload = () => setTimeout(initWidget, 200);
+    script.onerror = (error) => console.error('[NexvaChatWidget] Failed to load script:', error);
     
     document.head.appendChild(script);
 
     return () => {
-      // Cleanup
-      console.log('[NexvaChatWidget] Cleaning up...');
       if (script.parentNode) {
         script.parentNode.removeChild(script);
       }
     };
-  }, []);
+  }, [apiKey]);
 
   return null;
 }

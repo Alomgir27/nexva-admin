@@ -69,12 +69,11 @@ export default function Home() {
       title: 'CDN Script',
       subtitle: 'Quick Start',
       description: 'Get started instantly by adding a simple script tag to your HTML. Perfect for static sites and quick prototypes.',
-      code: `<script src="https://cdn.nexva.ai/widget.js"></script>
-<script>
-  NexvaChat.init('YOUR_API_KEY', {
-    position: 'bottom-right',
-    primaryColor: '#32f08c'
-  });
+      code: `<script 
+  src="https://cdn.nexva.ai/widget.js"
+  data-api-key="YOUR_API_KEY"
+  data-position="bottom-right"
+  data-primary-color="#32f08c">
 </script>`
     },
     {

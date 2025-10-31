@@ -77,33 +77,30 @@ export default function WidgetSetupPage() {
   };
 
   const generateCDNCode = () => {
-    return `<script src="${API_BASE_URL}/widget.js"></script>
-<script>
-  NexvaChat.init('${config.apiKey}', {
-    apiUrl: '${API_BASE_URL}',
-    position: '${config.position}',
-    primaryColor: '${config.primaryColor}',
-    headerText: '${config.headerText}',
-    welcomeMessage: '${config.welcomeMessage}',
-    placeholder: '${config.placeholder}',
-    enableVoice: ${config.enableVoice},
-    enableHumanSupport: ${config.enableHumanSupport},
-    theme: '${config.theme}',
-    borderRadius: '${config.borderRadius}',
-    borderColor: '${config.borderColor}',
-    borderWidth: '${config.borderWidth}',${config.presetQuestions.length > 0 ? `
-    presetQuestions: ${JSON.stringify(config.presetQuestions)},` : ''}
-    bubble: {
-      backgroundColor: '${config.bubble.backgroundColor}',
-      size: '${config.bubble.size}',
-      shape: '${config.bubble.shape}',
-      icon: '${config.bubble.icon}',
-      iconColor: '${config.bubble.iconColor}',
-      customIconUrl: '${config.bubble.customIconUrl}',
-      shadow: ${config.bubble.shadow},
-      animation: '${config.bubble.animation}'
-    }
-  });
+    return `<script 
+  src="${API_BASE_URL}/widget.js"
+  data-api-key="${config.apiKey}"
+  data-api-url="${API_BASE_URL}"
+  data-position="${config.position}"
+  data-primary-color="${config.primaryColor}"
+  data-header-text="${config.headerText}"
+  data-welcome-message="${config.welcomeMessage}"
+  data-placeholder="${config.placeholder}"
+  data-enable-voice="${config.enableVoice}"
+  data-enable-human-support="${config.enableHumanSupport}"
+  data-theme="${config.theme}"
+  data-border-radius="${config.borderRadius}"
+  data-border-color="${config.borderColor}"
+  data-border-width="${config.borderWidth}"${config.presetQuestions.length > 0 ? `
+  data-preset-questions='${JSON.stringify(config.presetQuestions)}'` : ''}
+  data-bubble-bg="${config.bubble.backgroundColor}"
+  data-bubble-size="${config.bubble.size}"
+  data-bubble-shape="${config.bubble.shape}"
+  data-bubble-icon="${config.bubble.icon}"
+  data-bubble-icon-color="${config.bubble.iconColor}"
+  data-bubble-custom-icon="${config.bubble.customIconUrl}"
+  data-bubble-shadow="${config.bubble.shadow}"
+  data-bubble-animation="${config.bubble.animation}">
 </script>`;
   };
 
