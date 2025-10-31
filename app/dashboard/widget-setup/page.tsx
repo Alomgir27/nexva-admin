@@ -58,7 +58,7 @@ export default function WidgetSetupPage() {
   const fetchChatbots = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.chatbots}`, {
+      const response = await fetch(API_ENDPOINTS.chatbots, {
         headers: { Authorization: `Bearer ${token}` },
       });
       

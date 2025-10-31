@@ -12,7 +12,7 @@ export default function NexvaChatWidget() {
         const token = localStorage.getItem('token');
         if (!token) return;
 
-        const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.chatbots}`, {
+        const response = await fetch(API_ENDPOINTS.chatbots, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
