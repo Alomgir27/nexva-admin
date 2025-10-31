@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Sparkles, Mail, Lock, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { API_ENDPOINTS } from "@/app/config/api";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -19,7 +20,7 @@ export default function LoginPage() {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:8000/api/auth/login", {
+      const response = await fetch(API_ENDPOINTS.auth.login, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

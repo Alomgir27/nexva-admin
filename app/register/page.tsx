@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Sparkles, Mail, Lock, AlertCircle, User } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { API_ENDPOINTS } from "@/app/config/api";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -32,7 +33,7 @@ export default function RegisterPage() {
     }
 
     try {
-      const response = await fetch("http://localhost:8000/api/auth/register", {
+      const response = await fetch(API_ENDPOINTS.auth.register, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

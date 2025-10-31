@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect } from 'react';
+import { API_BASE_URL } from '@/app/config/api';
 
 export default function NexvaChatWidget() {
   useEffect(() => {
     const initWidget = () => {
       if (typeof window !== 'undefined' && (window as any).NexvaChat) {
         (window as any).NexvaChat.init('7qjoBizhjGt28MFRoT4ME8a8zVr_EIHXvNyyTCmWtFk', {
-          apiUrl: 'http://localhost:8000',
+          apiUrl: API_BASE_URL,
           position: 'bottom-right',
           primaryColor: '#4F46E5',
           headerText: 'FluentCart',
@@ -26,7 +27,7 @@ export default function NexvaChatWidget() {
     // Create script element with type="module"
     const script = document.createElement('script');
     script.type = 'module';
-    script.src = `http://localhost:8000/widget.js?v=${Date.now()}`;
+    script.src = `${API_BASE_URL}/widget.js?v=${Date.now()}`;
     script.onload = () => {
       // Wait a bit for module to initialize
       setTimeout(initWidget, 100);

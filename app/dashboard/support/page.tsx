@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { MessageSquare, Send, CheckCircle2, Loader } from "lucide-react";
+import { API_BASE_URL, API_ENDPOINTS } from "@/app/config/api";
 
 interface Ticket {
   id: number;
@@ -108,8 +109,8 @@ export default function SupportPage() {
     try {
       const token = localStorage.getItem("token");
       const url = filter === "all" 
-        ? "http://localhost:8000/api/support/tickets"
-        : `http://localhost:8000/api/support/tickets?status=${filter}`;
+        ? API_ENDPOINTS.support.tickets
+        : `${API_ENDPOINTS.support.tickets}?status=${filter}`;
       
       const response = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
@@ -136,7 +137,7 @@ export default function SupportPage() {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:8000/api/support/tickets/${ticketId}`,
+        `${API_ENDPOINTS.support.tickets}/${ticketId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -168,7 +169,7 @@ export default function SupportPage() {
         const userEmail = "support@nexva.ai";
 
         const response = await fetch(
-          `http://localhost:8000/api/support/tickets/${selectedTicket}/message`,
+          `${API_ENDPOINTS.support.tickets}/${selectedTicket}/message`,
           {
             method: "POST",
             headers: {
@@ -197,7 +198,7 @@ export default function SupportPage() {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:8000/api/tickets/${selectedTicket}/resolve`,
+        `${API_BASE_URL}/api/tickets/${selectedTicket}/resolve`,
         {
           method: "POST",
           headers: { Authorization: `Bearer ${token}` },

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Copy, Check, Trash2, Loader, Key } from "lucide-react";
+import { API_ENDPOINTS } from "@/app/config/api";
 
 interface Chatbot {
   id: number;
@@ -31,7 +32,7 @@ export default function TokensPage() {
   const fetchChatbots = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:8000/api/chatbots", {
+      const response = await fetch(API_ENDPOINTS.chatbots, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.status === 401) {
@@ -55,7 +56,7 @@ export default function TokensPage() {
     setCreating(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:8000/api/chatbots", {
+      const response = await fetch(API_ENDPOINTS.chatbots, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

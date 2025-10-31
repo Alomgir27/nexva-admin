@@ -3,11 +3,12 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Globe, Loader, ExternalLink, Trash2, Users } from "lucide-react";
-import AddDomainModal from "../../components/AddDomainModal";
-import DeleteDomainModal from "../../components/DeleteDomainModal";
-import InviteSupportModal from "../../components/InviteSupportModal";
+import AddDomainModal from "@/app/components/AddDomainModal";
+import DeleteDomainModal from "@/app/components/DeleteDomainModal";
+import InviteSupportModal from "@/app/components/InviteSupportModal";
 import Link from "next/link";
-
+import { API_BASE_URL, API_ENDPOINTS } from "@/app/config/api";
+  
 interface Chatbot {
   id: number;
   name: string;
@@ -70,7 +71,7 @@ export default function DomainsPage() {
   const fetchDomainsForPolling = async (chatbotId: number) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:8000/api/domains/${chatbotId}`, {
+      const response = await fetch(`${API_ENDPOINTS.domains}/${chatbotId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.ok) {
@@ -85,7 +86,7 @@ export default function DomainsPage() {
   const fetchChatbots = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:8000/api/chatbots", {
+      const response = await fetch(API_ENDPOINTS.chatbots, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.status === 401) {
@@ -110,7 +111,7 @@ export default function DomainsPage() {
   const fetchDomains = async (chatbotId: number) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:8000/api/domains/${chatbotId}`, {
+      const response = await fetch(`${API_ENDPOINTS.domains}/${chatbotId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.ok) {
@@ -135,7 +136,7 @@ export default function DomainsPage() {
     setDeletingDomain(domainId);
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:8000/api/domains/${domainId}`, {
+      const response = await fetch(`${API_ENDPOINTS.domains}/${domainId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -160,7 +161,7 @@ export default function DomainsPage() {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:8000/api/chatbots/${chatbotId}/support-team`,
+        `${API_BASE_URL}/api/chatbots/${chatbotId}/support-team`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -180,7 +181,7 @@ export default function DomainsPage() {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:8000/api/support-team/${memberId}`,
+        `${API_ENDPOINTS.support.team}/${memberId}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },

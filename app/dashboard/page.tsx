@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { MessageSquare, Globe, FileText, TrendingUp, Database, Cpu, Server } from "lucide-react";
-import { useAuth, fetchWithAuth } from "../context/AuthContext";
+import { useAuth, fetchWithAuth } from "@/app/context/AuthContext";
+import { API_ENDPOINTS } from "@/app/config/api";
 
 interface Stats {
   totalChatbots: number;
@@ -23,14 +24,14 @@ export default function Dashboard() {
 
   const fetchStats = async () => {
     try {
-      const response = await fetchWithAuth("http://localhost:8000/api/chatbots");
+      const response = await fetchWithAuth(API_ENDPOINTS.chatbots);
       if (response.ok) {
         const chatbots = await response.json();
         let totalDomains = 0;
         let totalPages = 0;
 
         for (const chatbot of chatbots) {
-          const domainsRes = await fetchWithAuth(`http://localhost:8000/api/domains/${chatbot.id}`);
+          const domainsRes = await fetchWithAuth(`${API_ENDPOINTS.domains}/${chatbot.id}`);
           if (domainsRes.ok) {
             const domains = await domainsRes.json();
             totalDomains += domains.length;

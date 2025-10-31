@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { X, UserPlus, Loader } from "lucide-react";
+import { API_BASE_URL } from "@/app/config/api";
 
 interface InviteSupportModalProps {
   isOpen: boolean;
@@ -29,7 +30,7 @@ export default function InviteSupportModal({
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:8000/api/chatbots/${chatbotId}/support-team`,
+        `${API_BASE_URL}/api/chatbots/${chatbotId}/support-team`,
         {
           method: "POST",
           headers: {

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { X, AlertCircle, Loader } from "lucide-react";
+import { API_ENDPOINTS } from "@/app/config/api";
 
 interface AddDomainModalProps {
   isOpen: boolean;
@@ -44,7 +45,7 @@ export default function AddDomainModal({ isOpen, onClose, chatbotId, onDomainAdd
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:8000/api/domains", {
+      const response = await fetch(API_ENDPOINTS.domains, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

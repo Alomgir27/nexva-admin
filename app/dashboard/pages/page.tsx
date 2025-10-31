@@ -4,7 +4,8 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ExternalLink, Search, ChevronLeft, ChevronRight, LayoutGrid, List, Table, ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import PageDetailsModal from "../../components/PageDetailsModal";
+import PageDetailsModal from "@/app/components/PageDetailsModal";
+import { API_BASE_URL, API_ENDPOINTS } from "@/app/config/api";
 
 interface ScrapedPage {
   id: number;
@@ -45,7 +46,7 @@ function ScrapedPagesContent() {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:8000/api/domains/${domainId}/pages?page=${currentPage}&per_page=10`,
+        `${API_BASE_URL}/api/domains/${domainId}/pages?page=${currentPage}&per_page=10`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

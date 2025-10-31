@@ -17,6 +17,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { API_BASE_URL } from "@/app/config/api";
 
 export default function PlaygroundPage() {
   const [activeTab, setActiveTab] = useState<"text" | "voice">("text");
@@ -581,7 +582,7 @@ export default function PlaygroundPage() {
 
     try {
       const response = await fetch(
-        `http://localhost:8000/api/conversations/${currentConversationId}/request-support`,
+        `${API_BASE_URL}/api/conversations/${currentConversationId}/request-support`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
