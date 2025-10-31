@@ -66,7 +66,3 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 - Lucide React Icons
 - Radix UI Components
 
-# nexva-admin
-# nexva-admin
-# nexva-admin
-# nexva-admin
