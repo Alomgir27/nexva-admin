@@ -397,6 +397,10 @@ export default function App() {
                   </li>
                   <li className="flex items-start">
                     <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
+                    <span className="text-[var(--text-text-secondary)]">Web scraping</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
                     <span className="text-[var(--text-text-secondary)]">Document upload</span>
                   </li>
                 </ul>
@@ -416,7 +420,7 @@ export default function App() {
               <div className="bg-[var(--bg-bg-base-default)] rounded-xl border border-[var(--border-border-neutral-l1)] p-8">
                 <h3 className="text-2xl font-semibold text-[var(--text-text-default)] mb-2">Basic</h3>
                 <div className="mb-6">
-                  <span className="text-4xl font-bold text-[var(--text-text-default)]">$29</span>
+                  <span className="text-4xl font-bold text-[var(--text-text-default)]">$19</span>
                   <span className="text-[var(--text-text-secondary)]">/month</span>
                 </div>
                 <ul className="space-y-3 mb-8">
@@ -456,7 +460,7 @@ export default function App() {
                 </div>
                 <h3 className="text-2xl font-semibold text-[var(--text-text-default)] mb-2">Pro</h3>
                 <div className="mb-6">
-                  <span className="text-4xl font-bold text-[var(--text-text-default)]">$79</span>
+                  <span className="text-4xl font-bold text-[var(--text-text-default)]">$49</span>
                   <span className="text-[var(--text-text-secondary)]">/month</span>
                 </div>
                 <ul className="space-y-3 mb-8">
@@ -497,7 +501,7 @@ export default function App() {
               <div className="bg-[var(--bg-bg-base-default)] rounded-xl border border-[var(--border-border-neutral-l1)] p-8">
                 <h3 className="text-2xl font-semibold text-[var(--text-text-default)] mb-2">Enterprise</h3>
                 <div className="mb-6">
-                  <span className="text-4xl font-bold text-[var(--text-text-default)]">$199</span>
+                  <span className="text-4xl font-bold text-[var(--text-text-default)]">$99</span>
                   <span className="text-[var(--text-text-secondary)]">/month</span>
                 </div>
                 <ul className="space-y-3 mb-8">
