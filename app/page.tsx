@@ -47,7 +47,10 @@ export default function Home() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ plan_tier: planTier }),
+        body: JSON.stringify({ 
+          plan_tier: planTier, 
+          billing_period: billingPeriod === 'yearly' ? 'annual' : 'monthly' 
+        }),
       });
 
       if (response.ok) {
@@ -375,6 +378,34 @@ export default function App() {
               </p>
             </div>
 
+            <div className="flex justify-center mb-8">
+              <div className="inline-flex items-center bg-[var(--bg-bg-overlay-l1)] border border-[var(--border-border-neutral-l1)] rounded-lg p-1">
+                <button
+                  onClick={() => setBillingPeriod('monthly')}
+                  className={`px-6 py-2 rounded-md font-medium transition-all ${
+                    billingPeriod === 'monthly'
+                      ? 'bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)]'
+                      : 'text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)]'
+                  }`}
+                >
+                  Monthly
+                </button>
+                <button
+                  onClick={() => setBillingPeriod('yearly')}
+                  className={`px-6 py-2 rounded-md font-medium transition-all ${
+                    billingPeriod === 'yearly'
+                      ? 'bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)]'
+                      : 'text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)]'
+                  }`}
+                >
+                  Yearly
+                  <span className="ml-2 text-xs bg-green-500 text-white px-2 py-0.5 rounded-full">
+                    Save 20%
+                  </span>
+                </button>
+              </div>
+            </div>
+
             <div className="grid lg:grid-cols-4 gap-8">
               <div className="bg-[var(--bg-bg-base-default)] rounded-xl border border-[var(--border-border-neutral-l1)] p-8">
                 <h3 className="text-2xl font-semibold text-[var(--text-text-default)] mb-2">Free</h3>
@@ -420,8 +451,17 @@ export default function App() {
               <div className="bg-[var(--bg-bg-base-default)] rounded-xl border border-[var(--border-border-neutral-l1)] p-8">
                 <h3 className="text-2xl font-semibold text-[var(--text-text-default)] mb-2">Basic</h3>
                 <div className="mb-6">
-                  <span className="text-4xl font-bold text-[var(--text-text-default)]">$19</span>
-                  <span className="text-[var(--text-text-secondary)]">/month</span>
+                  <div className="flex items-baseline">
+                    <span className="text-4xl font-bold text-[var(--text-text-default)]">
+                      ${billingPeriod === 'monthly' ? '9.99' : '7.99'}
+                    </span>
+                    <span className="text-[var(--text-text-secondary)] ml-2">/month</span>
+                  </div>
+                  {billingPeriod === 'yearly' && (
+                    <p className="text-sm text-green-500 mt-1">
+                      $95.99 billed annually
+                    </p>
+                  )}
                 </div>
                 <ul className="space-y-3 mb-8">
                   <li className="flex items-start">
@@ -460,8 +500,17 @@ export default function App() {
                 </div>
                 <h3 className="text-2xl font-semibold text-[var(--text-text-default)] mb-2">Pro</h3>
                 <div className="mb-6">
-                  <span className="text-4xl font-bold text-[var(--text-text-default)]">$49</span>
-                  <span className="text-[var(--text-text-secondary)]">/month</span>
+                  <div className="flex items-baseline">
+                    <span className="text-4xl font-bold text-[var(--text-text-default)]">
+                      ${billingPeriod === 'monthly' ? '24.99' : '19.99'}
+                    </span>
+                    <span className="text-[var(--text-text-secondary)] ml-2">/month</span>
+                  </div>
+                  {billingPeriod === 'yearly' && (
+                    <p className="text-sm text-green-500 mt-1">
+                      $239.99 billed annually
+                    </p>
+                  )}
                 </div>
                 <ul className="space-y-3 mb-8">
                   <li className="flex items-start">
@@ -501,8 +550,17 @@ export default function App() {
               <div className="bg-[var(--bg-bg-base-default)] rounded-xl border border-[var(--border-border-neutral-l1)] p-8">
                 <h3 className="text-2xl font-semibold text-[var(--text-text-default)] mb-2">Enterprise</h3>
                 <div className="mb-6">
-                  <span className="text-4xl font-bold text-[var(--text-text-default)]">$99</span>
-                  <span className="text-[var(--text-text-secondary)]">/month</span>
+                  <div className="flex items-baseline">
+                    <span className="text-4xl font-bold text-[var(--text-text-default)]">
+                      ${billingPeriod === 'monthly' ? '49.99' : '39.99'}
+                    </span>
+                    <span className="text-[var(--text-text-secondary)] ml-2">/month</span>
+                  </div>
+                  {billingPeriod === 'yearly' && (
+                    <p className="text-sm text-green-500 mt-1">
+                      $479.99 billed annually
+                    </p>
+                  )}
                 </div>
                 <ul className="space-y-3 mb-8">
                   <li className="flex items-start">
