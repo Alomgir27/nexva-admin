@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CreditCard, CheckCircle, XCircle, Loader, ExternalLink } from "lucide-react";
 import PricingCards from "@/app/components/PricingCards";
@@ -13,7 +13,7 @@ interface SubscriptionInfo {
   cancel_at_period_end: boolean;
 }
 
-export default function BillingPage() {
+function BillingContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null);
@@ -190,3 +190,14 @@ export default function BillingPage() {
   );
 }
 
+export default function BillingPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader className="h-8 w-8 animate-spin text-[var(--text-text-secondary)]" />
+      </div>
+    }>
+      <BillingContent />
+    </Suspense>
+  );
+}
