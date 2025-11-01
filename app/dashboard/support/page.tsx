@@ -335,7 +335,7 @@ export default function SupportPage() {
               </div>
 
               <div className="flex-1 overflow-y-auto p-6 space-y-4">
-                {ticketDetail.messages.map((msg) => (
+                {ticketDetail.messages.filter(msg => msg.role === 'user' || msg.sender_type === 'support').map((msg) => (
                   <div
                     key={msg.id}
                     className={`flex ${msg.sender_type === "support" ? "justify-end" : "justify-start"}`}
