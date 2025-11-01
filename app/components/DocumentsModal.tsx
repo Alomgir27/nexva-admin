@@ -8,6 +8,7 @@ import UploadDocumentModal from "./UploadDocumentModal";
 interface Document {
   id: number;
   filename: string;
+  r2_url: string;
   file_type: string;
   file_size: number;
   title: string;
@@ -56,26 +57,14 @@ export default function DocumentsModal({ isOpen, onClose, domainId, domainUrl }:
     }
   };
 
-  const downloadDocument = async (documentId: number, filename: string) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(API_ENDPOINTS.documents.download(documentId), {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (response.ok) {
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-      }
-    } catch (error) {
-      console.error("Failed to download document");
-    }
+  const downloadDocument = (r2Url: string, filename: string) => {
+    const a = document.createElement("a");
+    a.href = r2Url;
+    a.download = filename;
+    a.target = "_blank";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   };
 
   const deleteDocument = async (documentId: number) => {
@@ -185,7 +174,7 @@ export default function DocumentsModal({ isOpen, onClose, domainId, domainUrl }:
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end space-x-2">
                         <button
-                          onClick={() => downloadDocument(doc.id, doc.filename)}
+                          onClick={() => downloadDocument(doc.r2_url, doc.filename)}
                           className="p-2 text-[var(--text-text-secondary)] hover:bg-[var(--bg-bg-overlay-l2)] rounded transition-all"
                           title="Download"
                         >
