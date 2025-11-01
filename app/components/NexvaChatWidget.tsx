@@ -68,11 +68,17 @@ export default function NexvaChatWidget() {
       }
     };
 
+    const existingScript = document.querySelector(`script[src^="${API_BASE_URL}/widget.js"]`);
+    if (existingScript) {
+      initWidget();
+      return;
+    }
+
     const script = document.createElement('script');
     script.type = 'module';
-    script.src = `${API_BASE_URL}/widget.js?v=${Date.now()}`;
+    script.src = `${API_BASE_URL}/widget.js`;
     
-    script.onload = () => setTimeout(initWidget, 200);
+    script.onload = () => setTimeout(initWidget, 100);
     script.onerror = (error) => console.error('[NexvaChatWidget] Failed to load script:', error);
     
     document.head.appendChild(script);

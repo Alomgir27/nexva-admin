@@ -839,17 +839,16 @@ export default function App() {
             <div>
               <h3 className="font-semibold text-[var(--text-text-default)] mb-3 sm:mb-4 text-sm sm:text-base">Company</h3>
               <ul className="space-y-2 sm:space-y-3">
-                <li><Link href="/about" className="text-xs sm:text-sm text-[var(--text-text-tertiary)] hover:text-[var(--bg-bg-brand)] transition-colors">About</Link></li>
-                <li><Link href="/blog" className="text-xs sm:text-sm text-[var(--text-text-tertiary)] hover:text-[var(--bg-bg-brand)] transition-colors">Blog</Link></li>
-                <li><Link href="/contact" className="text-xs sm:text-sm text-[var(--text-text-tertiary)] hover:text-[var(--bg-bg-brand)] transition-colors">Contact</Link></li>
+                <li><a href="mailto:hello@nexva.ai" className="text-xs sm:text-sm text-[var(--text-text-tertiary)] hover:text-[var(--bg-bg-brand)] transition-colors">Contact Us</a></li>
+                <li><Link href="/dashboard" className="text-xs sm:text-sm text-[var(--text-text-tertiary)] hover:text-[var(--bg-bg-brand)] transition-colors">Dashboard</Link></li>
               </ul>
             </div>
 
             <div>
-              <h3 className="font-semibold text-[var(--text-text-default)] mb-3 sm:mb-4 text-sm sm:text-base">Legal</h3>
+              <h3 className="font-semibold text-[var(--text-text-default)] mb-3 sm:mb-4 text-sm sm:text-base">Support</h3>
               <ul className="space-y-2 sm:space-y-3">
-                <li><Link href="/privacy" className="text-xs sm:text-sm text-[var(--text-text-tertiary)] hover:text-[var(--bg-bg-brand)] transition-colors">Privacy</Link></li>
-                <li><Link href="/terms" className="text-xs sm:text-sm text-[var(--text-text-tertiary)] hover:text-[var(--bg-bg-brand)] transition-colors">Terms</Link></li>
+                <li><Link href="/docs" className="text-xs sm:text-sm text-[var(--text-text-tertiary)] hover:text-[var(--bg-bg-brand)] transition-colors">Documentation</Link></li>
+                <li><Link href="/playground" className="text-xs sm:text-sm text-[var(--text-text-tertiary)] hover:text-[var(--bg-bg-brand)] transition-colors">Playground</Link></li>
               </ul>
             </div>
           </div>
