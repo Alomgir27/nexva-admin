@@ -14,10 +14,10 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { label: "Overview", path: "/dashboard", icon: <LayoutDashboard className="h-5 w-5" /> },
+  { label: "Support", path: "/dashboard/support", icon: <MessageCircle className="h-5 w-5" /> },
   { label: "Domains", path: "/dashboard/domains", icon: <Globe className="h-5 w-5" /> },
   { label: "API Tokens", path: "/dashboard/tokens", icon: <Key className="h-5 w-5" /> },
   { label: "Widget Setup", path: "/dashboard/widget-setup", icon: <Code className="h-5 w-5" /> },
-  { label: "Support", path: "/dashboard/support", icon: <MessageCircle className="h-5 w-5" /> },
   { label: "Voice Characters", path: "/dashboard/voices", icon: <Volume2 className="h-5 w-5" /> },
   { label: "Billing", path: "/dashboard/billing", icon: <CreditCard className="h-5 w-5" /> },
   { label: "Playground", path: "/playground", icon: <Sparkles className="h-5 w-5" /> },
