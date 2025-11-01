@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { MessageSquare, Globe, FileText, TrendingUp, Database, Cpu, Server, CreditCard, ArrowRight } from "lucide-react";
+import { MessageSquare, Globe, FileText, TrendingUp, Database, Cpu, Server, CreditCard, ArrowRight, Users } from "lucide-react";
 import { useAuth, fetchWithAuth } from "@/app/context/AuthContext";
 import { API_ENDPOINTS } from "@/app/config/api";
 import Link from "next/link";
@@ -10,6 +10,16 @@ interface Stats {
   totalChatbots: number;
   totalDomains: number;
   totalPages: number;
+  totalCustomers: number;
+  totalConversations: number;
+}
+
+interface ChatbotStats {
+  chatbot_id: number;
+  chatbot_name: string;
+  unique_customers: number;
+  total_conversations: number;
+  total_messages: number;
 }
 
 interface SubscriptionInfo {
@@ -21,7 +31,8 @@ interface SubscriptionInfo {
 
 export default function Dashboard() {
   const { isAuthenticated } = useAuth();
-  const [stats, setStats] = useState<Stats>({ totalChatbots: 0, totalDomains: 0, totalPages: 0 });
+  const [stats, setStats] = useState<Stats>({ totalChatbots: 0, totalDomains: 0, totalPages: 0, totalCustomers: 0, totalConversations: 0 });
+  const [chatbotStats, setChatbotStats] = useState<ChatbotStats[]>([]);
   const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
@@ -44,6 +55,9 @@ export default function Dashboard() {
         const chatbots = await response.json();
         let totalDomains = 0;
         let totalPages = 0;
+        let totalCustomers = 0;
+        let totalConversations = 0;
+        const chatbotStatsData: ChatbotStats[] = [];
 
         for (const chatbot of chatbots) {
           const domainsRes = await fetchWithAuth(`${API_ENDPOINTS.domains}/${chatbot.id}`);
@@ -52,13 +66,28 @@ export default function Dashboard() {
             totalDomains += domains.length;
             totalPages += domains.reduce((sum: number, d: any) => sum + d.pages_scraped, 0);
           }
+
+          const statsRes = await fetchWithAuth(`${API_ENDPOINTS.chatbots}/${chatbot.id}/stats`);
+          if (statsRes.ok) {
+            const chatbotStat = await statsRes.json();
+            totalCustomers += chatbotStat.unique_customers;
+            totalConversations += chatbotStat.total_conversations;
+            chatbotStatsData.push({
+              chatbot_id: chatbot.id,
+              chatbot_name: chatbot.name,
+              ...chatbotStat
+            });
+          }
         }
 
         setStats({
           totalChatbots: chatbots.length,
           totalDomains,
           totalPages,
+          totalCustomers,
+          totalConversations
         });
+        setChatbotStats(chatbotStatsData);
       }
     } catch (error) {
       console.error("Failed to fetch stats", error);
@@ -124,7 +153,7 @@ export default function Dashboard() {
 
           <div className="bg-[var(--bg-bg-overlay-l1)] rounded-lg p-6">
             <h2 className="text-base font-medium text-[var(--text-text-default)] mb-5">Quick Stats</h2>
-            <div className="grid grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
               <div>
                 <div className="text-2xl font-semibold text-[var(--text-text-default)] mb-1">{stats.totalChatbots}</div>
                 <div className="text-xs text-[var(--text-text-secondary)]">Chatbots</div>
@@ -137,8 +166,47 @@ export default function Dashboard() {
                 <div className="text-2xl font-semibold text-[var(--text-text-default)] mb-1">{stats.totalPages.toLocaleString()}</div>
                 <div className="text-xs text-[var(--text-text-secondary)]">Pages</div>
               </div>
+              <div>
+                <div className="text-2xl font-semibold text-[var(--bg-bg-brand)] mb-1">{stats.totalCustomers.toLocaleString()}</div>
+                <div className="text-xs text-[var(--text-text-secondary)]">Unique Customers</div>
+              </div>
+              <div>
+                <div className="text-2xl font-semibold text-[var(--text-text-default)] mb-1">{stats.totalConversations.toLocaleString()}</div>
+                <div className="text-xs text-[var(--text-text-secondary)]">Conversations</div>
+              </div>
             </div>
           </div>
+
+          {chatbotStats.length > 0 && (
+            <div className="bg-[var(--bg-bg-overlay-l1)] rounded-lg p-6">
+              <div className="flex items-center space-x-2 mb-5">
+                <Users className="h-5 w-5 text-[var(--bg-bg-brand)]" />
+                <h2 className="text-base font-medium text-[var(--text-text-default)]">Chatbot Statistics</h2>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-[var(--bg-bg-base-secondary)]">
+                    <tr>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-[var(--text-text-secondary)] uppercase">Chatbot</th>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-[var(--text-text-secondary)] uppercase">Customers</th>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-[var(--text-text-secondary)] uppercase">Conversations</th>
+                      <th className="px-4 py-3 text-right text-xs font-medium text-[var(--text-text-secondary)] uppercase">Messages</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[var(--border-border-neutral-l1)]">
+                    {chatbotStats.map((stat) => (
+                      <tr key={stat.chatbot_id} className="hover:bg-[var(--bg-bg-base-secondary)] transition-colors">
+                        <td className="px-4 py-3 text-sm text-[var(--text-text-default)] font-medium">{stat.chatbot_name}</td>
+                        <td className="px-4 py-3 text-sm text-[var(--bg-bg-brand)] font-semibold text-right">{stat.unique_customers.toLocaleString()}</td>
+                        <td className="px-4 py-3 text-sm text-[var(--text-text-default)] text-right">{stat.total_conversations.toLocaleString()}</td>
+                        <td className="px-4 py-3 text-sm text-[var(--text-text-secondary)] text-right">{stat.total_messages.toLocaleString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="space-y-6">

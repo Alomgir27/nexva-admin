@@ -424,7 +424,7 @@ export default function PlaygroundPage() {
           clearTimeout(processingTimeoutRef.current);
         }
         
-        if (currentText) {
+        if (currentText && !isSending) {
           processingTimeoutRef.current = setTimeout(() => {
             if (currentText && !isSending && ws.readyState === WebSocket.OPEN) {
               isSending = true;
@@ -434,6 +434,9 @@ export default function PlaygroundPage() {
                 type: "text_query",
                 text: currentText
               }));
+              
+              currentText = "";
+              setCurrentUserInput("");
             }
           }, 3000);
         }
@@ -512,9 +515,11 @@ export default function PlaygroundPage() {
           queueAudio(audioBlob);
         } else if (data.type === "response_end") {
           console.log("✅ DONE");
-          currentText = "";
           isSending = false;
-          setCurrentUserInput("");
+          if (processingTimeoutRef.current) {
+            clearTimeout(processingTimeoutRef.current);
+            processingTimeoutRef.current = null;
+          }
         } else if (data.type === "error") {
           setAssistantMessages(prev => [...prev, `❌ ${data.message}`]);
         }

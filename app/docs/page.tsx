@@ -143,22 +143,22 @@ export default {
   return (
     <div className="min-h-screen bg-[var(--bg-bg-base-default)]">
       <nav className="border-b border-[var(--border-border-neutral-l1)] sticky top-0 z-50 backdrop-blur-sm bg-[var(--bg-bg-base-default)]/90">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Link href="/" className="flex items-center space-x-3">
+            <Link href="/" className="flex items-center space-x-2 sm:space-x-3">
               <div className="relative">
                 <div className="absolute inset-0 bg-[var(--bg-bg-brand)] opacity-20 blur-xl rounded-full" />
                 <Image
                   src="/images/img.png"
                   alt="Nexva Logo"
-                  width={32}
-                  height={32}
-                  className="relative z-10 rounded-lg"
+                  width={28}
+                  height={28}
+                  className="relative z-10 rounded-lg sm:w-8 sm:h-8"
                 />
               </div>
-              <span className="text-xl font-semibold text-[var(--text-text-default)]">Nexva</span>
+              <span className="text-lg sm:text-xl font-semibold text-[var(--text-text-default)]">Nexva</span>
             </Link>
-            <div className="flex items-center space-x-6">
+            <div className="hidden md:flex items-center space-x-6">
               <Link href="/#features" className="text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors">
                 Features
               </Link>
@@ -192,6 +192,24 @@ export default {
                     Get Started
                   </Link>
                 </>
+              )}
+            </div>
+            
+            <div className="flex md:hidden items-center space-x-2">
+              {isAuthenticated ? (
+                <Link
+                  href="/dashboard"
+                  className="flex items-center px-3 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all font-medium text-sm"
+                >
+                  <User className="h-4 w-4" />
+                </Link>
+              ) : (
+                <Link
+                  href="/register"
+                  className="px-3 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all font-medium text-sm"
+                >
+                  Start
+                </Link>
               )}
             </div>
           </div>
