@@ -1,13 +1,16 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { NexvaChatNext } from 'nexva-react';
 import { API_ENDPOINTS } from '@/app/config/api';
 
 export default function NexvaChatWidget() {
   const [apiKey, setApiKey] = useState<string>('');
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
+    if (isLoaded) return;
+
     const fetchApiKey = async () => {
       try {
         const token = localStorage.getItem('token');
@@ -21,6 +24,7 @@ export default function NexvaChatWidget() {
           const chatbots = await response.json();
           if (chatbots.length > 0) {
             setApiKey(chatbots[0].api_key);
+            setIsLoaded(true);
           }
         }
       } catch (error) {
@@ -29,7 +33,7 @@ export default function NexvaChatWidget() {
     };
 
     fetchApiKey();
-  }, []);
+  }, [isLoaded]);
 
   if (!apiKey) return null;
 
