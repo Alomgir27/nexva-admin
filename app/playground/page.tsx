@@ -46,6 +46,7 @@ export default function PlaygroundPage() {
   const shouldPauseMicRef = useRef(false);
   const lastRestartTimeRef = useRef<number>(0);
   const processingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [introAudio, setIntroAudio] = useState<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     const savedKey = localStorage.getItem("nexva_api_key");
@@ -405,6 +406,15 @@ export default function PlaygroundPage() {
       recognition.onstart = () => {
         setIsRecording(true);
         console.log("🎤 START");
+        
+        if (!introAudio) {
+          const audio = new Audio(`${API_BASE_URL}/intro.wav`);
+          audio.volume = 0.7;
+          setIntroAudio(audio);
+          audio.play().catch(() => {});
+        } else {
+          introAudio.play().catch(() => {});
+        }
       };
 
       recognition.onresult = (event: any) => {

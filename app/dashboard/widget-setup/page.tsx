@@ -31,6 +31,7 @@ export default function WidgetSetupPage() {
     borderWidth: '1px',
     enableVoice: true,
     enableHumanSupport: true,
+    enableIntroSound: true,
     presetQuestions: [] as string[],
     bubble: {
       backgroundColor: '#32f08c',
@@ -88,6 +89,7 @@ export default function WidgetSetupPage() {
   data-placeholder="${config.placeholder}"
   data-enable-voice="${config.enableVoice}"
   data-enable-human-support="${config.enableHumanSupport}"
+  data-enable-intro-sound="${config.enableIntroSound !== false}"
   data-theme="${config.theme}"
   data-border-radius="${config.borderRadius}"
   data-border-color="${config.borderColor}"
@@ -118,6 +120,7 @@ NexvaChat.init('${config.apiKey}', {
   placeholder: '${config.placeholder}',
   enableVoice: ${config.enableVoice},
   enableHumanSupport: ${config.enableHumanSupport},
+  enableIntroSound: ${config.enableIntroSound !== false},
   theme: '${config.theme}',
   borderRadius: '${config.borderRadius}',
   borderColor: '${config.borderColor}',
@@ -151,6 +154,7 @@ export default function App() {
       placeholder="${config.placeholder}"
       enableVoice={${config.enableVoice}}
       enableHumanSupport={${config.enableHumanSupport}}
+      enableIntroSound={${config.enableIntroSound !== false}}
       theme="${config.theme}"
       borderRadius="${config.borderRadius}"
       borderColor="${config.borderColor}"
@@ -191,6 +195,7 @@ export default function App() {
       borderWidth: '1px',
       enableVoice: true,
       enableHumanSupport: true,
+      enableIntroSound: true,
       bubble: {
         backgroundColor: '#32f08c',
         size: '60px',
@@ -581,6 +586,15 @@ export default function App() {
                     className="w-5 h-5 rounded border-[var(--border-border-neutral-l1)]"
                   />
                   <span className="text-sm text-[var(--text-text-default)]">Enable Human Support</span>
+                </label>
+                <label className="flex items-center space-x-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={config.enableIntroSound !== false}
+                    onChange={(e) => setConfig({ ...config, enableIntroSound: e.target.checked })}
+                    className="w-5 h-5 rounded border-[var(--border-border-neutral-l1)]"
+                  />
+                  <span className="text-sm text-[var(--text-text-default)]">Enable Voice Intro Sound</span>
                 </label>
               </div>
             </div>
