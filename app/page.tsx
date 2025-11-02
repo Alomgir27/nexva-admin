@@ -73,38 +73,50 @@ export default function Home() {
       subtitle: 'Quick Start',
       description: 'Get started instantly by adding a simple script tag to your HTML. Perfect for static sites and quick prototypes.',
       code: `<script 
-  src="https://cdn.nexva.ai/widget.js"
+  src="https://nexva-admin.vercel.app/widget.js"
   data-api-key="YOUR_API_KEY"
   data-position="bottom-right"
   data-primary-color="#32f08c">
 </script>`
     },
     {
-      title: 'NPM Package',
-      subtitle: 'Modern Build Tools',
-      description: 'Install via npm for modern JavaScript applications. Works seamlessly with any bundler like Webpack or Vite.',
-      code: `npm install nexva-react
-
-import NexvaChat from 'nexva-react';
-
-NexvaChat.init('YOUR_API_KEY', {
-  position: 'bottom-right',
-  primaryColor: '#32f08c'
-});`
-    },
-    {
       title: 'React SDK',
       subtitle: 'React Integration',
       description: 'Native React component for seamless integration with your React applications. Full TypeScript support included.',
-      code: `import { NexvaChatWidget } from 'nexva-react';
+      code: `import { NexvaChat } from 'nexva-react';
 
 export default function App() {
   return (
-    <NexvaChatWidget 
-      apiKey="YOUR_API_KEY"
-      position="bottom-right"
-      primaryColor="#32f08c"
+    <NexvaChat 
+      config={{
+        apiKey: "YOUR_API_KEY",
+        position: "bottom-right",
+        primaryColor: "#32f08c"
+      }}
     />
+  );
+}`
+    },
+    {
+      title: 'Next.js SDK',
+      subtitle: 'Next.js Integration',
+      description: 'Optimized for Next.js applications with SSR support. Works with both App Router and Pages Router.',
+      code: `import { NexvaChatNext } from 'nexva-react';
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        {children}
+        <NexvaChatNext
+          config={{
+            apiKey: "YOUR_API_KEY",
+            position: "bottom-right",
+            primaryColor: "#32f08c"
+          }}
+        />
+      </body>
+    </html>
   );
 }`
     }
