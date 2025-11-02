@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { MessageSquare, Send, CheckCircle2, Loader } from "lucide-react";
+import { MessageSquare, Send, CheckCircle2, Loader, RotateCcw } from "lucide-react";
 import { API_BASE_URL, API_ENDPOINTS, buildWebSocketUrlWithToken } from "@/app/config/api";
 
 interface Ticket {
@@ -218,6 +218,31 @@ export default function SupportPage() {
     }
   };
 
+  const reopenTicket = async () => {
+    if (!selectedTicket) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `${API_BASE_URL}/api/tickets/${selectedTicket}/reopen`,
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (response.ok) {
+        fetchTickets();
+        fetchTicketDetail(selectedTicket);
+      } else {
+        const data = await response.json();
+        alert(data.detail || "Failed to reopen ticket");
+      }
+    } catch (error) {
+      console.error("Failed to reopen ticket", error);
+    }
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "open":
@@ -323,15 +348,25 @@ export default function SupportPage() {
                     {ticketDetail.ticket.chatbot_name}
                   </p>
                 </div>
-                {ticketDetail.ticket.status !== "resolved" && (
-                  <button
-                    onClick={resolveTicket}
-                    className="flex items-center space-x-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all"
-                  >
-                    <CheckCircle2 className="h-4 w-4" />
-                    <span>Resolve</span>
-                  </button>
-                )}
+                <div className="flex items-center space-x-2">
+                  {ticketDetail.ticket.status === "resolved" ? (
+                    <button
+                      onClick={reopenTicket}
+                      className="flex items-center space-x-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all"
+                    >
+                      <RotateCcw className="h-4 w-4" />
+                      <span>Reopen</span>
+                    </button>
+                  ) : (
+                    <button
+                      onClick={resolveTicket}
+                      className="flex items-center space-x-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all"
+                    >
+                      <CheckCircle2 className="h-4 w-4" />
+                      <span>Resolve</span>
+                    </button>
+                  )}
+                </div>
               </div>
 
               <div className="flex-1 overflow-y-auto p-6 space-y-4">
