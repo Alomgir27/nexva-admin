@@ -111,12 +111,11 @@ export default function WidgetSetupPage() {
   };
 
   const generateNPMCode = () => {
-    return `npm install @nexva/chat-widget
+    return `npm install nexva-react
 
-import NexvaChat from '@nexva/chat-widget';
+import NexvaChat from 'nexva-react';
 
 NexvaChat.init('${config.apiKey}', {
-  apiUrl: '${API_BASE_URL}',
   position: '${config.position}',
   primaryColor: '${config.primaryColor}',
   headerText: '${config.headerText}',
@@ -146,13 +145,12 @@ NexvaChat.init('${config.apiKey}', {
   };
 
   const generateReactCode = () => {
-    return `import { NexvaChatWidget } from '@nexva/react';
+    return `import { NexvaChatWidget } from 'nexva-react';
 
 export default function App() {
   return (
     <NexvaChatWidget 
       apiKey="${config.apiKey}"
-      apiUrl="${API_BASE_URL}"
       position="${config.position}"
       primaryColor="${config.primaryColor}"
       headerText="${config.headerText}"

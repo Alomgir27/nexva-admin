@@ -83,9 +83,9 @@ export default function Home() {
       title: 'NPM Package',
       subtitle: 'Modern Build Tools',
       description: 'Install via npm for modern JavaScript applications. Works seamlessly with any bundler like Webpack or Vite.',
-      code: `npm install @nexva/chat-widget
+      code: `npm install nexva-react
 
-import NexvaChat from '@nexva/chat-widget';
+import NexvaChat from 'nexva-react';
 
 NexvaChat.init('YOUR_API_KEY', {
   position: 'bottom-right',
@@ -96,7 +96,7 @@ NexvaChat.init('YOUR_API_KEY', {
       title: 'React SDK',
       subtitle: 'React Integration',
       description: 'Native React component for seamless integration with your React applications. Full TypeScript support included.',
-      code: `import { NexvaChatWidget } from '@nexva/react';
+      code: `import { NexvaChatWidget } from 'nexva-react';
 
 export default function App() {
   return (
