@@ -289,7 +289,7 @@ export default function Dashboard() {
           <div className="bg-[var(--bg-bg-overlay-l1)] rounded-lg p-6">
             <h2 className="text-base font-medium text-[var(--text-text-default)] mb-4">Resources</h2>
             <div className="space-y-3">
-              <a href="/dashboard/docs" className="block text-sm text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors">
+              <a href="/docs" className="block text-sm text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors">
                 Documentation →
               </a>
               <a href="/playground" className="block text-sm text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors">

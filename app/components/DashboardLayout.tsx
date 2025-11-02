@@ -4,7 +4,7 @@ import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { LayoutDashboard, Key, Globe, BookOpen, LogOut, Menu, X, Sparkles, Volume2, MessageCircle, Code, CreditCard } from "lucide-react";
+import { LayoutDashboard, Key, Globe, BookOpen, LogOut, Menu, X, Sparkles, Volume2, MessageCircle, Code, CreditCard, User } from "lucide-react";
 
 interface NavItem {
   label: string;
@@ -20,8 +20,8 @@ const navItems: NavItem[] = [
   { label: "Widget Setup", path: "/dashboard/widget-setup", icon: <Code className="h-5 w-5" /> },
   { label: "Voice Characters", path: "/dashboard/voices", icon: <Volume2 className="h-5 w-5" /> },
   { label: "Billing", path: "/dashboard/billing", icon: <CreditCard className="h-5 w-5" /> },
+  { label: "Profile", path: "/dashboard/profile", icon: <User className="h-5 w-5" /> },
   { label: "Playground", path: "/playground", icon: <Sparkles className="h-5 w-5" /> },
-  { label: "Documentation", path: "/dashboard/docs", icon: <BookOpen className="h-5 w-5" /> },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
