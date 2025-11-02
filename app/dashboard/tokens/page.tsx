@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Plus, Copy, Check, Trash2, Loader, Key, AlertCircle } from "lucide-react";
 import { API_ENDPOINTS } from "@/app/config/api";
 import UpgradeModal from "@/app/components/UpgradeModal";
+import DeleteChatbotModal from "@/app/components/DeleteChatbotModal";
 
 interface Chatbot {
   id: number;
@@ -30,6 +31,8 @@ export default function TokensPage() {
   const [creating, setCreating] = useState(false);
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [error, setError] = useState("");
+  const [chatbotToDelete, setChatbotToDelete] = useState<Chatbot | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -126,6 +129,28 @@ export default function TokensPage() {
     navigator.clipboard.writeText(key);
     setCopiedKey(key);
     setTimeout(() => setCopiedKey(null), 2000);
+  };
+
+  const deleteChatbot = async () => {
+    if (!chatbotToDelete) return;
+    
+    setDeleting(true);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${API_ENDPOINTS.chatbots}/${chatbotToDelete.id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      
+      if (response.ok) {
+        setChatbotToDelete(null);
+        await fetchData();
+      }
+    } catch (error) {
+      console.error("Failed to delete chatbot", error);
+    } finally {
+      setDeleting(false);
+    }
   };
 
   if (loading) {
@@ -233,6 +258,13 @@ export default function TokensPage() {
                       <Copy className="h-4 w-4 text-[var(--text-text-secondary)]" />
                     )}
                   </button>
+                  <button
+                    onClick={() => setChatbotToDelete(chatbot)}
+                    className="p-2 bg-red-500/10 hover:bg-red-500/20 rounded transition-all"
+                    title="Delete chatbot"
+                  >
+                    <Trash2 className="h-4 w-4 text-red-500" />
+                  </button>
                 </div>
               </div>
             ))}
@@ -249,6 +281,14 @@ export default function TokensPage() {
           currentCount={subscription.chatbot_count}
         />
       )}
+
+      <DeleteChatbotModal
+        isOpen={!!chatbotToDelete}
+        onClose={() => setChatbotToDelete(null)}
+        onConfirm={deleteChatbot}
+        chatbotName={chatbotToDelete?.name || ""}
+        isDeleting={deleting}
+      />
     </div>
   );
 }
