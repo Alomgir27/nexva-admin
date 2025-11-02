@@ -32,6 +32,8 @@ export default function WidgetSetupPage() {
     enableVoice: true,
     enableHumanSupport: true,
     enableIntroSound: true,
+    enableDock: true,
+    enableFullscreen: true,
     presetQuestions: [] as string[],
     bubble: {
       backgroundColor: '#32f08c',
@@ -90,6 +92,8 @@ export default function WidgetSetupPage() {
   data-enable-voice="${config.enableVoice}"
   data-enable-human-support="${config.enableHumanSupport}"
   data-enable-intro-sound="${config.enableIntroSound !== false}"
+  data-enable-dock="${config.enableDock !== false}"
+  data-enable-fullscreen="${config.enableFullscreen !== false}"
   data-theme="${config.theme}"
   data-border-radius="${config.borderRadius}"
   data-border-color="${config.borderColor}"
@@ -121,6 +125,8 @@ NexvaChat.init('${config.apiKey}', {
   enableVoice: ${config.enableVoice},
   enableHumanSupport: ${config.enableHumanSupport},
   enableIntroSound: ${config.enableIntroSound !== false},
+  enableDock: ${config.enableDock !== false},
+  enableFullscreen: ${config.enableFullscreen !== false},
   theme: '${config.theme}',
   borderRadius: '${config.borderRadius}',
   borderColor: '${config.borderColor}',
@@ -155,6 +161,8 @@ export default function App() {
       enableVoice={${config.enableVoice}}
       enableHumanSupport={${config.enableHumanSupport}}
       enableIntroSound={${config.enableIntroSound !== false}}
+      enableDock={${config.enableDock !== false}}
+      enableFullscreen={${config.enableFullscreen !== false}}
       theme="${config.theme}"
       borderRadius="${config.borderRadius}"
       borderColor="${config.borderColor}"
@@ -196,6 +204,8 @@ export default function App() {
       enableVoice: true,
       enableHumanSupport: true,
       enableIntroSound: true,
+      enableDock: true,
+      enableFullscreen: true,
       bubble: {
         backgroundColor: '#32f08c',
         size: '60px',
@@ -595,6 +605,24 @@ export default function App() {
                     className="w-5 h-5 rounded border-[var(--border-border-neutral-l1)]"
                   />
                   <span className="text-sm text-[var(--text-text-default)]">Enable Voice Intro Sound</span>
+                </label>
+                <label className="flex items-center space-x-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={config.enableDock !== false}
+                    onChange={(e) => setConfig({ ...config, enableDock: e.target.checked })}
+                    className="w-5 h-5 rounded border-[var(--border-border-neutral-l1)]"
+                  />
+                  <span className="text-sm text-[var(--text-text-default)]">Enable Dock Button</span>
+                </label>
+                <label className="flex items-center space-x-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={config.enableFullscreen !== false}
+                    onChange={(e) => setConfig({ ...config, enableFullscreen: e.target.checked })}
+                    className="w-5 h-5 rounded border-[var(--border-border-neutral-l1)]"
+                  />
+                  <span className="text-sm text-[var(--text-text-default)]">Enable Fullscreen Button</span>
                 </label>
               </div>
             </div>

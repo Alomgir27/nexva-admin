@@ -47,6 +47,7 @@ export default function PlaygroundPage() {
   const lastRestartTimeRef = useRef<number>(0);
   const processingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [introAudio, setIntroAudio] = useState<HTMLAudioElement | null>(null);
+  const introSoundPlayedRef = useRef(false);
 
   useEffect(() => {
     const savedKey = localStorage.getItem("nexva_api_key");
@@ -407,13 +408,16 @@ export default function PlaygroundPage() {
         setIsRecording(true);
         console.log("🎤 START");
         
-        if (!introAudio) {
-          const audio = new Audio(`${API_BASE_URL}/intro.wav`);
-          audio.volume = 0.7;
-          setIntroAudio(audio);
-          audio.play().catch(() => {});
-        } else {
-          introAudio.play().catch(() => {});
+        if (!introSoundPlayedRef.current) {
+          introSoundPlayedRef.current = true;
+          if (!introAudio) {
+            const audio = new Audio(`${API_BASE_URL}/intro.wav`);
+            audio.volume = 0.7;
+            setIntroAudio(audio);
+            audio.play().catch(() => {});
+          } else {
+            introAudio.play().catch(() => {});
+          }
         }
       };
 
@@ -575,6 +579,7 @@ export default function PlaygroundPage() {
     audioQueueRef.current = [];
     isPlayingRef.current = false;
     shouldPauseMicRef.current = false;
+    introSoundPlayedRef.current = false;
     
     setIsRecording(false);
     stopAudioMonitoring();
