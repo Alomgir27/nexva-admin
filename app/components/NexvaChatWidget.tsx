@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { API_BASE_URL, API_ENDPOINTS } from '@/app/config/api';
+import { NexvaChatNext } from 'nexva-react';
+import { API_ENDPOINTS } from '@/app/config/api';
 
 export default function NexvaChatWidget() {
-  const [apiKey, setApiKey] = useState<string | null>(null);
+  const [apiKey, setApiKey] = useState<string>('');
 
   useEffect(() => {
     const fetchApiKey = async () => {
@@ -30,66 +31,23 @@ export default function NexvaChatWidget() {
     fetchApiKey();
   }, []);
 
-  useEffect(() => {
-    if (!apiKey) return;
+  if (!apiKey) return null;
 
-    const initWidget = () => {
-      if (typeof window !== 'undefined' && (window as any).NexvaChat) {
-        try {
-          (window as any).NexvaChat.init(apiKey, {
-            apiUrl: API_BASE_URL,
-            position: 'bottom-right',
-            primaryColor: '#32f08c',
-            headerText: 'Nexva Chat',
-            welcomeMessage: '👋 Hi! How can I help you today?',
-            placeholder: 'Type your message here...',
-            enableVoice: true,
-            enableHumanSupport: true,
-            theme: 'dark',
-            borderRadius: '12px',
-            presetQuestions: [
-              'How do I create a chatbot?',
-              'What features are available?',
-              'Need help with integration'
-            ],
-            bubble: {
-              backgroundColor: '#32f08c',
-              size: '60px',
-              shape: 'circle',
-              icon: 'chat',
-              iconColor: '#ffffff',
-              shadow: true,
-              animation: 'pulse'
-            }
-          });
-        } catch (error) {
-          console.error('[NexvaChatWidget] Error initializing widget:', error);
-        }
-      }
-    };
-
-    const existingScript = document.querySelector(`script[src^="${API_BASE_URL}/widget.js"]`);
-    if (existingScript) {
-      initWidget();
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.type = 'module';
-    script.src = `${API_BASE_URL}/widget.js`;
-    
-    script.onload = () => setTimeout(initWidget, 100);
-    script.onerror = (error) => console.error('[NexvaChatWidget] Failed to load script:', error);
-    
-    document.head.appendChild(script);
-
-    return () => {
-      if (script.parentNode) {
-        script.parentNode.removeChild(script);
-      }
-    };
-  }, [apiKey]);
-
-  return null;
+  return (
+    <NexvaChatNext
+      config={{
+        apiKey,
+        position: 'bottom-right',
+        primaryColor: '#32f08c',
+        headerText: 'Nexva Chat',
+        welcomeMessage: '👋 Hi! How can I help you today?',
+        placeholder: 'Type your message here...',
+        enableVoice: true,
+        enableHumanSupport: true,
+        theme: 'dark',
+        borderRadius: '12px',
+      }}
+    />
+  );
 }
 

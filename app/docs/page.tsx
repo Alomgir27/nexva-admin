@@ -25,7 +25,6 @@ export default function DocsPage() {
 <script src="https://cdn.nexva.ai/widget.js"></script>
 <script>
   NexvaChat.init('YOUR_API_KEY', {
-    apiUrl: 'https://api.nexva.ai',
     position: 'bottom-right',
     primaryColor: '#32f08c',
     welcomeMessage: 'Hi! How can I help you today?',
@@ -33,50 +32,43 @@ export default function DocsPage() {
     enableHumanSupport: true
   });
 </script>`,
-    react: `import { useEffect } from 'react';
+    react: `// npm install nexva-react
+
+import { NexvaChat } from 'nexva-react';
 
 export default function App() {
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://cdn.nexva.ai/widget.js';
-    script.async = true;
-    
-    script.onload = () => {
-      window.NexvaChat.init('YOUR_API_KEY', {
-        apiUrl: 'https://api.nexva.ai',
-        position: 'bottom-right',
-        primaryColor: '#32f08c',
-        welcomeMessage: 'Hi! How can I help?',
-        enableVoice: true,
-        enableHumanSupport: true
-      });
-    };
-    
-    document.body.appendChild(script);
-    
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
-
-  return <div>Your App Content</div>;
+  return (
+    <div>
+      <h1>Your App Content</h1>
+      <NexvaChat
+        config={{
+          apiKey: 'YOUR_API_KEY',
+          position: 'bottom-right',
+          primaryColor: '#32f08c',
+          enableVoice: true,
+          enableHumanSupport: true
+        }}
+      />
+    </div>
+  );
 }`,
-    nextjs: `// app/layout.tsx or pages/_app.tsx
-import Script from 'next/script';
+    nextjs: `// npm install nexva-react
+// app/layout.tsx or pages/_app.tsx
+
+import { NexvaChatNext } from 'nexva-react';
 
 export default function RootLayout({ children }) {
   return (
     <html>
       <body>
         {children}
-        <Script
-          src="https://cdn.nexva.ai/widget.js"
-          onLoad={() => {
-            window.NexvaChat.init('YOUR_API_KEY', {
-              apiUrl: 'https://api.nexva.ai',
-              primaryColor: '#32f08c',
-              enableVoice: true
-            });
+        <NexvaChatNext
+          config={{
+            apiKey: 'YOUR_API_KEY',
+            position: 'bottom-right',
+            primaryColor: '#32f08c',
+            enableVoice: true,
+            enableHumanSupport: true
           }}
         />
       </body>
@@ -91,7 +83,6 @@ function nexva_chat_widget() {
     <script src="https://cdn.nexva.ai/widget.js"></script>
     <script>
       NexvaChat.init('<?php echo $api_key; ?>', {
-        apiUrl: 'https://api.nexva.ai',
         position: 'bottom-right',
         primaryColor: '#32f08c',
         enableVoice: true
@@ -113,7 +104,6 @@ add_action('wp_footer', 'nexva_chat_widget');
     <script src="https://cdn.nexva.ai/widget.js"></script>
     <script>
       NexvaChat.init('{{ config('services.nexva.api_key') }}', {
-        apiUrl: 'https://api.nexva.ai',
         position: 'bottom-right',
         primaryColor: '#32f08c'
       });
@@ -129,7 +119,6 @@ export default {
     
     script.onload = () => {
       window.NexvaChat.init('YOUR_API_KEY', {
-        apiUrl: 'https://api.nexva.ai',
         position: 'bottom-right',
         primaryColor: '#32f08c'
       });
