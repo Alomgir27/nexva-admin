@@ -81,6 +81,7 @@ export default function WidgetSetupPage() {
 
   const generateCDNCode = () => {
     return `<script 
+  type="module"
   src="${API_BASE_URL}/widget.js"
   data-api-key="${config.apiKey}"
   data-api-url="${API_BASE_URL}"
