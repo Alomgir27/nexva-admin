@@ -226,21 +226,21 @@ export default function App() {
   }
 
   return (
-    <div className="p-6 lg:p-8 max-w-7xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-semibold text-[var(--text-text-default)] mb-2">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-[var(--text-text-default)] mb-2">
           Widget Setup
         </h1>
-        <p className="text-[var(--text-text-secondary)]">
+        <p className="text-sm sm:text-base text-[var(--text-text-secondary)]">
           Customize your chat widget and copy the integration code
         </p>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-8">
+      <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
         <div className="space-y-6">
-          <div className="bg-[var(--bg-bg-base-secondary)] rounded-xl border border-[var(--border-border-neutral-l1)] p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-[var(--text-text-default)]">Configuration</h2>
+          <div className="bg-[var(--bg-bg-base-secondary)] rounded-xl border border-[var(--border-border-neutral-l1)] p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-3">
+              <h2 className="text-lg sm:text-xl font-semibold text-[var(--text-text-default)]">Configuration</h2>
               <button
                 onClick={resetToDefaults}
                 className="flex items-center space-x-2 px-3 py-1.5 text-sm bg-[var(--bg-bg-overlay-l2)] hover:bg-[var(--bg-bg-overlay-l3)] rounded-lg transition-all"
@@ -746,15 +746,15 @@ export default function App() {
             </div>
           </div>
 
-          <div className="bg-[var(--bg-bg-base-secondary)] rounded-xl border border-[var(--border-border-neutral-l1)] p-6">
-            <h2 className="text-xl font-semibold text-[var(--text-text-default)] mb-4">Integration Code</h2>
+          <div className="bg-[var(--bg-bg-base-secondary)] rounded-xl border border-[var(--border-border-neutral-l1)] p-4 sm:p-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-[var(--text-text-default)] mb-4">Integration Code</h2>
             
-            <div className="flex space-x-2 mb-4">
+            <div className="flex flex-wrap gap-2 mb-4">
               {['cdn', 'npm', 'react'].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab as any)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
                     activeTab === tab
                       ? 'bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)]'
                       : 'bg-[var(--bg-bg-overlay-l1)] text-[var(--text-text-secondary)]'
@@ -765,9 +765,9 @@ export default function App() {
               ))}
             </div>
 
-            <div className="relative">
-              <pre className="bg-[var(--bg-bg-base-default)] p-4 rounded-lg overflow-x-auto text-sm border border-[var(--border-border-neutral-l1)]">
-                <code className="text-[var(--text-text-default)] font-mono">
+            <div className="relative w-full max-w-full overflow-hidden">
+              <pre className="bg-[var(--bg-bg-base-default)] p-3 sm:p-4 rounded-lg overflow-x-auto text-xs sm:text-sm border border-[var(--border-border-neutral-l1)] max-w-full">
+                <code className="text-[var(--text-text-default)] font-mono whitespace-pre break-all sm:break-normal">
                   {activeTab === 'cdn' && generateCDNCode()}
                   {activeTab === 'npm' && generateNPMCode()}
                   {activeTab === 'react' && generateReactCode()}
@@ -780,17 +780,17 @@ export default function App() {
                                generateReactCode();
                   copyCode(code, activeTab);
                 }}
-                className="absolute top-2 right-2 flex items-center space-x-2 px-3 py-1.5 bg-[var(--bg-bg-overlay-l2)] hover:bg-[var(--bg-bg-overlay-l3)] rounded-lg transition-all"
+                className="absolute top-2 right-2 flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-[var(--bg-bg-overlay-l2)] hover:bg-[var(--bg-bg-overlay-l3)] rounded-lg transition-all"
               >
                 {copiedTab === activeTab ? (
                   <>
-                    <Check className="h-4 w-4 text-green-500" />
-                    <span className="text-sm text-green-500">Copied!</span>
+                    <Check className="h-3 w-3 sm:h-4 sm:w-4 text-green-500" />
+                    <span className="text-xs sm:text-sm text-green-500 hidden sm:inline">Copied!</span>
                   </>
                 ) : (
                   <>
-                    <Copy className="h-4 w-4 text-[var(--text-text-secondary)]" />
-                    <span className="text-sm text-[var(--text-text-secondary)]">Copy</span>
+                    <Copy className="h-3 w-3 sm:h-4 sm:w-4 text-[var(--text-text-secondary)]" />
+                    <span className="text-xs sm:text-sm text-[var(--text-text-secondary)] hidden sm:inline">Copy</span>
                   </>
                 )}
               </button>
