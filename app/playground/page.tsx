@@ -365,6 +365,13 @@ export default function PlaygroundPage() {
             setCurrentConversationId(data.conversation_id);
           }
           ws.close();
+        } else if (data.type === 'error') {
+          setMessages(prev => [...prev, { 
+            role: "system", 
+            content: `❌ Error: ${data.message || 'Unknown error occurred'}` 
+          }]);
+          setLoading(false);
+          ws.close();
         }
       };
 
