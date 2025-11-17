@@ -19,6 +19,8 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { API_BASE_URL, buildWebSocketUrl } from "@/app/config/api";
 
+const VOICE_QUERY_DEBOUNCE_MS = 900;
+
 export default function PlaygroundPage() {
   const [activeTab, setActiveTab] = useState<"text" | "voice">("text");
   const [apiKey, setApiKey] = useState("");
@@ -137,12 +139,19 @@ export default function PlaygroundPage() {
       isPlayingRef.current = false;
       setTimeout(() => {
         shouldPauseMicRef.current = false;
-      }, 200);
+      }, 500);
       return;
     }
 
     isPlayingRef.current = true;
     shouldPauseMicRef.current = true;
+    
+    if (recognitionRef.current?.recognition) {
+      try {
+        recognitionRef.current.recognition.stop();
+      } catch (e) {}
+    }
+    
     const audioData = audioQueueRef.current.shift()!;
     const audio = audioData.audio;
     const url = audioData.url;
@@ -167,6 +176,7 @@ export default function PlaygroundPage() {
   const queueAudio = (audioBlob: Blob) => {
     const audioUrl = URL.createObjectURL(audioBlob);
     const audio = new Audio(audioUrl);
+    audio.setAttribute('sinkId', 'default');
     
     audioQueueRef.current.push({ audio, url: audioUrl });
     
@@ -452,7 +462,7 @@ export default function PlaygroundPage() {
               currentText = "";
               setCurrentUserInput("");
             }
-          }, 3000);
+          }, VOICE_QUERY_DEBOUNCE_MS);
         }
       };
 
