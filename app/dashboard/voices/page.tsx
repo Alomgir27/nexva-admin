@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Volume2, Check, Loader, Play, Square } from "lucide-react";
-import { API_BASE_URL, API_ENDPOINTS } from "@/app/config/api";
+import { API_BASE_URL } from "../../config/api";
 
 interface Chatbot {
   id: number;
@@ -46,7 +46,7 @@ export default function VoicesPage() {
   const fetchChatbots = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(API_ENDPOINTS.chatbots, {
+      const response = await fetch(`${API_BASE_URL}/api/chatbots`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.ok) {
@@ -78,7 +78,7 @@ export default function VoicesPage() {
     try {
       setPlayingVoice(voiceId);
       
-      const response = await fetch(API_ENDPOINTS.voice.generate, {
+      const response = await fetch(`${API_BASE_URL}/api/voice/generate-speech`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -115,7 +115,7 @@ export default function VoicesPage() {
     setSaving(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`${API_ENDPOINTS.chatbots}/${selectedChatbot}/voice`, {
+      const response = await fetch(`${API_BASE_URL}/api/chatbots/${selectedChatbot}/voice`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

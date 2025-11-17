@@ -2,14 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Globe, Loader, ExternalLink, Trash2, Users, FileText } from "lucide-react";
-import AddDomainModal from "@/app/components/AddDomainModal";
-import DeleteDomainModal from "@/app/components/DeleteDomainModal";
-import InviteSupportModal from "@/app/components/InviteSupportModal";
-import DocumentsModal from "@/app/components/DocumentsModal";
+import { Plus, Globe, Loader, ExternalLink, Trash2, Users } from "lucide-react";
+import AddDomainModal from "../../components/AddDomainModal";
+import DeleteDomainModal from "../../components/DeleteDomainModal";
+import InviteSupportModal from "../../components/InviteSupportModal";
 import Link from "next/link";
-import { API_BASE_URL, API_ENDPOINTS } from "@/app/config/api";
-  
+import { API_BASE_URL } from "../../config/api";
+
 interface Chatbot {
   id: number;
   name: string;
@@ -46,7 +45,6 @@ export default function DomainsPage() {
   const [showInviteSupport, setShowInviteSupport] = useState(false);
   const [supportMembers, setSupportMembers] = useState<SupportMember[]>([]);
   const [showSupportTeam, setShowSupportTeam] = useState(false);
-  const [showDocuments, setShowDocuments] = useState<{ domainId: number; url: string } | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -61,27 +59,37 @@ export default function DomainsPage() {
     if (selectedChatbot) {
       fetchDomains(selectedChatbot);
       fetchSupportTeam(selectedChatbot);
-    }
-  }, [selectedChatbot]);
-
-  useEffect(() => {
-    if (!selectedChatbot) return;
-    
-    const hasScrapingDomain = domains.some(d => d.status === 'scraping');
-    
-    if (hasScrapingDomain) {
+      
       const interval = setInterval(() => {
-        fetchDomains(selectedChatbot);
-      }, 10000);
+        fetchDomainsForPolling(selectedChatbot);
+      }, 5000);
       
       return () => clearInterval(interval);
     }
-  }, [domains, selectedChatbot]);
+  }, [selectedChatbot]);
+
+  const fetchDomainsForPolling = async (chatbotId: number) => {
+    const hasScrapingInProgress = domains.some(d => d.status === 'scraping');
+    if (!hasScrapingInProgress) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${API_BASE_URL}/api/domains/${chatbotId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setDomains(data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch domains");
+    }
+  };
 
   const fetchChatbots = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(API_ENDPOINTS.chatbots, {
+      const response = await fetch(`${API_BASE_URL}/api/chatbots`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.status === 401) {
@@ -106,7 +114,7 @@ export default function DomainsPage() {
   const fetchDomains = async (chatbotId: number) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`${API_ENDPOINTS.domains}/${chatbotId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/domains/${chatbotId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.ok) {
@@ -114,7 +122,7 @@ export default function DomainsPage() {
         setDomains(data);
       }
     } catch (error) {
-      
+      console.error("Failed to fetch domains");
     }
   };
 
@@ -131,7 +139,7 @@ export default function DomainsPage() {
     setDeletingDomain(domainId);
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`${API_ENDPOINTS.domains}/${domainId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/domains/${domainId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -176,7 +184,7 @@ export default function DomainsPage() {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `${API_ENDPOINTS.support.team}/${memberId}`,
+        `${API_BASE_URL}/api/support-team/${memberId}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },
@@ -284,63 +292,29 @@ export default function DomainsPage() {
                   </p>
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="bg-[var(--bg-bg-base-secondary)]">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-text-secondary)] uppercase tracking-wider">Name</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-text-secondary)] uppercase tracking-wider">Email</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-text-secondary)] uppercase tracking-wider">Role</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-text-secondary)] uppercase tracking-wider">Status</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-text-secondary)] uppercase tracking-wider">Added</th>
-                        <th className="px-6 py-3 text-right text-xs font-medium text-[var(--text-text-secondary)] uppercase tracking-wider">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[var(--border-border-neutral-l1)]">
-                      {supportMembers.map((member) => (
-                        <tr key={member.id} className="hover:bg-[var(--bg-bg-base-secondary)] transition-colors">
-                          <td className="px-6 py-4">
-                            <p className="font-medium text-[var(--text-text-default)]">
-                              {member.name}
-                            </p>
-                          </td>
-                          <td className="px-6 py-4">
-                            <p className="text-sm text-[var(--text-text-secondary)]">
-                              {member.email}
-                            </p>
-                          </td>
-                          <td className="px-6 py-4">
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[var(--bg-bg-brand)]/10 text-[var(--bg-bg-brand)] capitalize">
-                              {member.role}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4">
-                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${
-                              member.status === 'active' 
-                                ? 'bg-green-500/10 text-green-500' 
-                                : member.status === 'pending'
-                                ? 'bg-yellow-500/10 text-yellow-500'
-                                : 'bg-gray-500/10 text-gray-500'
-                            }`}>
-                              {member.status}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 text-sm text-[var(--text-text-secondary)]">
-                            {new Date(member.created_at).toLocaleDateString()}
-                          </td>
-                          <td className="px-6 py-4 text-right">
-                            <button
-                              onClick={() => removeSupportMember(member.id)}
-                              className="p-2 text-red-500 hover:bg-red-500/10 rounded transition-all"
-                              title="Remove Member"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                <div className="space-y-2">
+                  {supportMembers.map((member) => (
+                    <div
+                      key={member.id}
+                      className="flex items-center justify-between p-4 bg-[var(--bg-bg-base-secondary)] rounded-lg"
+                    >
+                      <div>
+                        <p className="font-medium text-[var(--text-text-default)]">
+                          {member.name}
+                        </p>
+                        <p className="text-sm text-[var(--text-text-secondary)]">
+                          {member.email}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => removeSupportMember(member.id)}
+                        className="p-2 text-red-500 hover:bg-red-500/10 rounded transition-all"
+                        title="Remove Member"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
@@ -399,13 +373,6 @@ export default function DomainsPage() {
                               </button>
                             </Link>
                             <button
-                              onClick={() => setShowDocuments({ domainId: domain.id, url: domain.url })}
-                              className="flex items-center space-x-1 px-3 py-1 text-sm bg-[var(--bg-bg-overlay-l2)] hover:bg-[var(--bg-bg-overlay-l3)] rounded text-[var(--text-text-secondary)] transition-all"
-                            >
-                              <FileText className="h-3 w-3" />
-                              <span>Documents</span>
-                            </button>
-                            <button
                               onClick={() => setDomainToDelete({ id: domain.id, url: domain.url })}
                               disabled={deletingDomain === domain.id}
                               className="p-2 text-red-500 hover:bg-red-500/10 rounded transition-all disabled:opacity-50"
@@ -460,15 +427,6 @@ export default function DomainsPage() {
         domainUrl={domainToDelete?.url || ""}
         isDeleting={!!deletingDomain}
       />
-
-      {showDocuments && (
-        <DocumentsModal
-          isOpen={!!showDocuments}
-          onClose={() => setShowDocuments(null)}
-          domainId={showDocuments.domainId}
-          domainUrl={showDocuments.url}
-        />
-      )}
     </div>
   );
 }

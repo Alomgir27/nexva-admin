@@ -1,6 +1,6 @@
 "use client";
 
-import { MessageSquare, BarChart3, Settings, Check, ChevronDown, Copy, Play, User, Loader } from "lucide-react";
+import { MessageSquare, BarChart3, Settings, Check, ChevronDown, Copy, User, Loader, Layers, Cpu, Sparkles } from "lucide-react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import Image from "next/image";
@@ -14,9 +14,10 @@ const ThreeJSBackground = dynamic(() => import('./components/ThreeJSBackground')
 export default function Home() {
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'yearly'>('monthly');
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [copied, setCopied] = useState<number | null>(null);
+  const [copiedIntegration, setCopiedIntegration] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [purchasingPlan, setPurchasingPlan] = useState<string | null>(null);
+  const [activeIntegrationKey, setActiveIntegrationKey] = useState('cdn');
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -67,11 +68,17 @@ export default function Home() {
     }
   };
 
-  const codeExamples = [
+  const integrationOptions = [
     {
-      title: 'CDN Script',
-      subtitle: 'Quick Start',
-      description: 'Get started instantly by adding a simple script tag to your HTML. Perfect for static sites and quick prototypes.',
+      key: 'cdn',
+      label: 'Script Tag',
+      title: 'Drop-in CDN Script',
+      description: 'Add a single script tag to any site. Configure placement, colors, and behavior with simple data attributes.',
+      highlights: [
+        'Works with any static site or CMS',
+        'Customize colors and position via attributes',
+        'No build step required'
+      ],
       code: `<script 
   src="https://cdn.nexva.ai/widget.js"
   data-api-key="YOUR_API_KEY"
@@ -80,9 +87,15 @@ export default function Home() {
 </script>`
     },
     {
-      title: 'React SDK',
-      subtitle: 'React Integration',
-      description: 'Native React component for seamless integration with your React applications. Full TypeScript support included.',
+      key: 'react',
+      label: 'React SDK',
+      title: 'React Component',
+      description: 'Use the Nexva React SDK for full TypeScript support, hooks, and automatic token handling.',
+      highlights: [
+        'Tree-shakable React component',
+        'Full TypeScript definitions',
+        'Access to lifecycle hooks'
+      ],
       code: `import { NexvaChat } from 'nexva-react';
 
 export default function App() {
@@ -98,9 +111,15 @@ export default function App() {
 }`
     },
     {
-      title: 'Next.js SDK',
-      subtitle: 'Next.js Integration',
-      description: 'Optimized for Next.js applications with SSR support. Works with both App Router and Pages Router.',
+      key: 'next',
+      label: 'Next.js SDK',
+      title: 'Next.js + App Router',
+      description: 'Embed NexvaChatNext inside your root layout for automatic hydration and zero layout shifts.',
+      highlights: [
+        'SSR friendly component',
+        'Works with App & Pages Router',
+        'No client-side routing hacks'
+      ],
       code: `import { NexvaChatNext } from 'nexva-react';
 
 export default function RootLayout({ children }) {
@@ -122,14 +141,37 @@ export default function RootLayout({ children }) {
     }
   ];
 
-  const copyCode = (index: number) => {
-    navigator.clipboard.writeText(codeExamples[index].code);
-    setCopied(index);
-    setTimeout(() => setCopied(null), 2000);
+  const activeIntegration = integrationOptions.find((option) => option.key === activeIntegrationKey) ?? integrationOptions[0];
+
+  const workflowSteps = [
+    {
+      title: 'Connect your sources',
+      description: 'Sync websites, docs, support articles, and product knowledge with one click.',
+      badge: 'Step 01',
+      icon: Layers
+    },
+    {
+      title: 'Train the AI brain',
+      description: 'Nexva automatically chunks, tags, and embeds your data for lightning-fast answers.',
+      badge: 'Step 02',
+      icon: Cpu
+    },
+    {
+      title: 'Launch everywhere',
+      description: 'Drop the widget on your site or use the API to power custom chat surfaces.',
+      badge: 'Step 03',
+      icon: Sparkles
+    }
+  ];
+
+  const copyIntegrationCode = (code: string, key: string) => {
+    navigator.clipboard.writeText(code);
+    setCopiedIntegration(key);
+    setTimeout(() => setCopiedIntegration(null), 2000);
   };
   
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen overflow-x-hidden">
       <nav className="border-b border-[var(--border-border-neutral-l1)] sticky top-0 z-50 backdrop-blur-sm bg-[var(--bg-bg-base-default)]/90">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -289,29 +331,48 @@ export default function RootLayout({ children }) {
           </div>
         </section>
 
-        <section className="py-24 bg-[var(--bg-bg-base-secondary)]">
+        <section className="py-24 bg-[var(--bg-bg-base-secondary)]" id="workflow">
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-5xl font-semibold text-[var(--text-text-default)] mb-6">
-                See How It Works
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-semibold text-[var(--text-text-default)] mb-4">
+                See the entire workflow in three steps
               </h2>
-              <p className="text-xl text-[var(--text-text-secondary)] max-w-3xl mx-auto">
-                Watch Nexva AI chatbot in action. See how easy it is to integrate and engage with your customers.
+              <p className="text-lg text-[var(--text-text-secondary)] max-w-3xl mx-auto">
+                No long onboarding calls or complex dev work. Connect your data, let Nexva process it, and go live the same day.
               </p>
             </div>
-            
-            <div className="max-w-5xl mx-auto">
-              <div className="relative aspect-video bg-[var(--bg-bg-base-default)] rounded-2xl border-2 border-[var(--border-border-neutral-l1)] overflow-hidden shadow-2xl">
-                <div className="absolute inset-0 bg-gradient-to-br from-[var(--bg-bg-brand)]/10 to-transparent" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="w-20 h-20 mx-auto mb-4 bg-[var(--bg-bg-brand)]/20 rounded-full flex items-center justify-center backdrop-blur-sm border border-[var(--bg-bg-brand)] group cursor-pointer hover:scale-110 transition-transform">
-                      <Play className="h-10 w-10 text-[var(--bg-bg-brand)] ml-1" />
+
+            <div className="grid md:grid-cols-3 gap-8">
+              {workflowSteps.map((step, index) => {
+                const Icon = step.icon;
+                return (
+                  <div
+                    key={step.title}
+                    className="bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] rounded-2xl p-6 shadow-lg"
+                  >
+                    <div className="flex items-center justify-between mb-6">
+                      <span className="text-xs font-mono tracking-[0.2em] text-[var(--text-text-tertiary)]">
+                        {step.badge}
+                      </span>
+                      <div className="w-10 h-10 rounded-full bg-[var(--bg-bg-brand)]/10 flex items-center justify-center text-[var(--bg-bg-brand)]">
+                        <Icon className="h-5 w-5" />
+                      </div>
                     </div>
-                    <p className="text-lg text-[var(--text-text-secondary)]">Click to play demo video</p>
+                    <h3 className="text-2xl font-semibold text-[var(--text-text-default)] mb-3">
+                      {step.title}
+                    </h3>
+                    <p className="text-[var(--text-text-secondary)] leading-relaxed">
+                      {step.description}
+                    </p>
+                    <div className="mt-6 h-1 w-full bg-[var(--bg-bg-overlay-l2)] rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-[var(--bg-bg-brand)] transition-all"
+                        style={{ width: `${(index + 1) * 33.33}%` }}
+                      ></div>
+                    </div>
                   </div>
-                </div>
-              </div>
+                );
+              })}
             </div>
           </div>
         </section>
@@ -632,89 +693,83 @@ export default function RootLayout({ children }) {
 
         <section id="integration-section" className="py-24 bg-[var(--bg-bg-base-secondary)]">
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-semibold text-[var(--text-text-default)] mb-6">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-semibold text-[var(--text-text-default)] mb-4">
                 Integrate in Minutes
               </h2>
-              <p className="text-lg text-[var(--text-text-secondary)]">
-                Add Nexva to your website with just a few lines of code. Choose your preferred method.
+              <p className="text-lg text-[var(--text-text-secondary)] max-w-3xl mx-auto">
+                Switch between your preferred integration style. One component controls the entire experience.
               </p>
             </div>
 
-            <div className="relative">
-              <div className="absolute left-1/2 top-0 bottom-0 w-px hidden lg:block">
-                <div 
-                  className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--bg-bg-brand)]/30 to-transparent"
-                  style={{
-                    backgroundImage: 'repeating-linear-gradient(0deg, var(--bg-bg-brand), var(--bg-bg-brand) 10px, transparent 10px, transparent 20px)',
-                    opacity: 0.3
-                  }}
-                />
-              </div>
-
-              <div className="space-y-24">
-                {codeExamples.map((example, index) => (
-                  <div key={index} className="relative">
-                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden lg:flex items-center justify-center">
-                      <div className="absolute w-16 h-16 border-2 border-[var(--bg-bg-brand)]/20 rounded-full animate-ping" style={{ animationDuration: '2s' }}></div>
-                      <div className="absolute w-12 h-12 border-2 border-[var(--bg-bg-brand)]/30 rounded-full animate-ping" style={{ animationDuration: '2s', animationDelay: '0.5s' }}></div>
-                      <div className="w-8 h-8 bg-[var(--bg-bg-base-secondary)] rounded-full border-2 border-[var(--bg-bg-brand)]/40 flex items-center justify-center relative z-10">
-                        <div className="w-3 h-3 bg-[var(--bg-bg-brand)] rounded-full animate-pulse" />
-                      </div>
-                    </div>
-
-                    <div
-                      className={`grid lg:grid-cols-2 gap-12 items-center ${
-                        index % 2 === 1 ? 'lg:flex-row-reverse' : ''
+            <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-8 lg:gap-12 items-start">
+              <div className="space-y-8">
+                <div className="flex flex-wrap gap-3">
+                  {integrationOptions.map((option) => (
+                    <button
+                      key={option.key}
+                      onClick={() => setActiveIntegrationKey(option.key)}
+                      className={`px-5 py-2 rounded-lg border transition-all ${
+                        activeIntegrationKey === option.key
+                          ? 'bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] border-[var(--bg-bg-brand)]'
+                          : 'bg-[var(--bg-bg-overlay-l2)] text-[var(--text-text-secondary)] border-[var(--border-border-neutral-l1)] hover:text-[var(--text-text-default)]'
                       }`}
                     >
-                      <div className={index % 2 === 1 ? 'lg:order-2' : ''}>
-                        <div className="inline-block px-4 py-1 bg-[var(--bg-bg-brand)]/10 border border-[var(--bg-bg-brand)]/20 rounded-full mb-4">
-                          <span className="text-sm font-medium text-[var(--bg-bg-brand)]">{example.subtitle}</span>
-                        </div>
-                        <h3 className="text-3xl font-semibold text-[var(--text-text-default)] mb-4">
-                          {example.title}
-                        </h3>
-                        <p className="text-lg text-[var(--text-text-secondary)] leading-relaxed mb-6">
-                          {example.description}
-                        </p>
-                        <div className="flex items-center space-x-3">
-                          <div className="w-1.5 h-1.5 bg-[var(--bg-bg-brand)] rounded-full"></div>
-                          <span className="text-sm text-[var(--text-text-tertiary)]">Copy and paste to get started</span>
-                        </div>
-                      </div>
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
 
-                      <div className={index % 2 === 1 ? 'lg:order-1' : ''}>
-                        <div className="bg-[var(--bg-bg-base-default)] rounded-xl border border-[var(--border-border-neutral-l1)] p-6 shadow-lg">
-                          <div className="flex items-center justify-between mb-4">
-                            <span className="text-sm font-mono text-[var(--text-text-tertiary)]">{example.title}</span>
-                            <button
-                              onClick={() => copyCode(index)}
-                              className="flex items-center space-x-2 px-3 py-1.5 bg-[var(--bg-bg-overlay-l2)] hover:bg-[var(--bg-bg-overlay-l3)] rounded-lg transition-all"
-                            >
-                              {copied === index ? (
-                                <>
-                                  <Check className="h-4 w-4 text-green-500" />
-                                  <span className="text-sm text-green-500">Copied!</span>
-                                </>
-                              ) : (
-                                <>
-                                  <Copy className="h-4 w-4 text-[var(--text-text-secondary)]" />
-                                  <span className="text-sm text-[var(--text-text-secondary)]">Copy</span>
-                                </>
-                              )}
-                            </button>
-                          </div>
-                          <pre className="bg-[var(--bg-bg-base-secondary)] p-4 rounded-lg overflow-x-auto">
-                            <code className="text-sm text-[var(--text-text-default)] font-mono">
-{example.code}
-                            </code>
-                          </pre>
-                        </div>
-                      </div>
-                    </div>
+                <div className="bg-[var(--bg-bg-base-default)] rounded-2xl border border-[var(--border-border-neutral-l1)] p-6 sm:p-8 shadow-xl">
+                  <div className="inline-block px-4 py-1 bg-[var(--bg-bg-brand)]/10 border border-[var(--bg-bg-brand)]/20 rounded-full mb-4">
+                    <span className="text-sm font-medium text-[var(--bg-bg-brand)]">
+                      {activeIntegration.label}
+                    </span>
                   </div>
-                ))}
+                  <h3 className="text-3xl font-semibold text-[var(--text-text-default)] mb-4">
+                    {activeIntegration.title}
+                  </h3>
+                  <p className="text-lg text-[var(--text-text-secondary)] leading-relaxed mb-6">
+                    {activeIntegration.description}
+                  </p>
+                  <ul className="space-y-3">
+                    {activeIntegration.highlights.map((highlight) => (
+                      <li key={highlight} className="flex items-start space-x-3">
+                        <div className="w-2 h-2 rounded-full bg-[var(--bg-bg-brand)] mt-1.5" />
+                        <span className="text-[var(--text-text-secondary)]">{highlight}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <div className="bg-[var(--bg-bg-base-default)] rounded-2xl border border-[var(--border-border-neutral-l1)] p-5 sm:p-6 shadow-2xl w-full">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-xs sm:text-sm font-mono text-[var(--text-text-tertiary)]">
+                    {activeIntegration.title}
+                  </span>
+                  <button
+                    onClick={() => copyIntegrationCode(activeIntegration.code, activeIntegration.key)}
+                    className="flex items-center space-x-2 px-3 py-1.5 bg-[var(--bg-bg-overlay-l2)] hover:bg-[var(--bg-bg-overlay-l3)] rounded-lg transition-all text-xs sm:text-sm"
+                  >
+                    {copiedIntegration === activeIntegration.key ? (
+                      <>
+                        <Check className="h-4 w-4 text-green-500" />
+                        <span className="text-sm text-green-500">Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-4 w-4 text-[var(--text-text-secondary)]" />
+                        <span className="text-sm text-[var(--text-text-secondary)]">Copy</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+                <pre className="bg-[var(--bg-bg-base-secondary)] p-4 rounded-lg overflow-x-auto text-sm sm:text-base w-full">
+                  <code className="text-[var(--text-text-default)] font-mono block whitespace-pre-wrap break-words">
+{activeIntegration.code}
+                  </code>
+                </pre>
               </div>
             </div>
 

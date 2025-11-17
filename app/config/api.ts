@@ -1,4 +1,18 @@
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://yueihds3xl383a-5000.proxy.runpod.net';
+const ENV = process.env.NEXT_PUBLIC_ENV || 'development';
+
+const config = {
+  development: {
+    apiUrl: 'http://localhost:8000',
+  },
+  production: {
+    apiUrl: 'https://yueihds3xl383a-5000.proxy.runpod.net',
+  }
+};
+
+const currentConfig = config[ENV as keyof typeof config] || config.development;
+
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || currentConfig.apiUrl;
+export const IS_PRODUCTION = ENV === 'production';
 
 export const buildWebSocketUrl = (path: string) => {
   try {
@@ -48,5 +62,3 @@ export const API_ENDPOINTS = {
   },
   widget: `${API_BASE_URL}/widget.js`,
 };
-
-
