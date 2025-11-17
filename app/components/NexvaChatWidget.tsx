@@ -60,6 +60,7 @@ export default function NexvaChatWidget() {
     <NexvaChatNext
       config={{
         apiKey: apiKey,
+        apiUrl: API_BASE_URL,
         position: 'bottom-right',
         primaryColor: '#32f08c',
         headerText: 'Nexva Chat',
