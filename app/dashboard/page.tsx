@@ -70,12 +70,22 @@ export default function Dashboard() {
           const statsRes = await fetchWithAuth(`${API_ENDPOINTS.chatbots}/${chatbot.id}/stats`);
           if (statsRes.ok) {
             const chatbotStat = await statsRes.json();
-            totalCustomers += chatbotStat.unique_customers;
-            totalConversations += chatbotStat.total_conversations;
+            totalCustomers += chatbotStat.unique_customers || 0;
+            totalConversations += chatbotStat.total_conversations || 0;
             chatbotStatsData.push({
               chatbot_id: chatbot.id,
               chatbot_name: chatbot.name,
-              ...chatbotStat
+              unique_customers: chatbotStat.unique_customers || 0,
+              total_conversations: chatbotStat.total_conversations || 0,
+              total_messages: chatbotStat.total_messages || 0
+            });
+          } else {
+            chatbotStatsData.push({
+              chatbot_id: chatbot.id,
+              chatbot_name: chatbot.name,
+              unique_customers: 0,
+              total_conversations: 0,
+              total_messages: 0
             });
           }
         }

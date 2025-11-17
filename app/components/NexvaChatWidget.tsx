@@ -2,14 +2,25 @@
 
 import { useState, useEffect } from "react";
 import { NexvaChatNext } from 'nexva-react';
-import { API_BASE_URL } from '../config/api';
 
 export default function NexvaChatWidget() {
+  const [apiKey, setApiKey] = useState<string>("");
+
+  useEffect(() => {
+    const savedKey = localStorage.getItem("nexva_api_key");
+    if (savedKey) {
+      setApiKey(savedKey);
+    }
+  }, []);
+
+  if (!apiKey) {
+    return null;
+  }
+
   return (
     <NexvaChatNext
       config={{
-        apiKey: "82DGMU7UTmo04VpNPkiS0LrbC2t3ZKdGpF-lq60NFxw",
-        apiUrl: API_BASE_URL,
+        apiKey: apiKey,
         position: 'bottom-right',
         primaryColor: '#32f08c',
         headerText: 'Nexva Chat',
