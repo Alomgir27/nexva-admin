@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ExternalLink, Search, ChevronLeft, ChevronRight, LayoutGrid, List, Table, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import PageDetailsModal from "@/app/components/PageDetailsModal";
+import UploadDocumentModal from "@/app/components/UploadDocumentModal";
 import { API_BASE_URL, API_ENDPOINTS } from "@/app/config/api";
 
 interface ScrapedPage {
@@ -34,6 +35,7 @@ function ScrapedPagesContent() {
   const [total, setTotal] = useState(0);
   const [viewMode, setViewMode] = useState<ViewMode>("table");
   const [selectedPage, setSelectedPage] = useState<ScrapedPage | null>(null);
+  const [showUploadModal, setShowUploadModal] = useState(false);
 
   useEffect(() => {
     if (domainId) {
@@ -83,7 +85,7 @@ function ScrapedPagesContent() {
       </div>
 
       <div className="bg-[var(--bg-bg-overlay-l1)] rounded-xl p-6">
-        <div className="mb-6 flex items-center gap-3">
+        <div className="mb-6 flex flex-col gap-3 lg:flex-row lg:items-center">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-[var(--text-text-tertiary)]" />
             <input
@@ -94,7 +96,8 @@ function ScrapedPagesContent() {
               className="w-full pl-10 pr-4 py-2 bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)] rounded-lg text-[var(--text-text-default)] focus:outline-none focus:border-[var(--bg-bg-brand)]"
             />
           </div>
-          <div className="flex items-center gap-1 bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)] rounded-lg p-1">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <div className="flex items-center gap-1 bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)] rounded-lg p-1">
             <button
               onClick={() => setViewMode("table")}
               className={`p-2 rounded transition-colors ${viewMode === "table" ? "bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)]" : "text-[var(--text-text-secondary)] hover:bg-[var(--bg-bg-overlay-l1)]"}`}
@@ -116,6 +119,15 @@ function ScrapedPagesContent() {
             >
               <List className="h-4 w-4" />
             </button>
+          </div>
+            {domainId && (
+              <button
+                onClick={() => setShowUploadModal(true)}
+                className="px-4 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all text-sm font-medium"
+              >
+                Upload Document
+              </button>
+            )}
           </div>
         </div>
 
@@ -304,6 +316,17 @@ function ScrapedPagesContent() {
         onClose={() => setSelectedPage(null)}
         page={selectedPage}
       />
+      {domainId && (
+        <UploadDocumentModal
+          isOpen={showUploadModal}
+          onClose={() => setShowUploadModal(false)}
+          domainId={Number(domainId)}
+          onDocumentUploaded={() => {
+            setShowUploadModal(false);
+            fetchPages();
+          }}
+        />
+      )}
     </div>
   );
 }
