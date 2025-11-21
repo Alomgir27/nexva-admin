@@ -64,7 +64,7 @@ export default function WidgetSetupPage() {
       const response = await fetch(API_ENDPOINTS.chatbots, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setChatbots(data);
@@ -221,7 +221,7 @@ export default function App() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--bg-bg-brand)]"></div>
+        <div className="animate-spin h-12 w-12 border-b-2 border-[var(--bg-bg-brand)]"></div>
       </div>
     );
   }
@@ -229,22 +229,27 @@ export default function App() {
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
       <div className="mb-6 sm:mb-8">
-        <h1 className="text-2xl sm:text-3xl font-semibold text-[var(--text-text-default)] mb-2">
+        <h1 className="text-2xl sm:text-3xl font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-tight">
           Widget Setup
         </h1>
-        <p className="text-sm sm:text-base text-[var(--text-text-secondary)]">
+        <p className="text-sm sm:text-base text-[var(--text-text-secondary)] font-mono">
           Customize your chat widget and copy the integration code
         </p>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
         <div className="space-y-6">
-          <div className="bg-[var(--bg-bg-base-secondary)] rounded-xl border border-[var(--border-border-neutral-l1)] p-4 sm:p-6">
+          <div className="bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)] p-4 sm:p-6 relative">
+            <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--bg-bg-brand)]"></div>
+            <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[var(--bg-bg-brand)]"></div>
+            <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[var(--bg-bg-brand)]"></div>
+            <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--bg-bg-brand)]"></div>
+
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-3">
-              <h2 className="text-lg sm:text-xl font-semibold text-[var(--text-text-default)]">Configuration</h2>
+              <h2 className="text-lg sm:text-xl font-bold text-[var(--text-text-default)] uppercase tracking-wider">Configuration</h2>
               <button
                 onClick={resetToDefaults}
-                className="flex items-center space-x-2 px-3 py-1.5 text-sm bg-[var(--bg-bg-overlay-l2)] hover:bg-[var(--bg-bg-overlay-l3)] rounded-lg transition-all"
+                className="flex items-center space-x-2 px-3 py-1.5 text-xs bg-[var(--bg-bg-overlay-l2)] hover:bg-[var(--bg-bg-overlay-l3)] transition-all font-mono uppercase tracking-wide border border-[var(--border-border-neutral-l1)]"
               >
                 <RefreshCw className="h-4 w-4" />
                 <span>Reset</span>
@@ -253,13 +258,13 @@ export default function App() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-[var(--text-text-default)] mb-2">
+                <label className="block text-xs font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-wider font-mono">
                   API Key
                 </label>
                 <select
                   value={config.apiKey}
                   onChange={(e) => setConfig({ ...config, apiKey: e.target.value })}
-                  className="w-full px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] rounded-lg text-[var(--text-text-default)]"
+                  className="w-full px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] font-mono text-xs"
                 >
                   {chatbots.map((bot) => (
                     <option key={bot.id} value={bot.api_key}>
@@ -270,7 +275,7 @@ export default function App() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[var(--text-text-default)] mb-2">
+                <label className="block text-xs font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-wider font-mono">
                   Primary Color
                 </label>
                 <div className="flex space-x-3">
@@ -278,25 +283,25 @@ export default function App() {
                     type="color"
                     value={config.primaryColor}
                     onChange={(e) => setConfig({ ...config, primaryColor: e.target.value })}
-                    className="w-16 h-10 rounded-lg cursor-pointer"
+                    className="w-16 h-10 cursor-pointer border border-[var(--border-border-neutral-l1)]"
                   />
                   <input
                     type="text"
                     value={config.primaryColor}
                     onChange={(e) => setConfig({ ...config, primaryColor: e.target.value })}
-                    className="flex-1 px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] rounded-lg text-[var(--text-text-default)]"
+                    className="flex-1 px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] font-mono text-xs uppercase"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[var(--text-text-default)] mb-2">
+                <label className="block text-xs font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-wider font-mono">
                   Position
                 </label>
                 <select
                   value={config.position}
                   onChange={(e) => setConfig({ ...config, position: e.target.value })}
-                  className="w-full px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] rounded-lg text-[var(--text-text-default)]"
+                  className="w-full px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] font-mono text-xs uppercase"
                 >
                   <option value="bottom-right">Bottom Right</option>
                   <option value="bottom-left">Bottom Left</option>
@@ -306,46 +311,46 @@ export default function App() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[var(--text-text-default)] mb-2">
+                <label className="block text-xs font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-wider font-mono">
                   Header Text
                 </label>
                 <input
                   type="text"
                   value={config.headerText}
                   onChange={(e) => setConfig({ ...config, headerText: e.target.value })}
-                  className="w-full px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] rounded-lg text-[var(--text-text-default)]"
+                  className="w-full px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] font-mono text-xs"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[var(--text-text-default)] mb-2">
+                <label className="block text-xs font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-wider font-mono">
                   Welcome Message
                 </label>
                 <textarea
                   value={config.welcomeMessage}
                   onChange={(e) => setConfig({ ...config, welcomeMessage: e.target.value })}
                   rows={2}
-                  className="w-full px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] rounded-lg text-[var(--text-text-default)]"
+                  className="w-full px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] font-mono text-xs"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[var(--text-text-default)] mb-2">
+                <label className="block text-xs font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-wider font-mono">
                   Placeholder
                 </label>
                 <input
                   type="text"
                   value={config.placeholder}
                   onChange={(e) => setConfig({ ...config, placeholder: e.target.value })}
-                  className="w-full px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] rounded-lg text-[var(--text-text-default)]"
+                  className="w-full px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] font-mono text-xs uppercase"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[var(--text-text-default)] mb-2">
+                <label className="block text-xs font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-wider font-mono">
                   Preset Questions (Optional)
                 </label>
-                <p className="text-sm text-[var(--text-text-secondary)] mb-2">
+                <p className="text-xs text-[var(--text-text-secondary)] mb-2 font-mono uppercase tracking-wide">
                   Quick questions to help users get started
                 </p>
                 <div className="space-y-2">
@@ -360,8 +365,8 @@ export default function App() {
                           setNewQuestion('');
                         }
                       }}
-                      placeholder="Enter a question and press Enter"
-                      className="flex-1 px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] rounded-lg text-[var(--text-text-default)]"
+                      placeholder="ENTER A QUESTION AND PRESS ENTER"
+                      className="flex-1 px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] font-mono text-xs uppercase placeholder:text-[var(--text-text-tertiary)]"
                     />
                     <button
                       onClick={() => {
@@ -370,7 +375,7 @@ export default function App() {
                           setNewQuestion('');
                         }
                       }}
-                      className="px-4 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all"
+                      className="px-4 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] hover:bg-[var(--bg-bg-brand-hover)] transition-all font-bold uppercase tracking-wider font-mono text-xs"
                     >
                       Add
                     </button>
@@ -380,7 +385,7 @@ export default function App() {
                       {config.presetQuestions.map((q, index) => (
                         <div
                           key={index}
-                          className="flex items-center space-x-2 px-3 py-1.5 bg-[var(--bg-bg-overlay-l2)] border border-[var(--border-border-neutral-l1)] rounded-full text-sm text-[var(--text-text-default)]"
+                          className="flex items-center space-x-2 px-3 py-1.5 bg-[var(--bg-bg-overlay-l2)] border border-[var(--border-border-neutral-l1)] text-xs text-[var(--text-text-default)] font-mono uppercase tracking-wide"
                         >
                           <span>{q}</span>
                           <button
@@ -402,13 +407,13 @@ export default function App() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[var(--text-text-default)] mb-2">
+                <label className="block text-xs font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-wider font-mono">
                   Theme
                 </label>
                 <select
                   value={config.theme}
                   onChange={(e) => setConfig({ ...config, theme: e.target.value })}
-                  className="w-full px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] rounded-lg text-[var(--text-text-default)]"
+                  className="w-full px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] font-mono text-xs uppercase"
                 >
                   <option value="dark">Dark</option>
                   <option value="light">Light</option>
@@ -417,45 +422,45 @@ export default function App() {
 
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-[var(--text-text-default)] mb-2">
+                  <label className="block text-xs font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-wider font-mono">
                     Border Radius
                   </label>
                   <input
                     type="text"
                     value={config.borderRadius}
                     onChange={(e) => setConfig({ ...config, borderRadius: e.target.value })}
-                    className="w-full px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] rounded-lg text-[var(--text-text-default)]"
+                    className="w-full px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] font-mono text-xs"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--text-text-default)] mb-2">
+                  <label className="block text-xs font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-wider font-mono">
                     Border Color
                   </label>
                   <input
                     type="color"
                     value={config.borderColor}
                     onChange={(e) => setConfig({ ...config, borderColor: e.target.value })}
-                    className="w-full h-10 rounded-lg cursor-pointer"
+                    className="w-full h-10 cursor-pointer border border-[var(--border-border-neutral-l1)]"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[var(--text-text-default)] mb-2">
+                  <label className="block text-xs font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-wider font-mono">
                     Border Width
                   </label>
                   <input
                     type="text"
                     value={config.borderWidth}
                     onChange={(e) => setConfig({ ...config, borderWidth: e.target.value })}
-                    className="w-full px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] rounded-lg text-[var(--text-text-default)]"
+                    className="w-full px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] font-mono text-xs"
                   />
                 </div>
               </div>
 
               <div className="pt-4 border-t border-[var(--border-border-neutral-l1)]">
-                <h3 className="text-lg font-semibold text-[var(--text-text-default)] mb-4">Bubble Button</h3>
+                <h3 className="text-sm font-bold text-[var(--text-text-default)] mb-4 uppercase tracking-wider font-mono">Bubble Button</h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-[var(--text-text-default)] mb-2">
+                    <label className="block text-xs font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-wider font-mono">
                       Bubble Color
                     </label>
                     <div className="flex space-x-3">
@@ -463,37 +468,37 @@ export default function App() {
                         type="color"
                         value={config.bubble.backgroundColor}
                         onChange={(e) => setConfig({ ...config, bubble: { ...config.bubble, backgroundColor: e.target.value } })}
-                        className="w-16 h-10 rounded-lg cursor-pointer"
+                        className="w-16 h-10 cursor-pointer border border-[var(--border-border-neutral-l1)]"
                       />
                       <input
                         type="text"
                         value={config.bubble.backgroundColor}
                         onChange={(e) => setConfig({ ...config, bubble: { ...config.bubble, backgroundColor: e.target.value } })}
-                        className="flex-1 px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] rounded-lg text-[var(--text-text-default)]"
+                        className="flex-1 px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] font-mono text-xs uppercase"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-[var(--text-text-default)] mb-2">
+                      <label className="block text-xs font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-wider font-mono">
                         Size
                       </label>
                       <input
                         type="text"
                         value={config.bubble.size}
                         onChange={(e) => setConfig({ ...config, bubble: { ...config.bubble, size: e.target.value } })}
-                        className="w-full px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] rounded-lg text-[var(--text-text-default)]"
+                        className="w-full px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] font-mono text-xs"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-[var(--text-text-default)] mb-2">
+                      <label className="block text-xs font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-wider font-mono">
                         Shape
                       </label>
                       <select
                         value={config.bubble.shape}
                         onChange={(e) => setConfig({ ...config, bubble: { ...config.bubble, shape: e.target.value } })}
-                        className="w-full px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] rounded-lg text-[var(--text-text-default)]"
+                        className="w-full px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] font-mono text-xs uppercase"
                       >
                         <option value="circle">Circle</option>
                         <option value="rounded">Rounded</option>
@@ -504,13 +509,13 @@ export default function App() {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-[var(--text-text-default)] mb-2">
+                      <label className="block text-xs font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-wider font-mono">
                         Icon
                       </label>
                       <select
                         value={config.bubble.icon}
                         onChange={(e) => setConfig({ ...config, bubble: { ...config.bubble, icon: e.target.value } })}
-                        className="w-full px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] rounded-lg text-[var(--text-text-default)]"
+                        className="w-full px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] font-mono text-xs uppercase"
                       >
                         <option value="chat">Chat</option>
                         <option value="message">Message</option>
@@ -520,14 +525,14 @@ export default function App() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-[var(--text-text-default)] mb-2">
+                      <label className="block text-xs font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-wider font-mono">
                         Icon Color
                       </label>
                       <input
                         type="color"
                         value={config.bubble.iconColor}
                         onChange={(e) => setConfig({ ...config, bubble: { ...config.bubble, iconColor: e.target.value } })}
-                        className="w-full h-10 rounded-lg cursor-pointer"
+                        className="w-full h-10 cursor-pointer border border-[var(--border-border-neutral-l1)]"
                         disabled={config.bubble.icon === 'custom'}
                       />
                     </div>
@@ -535,7 +540,7 @@ export default function App() {
 
                   {config.bubble.icon === 'custom' && (
                     <div>
-                      <label className="block text-sm font-medium text-[var(--text-text-default)] mb-2">
+                      <label className="block text-xs font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-wider font-mono">
                         Custom Icon URL
                       </label>
                       <input
@@ -543,20 +548,20 @@ export default function App() {
                         value={config.bubble.customIconUrl}
                         onChange={(e) => setConfig({ ...config, bubble: { ...config.bubble, customIconUrl: e.target.value } })}
                         placeholder="https://example.com/icon.png"
-                        className="w-full px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] rounded-lg text-[var(--text-text-default)]"
+                        className="w-full px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] font-mono text-xs"
                       />
-                      <p className="text-xs text-[var(--text-text-tertiary)] mt-1">Enter a URL to your custom icon image</p>
+                      <p className="text-[10px] text-[var(--text-text-tertiary)] mt-1 font-mono uppercase tracking-wide">Enter a URL to your custom icon image</p>
                     </div>
                   )}
 
                   <div>
-                    <label className="block text-sm font-medium text-[var(--text-text-default)] mb-2">
+                    <label className="block text-xs font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-wider font-mono">
                       Animation
                     </label>
                     <select
                       value={config.bubble.animation}
                       onChange={(e) => setConfig({ ...config, bubble: { ...config.bubble, animation: e.target.value } })}
-                      className="w-full px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] rounded-lg text-[var(--text-text-default)]"
+                      className="w-full px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] font-mono text-xs uppercase"
                     >
                       <option value="none">None</option>
                       <option value="pulse">Pulse</option>
@@ -570,9 +575,9 @@ export default function App() {
                       type="checkbox"
                       checked={config.bubble.shadow}
                       onChange={(e) => setConfig({ ...config, bubble: { ...config.bubble, shadow: e.target.checked } })}
-                      className="w-5 h-5 rounded border-[var(--border-border-neutral-l1)]"
+                      className="w-5 h-5 border-[var(--border-border-neutral-l1)]"
                     />
-                    <span className="text-sm text-[var(--text-text-default)]">Enable Shadow</span>
+                    <span className="text-xs font-mono uppercase tracking-wide text-[var(--text-text-default)]">Enable Shadow</span>
                   </label>
                 </div>
               </div>
@@ -583,45 +588,45 @@ export default function App() {
                     type="checkbox"
                     checked={config.enableVoice}
                     onChange={(e) => setConfig({ ...config, enableVoice: e.target.checked })}
-                    className="w-5 h-5 rounded border-[var(--border-border-neutral-l1)]"
+                    className="w-5 h-5 border-[var(--border-border-neutral-l1)]"
                   />
-                  <span className="text-sm text-[var(--text-text-default)]">Enable Voice Chat</span>
+                  <span className="text-xs font-mono uppercase tracking-wide text-[var(--text-text-default)]">Enable Voice Chat</span>
                 </label>
                 <label className="flex items-center space-x-3 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={config.enableHumanSupport}
                     onChange={(e) => setConfig({ ...config, enableHumanSupport: e.target.checked })}
-                    className="w-5 h-5 rounded border-[var(--border-border-neutral-l1)]"
+                    className="w-5 h-5 border-[var(--border-border-neutral-l1)]"
                   />
-                  <span className="text-sm text-[var(--text-text-default)]">Enable Human Support</span>
+                  <span className="text-xs font-mono uppercase tracking-wide text-[var(--text-text-default)]">Enable Human Support</span>
                 </label>
                 <label className="flex items-center space-x-3 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={config.enableIntroSound !== false}
                     onChange={(e) => setConfig({ ...config, enableIntroSound: e.target.checked })}
-                    className="w-5 h-5 rounded border-[var(--border-border-neutral-l1)]"
+                    className="w-5 h-5 border-[var(--border-border-neutral-l1)]"
                   />
-                  <span className="text-sm text-[var(--text-text-default)]">Enable Voice Intro Sound</span>
+                  <span className="text-xs font-mono uppercase tracking-wide text-[var(--text-text-default)]">Enable Voice Intro Sound</span>
                 </label>
                 <label className="flex items-center space-x-3 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={config.enableDock !== false}
                     onChange={(e) => setConfig({ ...config, enableDock: e.target.checked })}
-                    className="w-5 h-5 rounded border-[var(--border-border-neutral-l1)]"
+                    className="w-5 h-5 border-[var(--border-border-neutral-l1)]"
                   />
-                  <span className="text-sm text-[var(--text-text-default)]">Enable Dock Button</span>
+                  <span className="text-xs font-mono uppercase tracking-wide text-[var(--text-text-default)]">Enable Dock Button</span>
                 </label>
                 <label className="flex items-center space-x-3 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={config.enableFullscreen !== false}
                     onChange={(e) => setConfig({ ...config, enableFullscreen: e.target.checked })}
-                    className="w-5 h-5 rounded border-[var(--border-border-neutral-l1)]"
+                    className="w-5 h-5 border-[var(--border-border-neutral-l1)]"
                   />
-                  <span className="text-sm text-[var(--text-text-default)]">Enable Fullscreen Button</span>
+                  <span className="text-xs font-mono uppercase tracking-wide text-[var(--text-text-default)]">Enable Fullscreen Button</span>
                 </label>
               </div>
             </div>
@@ -629,35 +634,41 @@ export default function App() {
         </div>
 
         <div className="space-y-6">
-          <div className="bg-[var(--bg-bg-base-secondary)] rounded-xl border border-[var(--border-border-neutral-l1)] p-6">
-            <h2 className="text-xl font-semibold text-[var(--text-text-default)] mb-4">Live Preview</h2>
-            <div 
-              className="rounded-lg p-6 border border-[var(--border-border-neutral-l1)] relative min-h-[400px]"
+          <div className="bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)] p-6 relative">
+            <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--bg-bg-brand)]"></div>
+            <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[var(--bg-bg-brand)]"></div>
+            <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[var(--bg-bg-brand)]"></div>
+            <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--bg-bg-brand)]"></div>
+
+            <h2 className="text-lg font-bold text-[var(--text-text-default)] mb-4 uppercase tracking-wider">Live Preview</h2>
+            <div
+              className="p-6 border border-[var(--border-border-neutral-l1)] relative min-h-[400px]"
               style={{
                 backgroundColor: config.theme === 'dark' ? '#0a0b0d' : '#f9fafb',
               }}
             >
-              <div 
-                className="rounded-lg p-4 shadow-lg max-w-sm"
+              <div
+                className="p-4 shadow-lg max-w-sm"
                 style={{
                   backgroundColor: config.theme === 'dark' ? '#1a1b1e' : '#ffffff',
                   borderRadius: config.borderRadius,
                   border: `${config.borderWidth} solid ${config.borderColor}`,
                 }}
               >
-                <div 
-                  className="px-4 py-3 rounded-t-lg flex items-center justify-between"
-                  style={{ backgroundColor: config.primaryColor }}
+                <div
+                  className="px-4 py-3 flex items-center justify-between"
+                  style={{ backgroundColor: config.primaryColor, borderTopLeftRadius: `calc(${config.borderRadius} - 2px)`, borderTopRightRadius: `calc(${config.borderRadius} - 2px)` }}
                 >
-                  <span className="font-semibold text-white">{config.headerText}</span>
+                  <span className="font-bold text-white uppercase tracking-wide text-sm">{config.headerText}</span>
                   <div className="w-2 h-2 bg-white rounded-full"></div>
                 </div>
                 <div className="p-4 space-y-3">
-                  <div 
-                    className="rounded-lg p-3 text-sm"
-                    style={{ 
+                  <div
+                    className="p-3 text-xs font-mono"
+                    style={{
                       backgroundColor: config.theme === 'dark' ? '#2d2e32' : '#f3f4f6',
-                      color: config.theme === 'dark' ? '#e5e7eb' : '#1f2937' 
+                      color: config.theme === 'dark' ? '#e5e7eb' : '#1f2937',
+                      borderRadius: '4px'
                     }}
                   >
                     {config.welcomeMessage}
@@ -667,12 +678,13 @@ export default function App() {
                       {config.presetQuestions.map((q, i) => (
                         <div
                           key={i}
-                          className="px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all hover:scale-105"
+                          className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider cursor-pointer transition-all hover:scale-105"
                           style={{
                             backgroundColor: config.theme === 'dark' ? '#2d2e32' : '#f3f4f6',
                             color: config.theme === 'dark' ? '#e5e7eb' : '#1f2937',
                             border: '1px solid',
-                            borderColor: config.theme === 'dark' ? '#3f4045' : '#d1d5db'
+                            borderColor: config.theme === 'dark' ? '#3f4045' : '#d1d5db',
+                            borderRadius: '4px'
                           }}
                         >
                           {q}
@@ -684,22 +696,22 @@ export default function App() {
                     type="text"
                     placeholder={config.placeholder}
                     disabled
-                    className="w-full px-3 py-2 rounded-lg text-sm"
+                    className="w-full px-3 py-2 text-xs font-mono uppercase tracking-wide"
                     style={{
                       backgroundColor: config.theme === 'dark' ? '#2d2e32' : '#f3f4f6',
                       color: config.theme === 'dark' ? '#e5e7eb' : '#1f2937',
                       border: '1px solid',
-                      borderColor: config.theme === 'dark' ? '#3f4045' : '#d1d5db'
+                      borderColor: config.theme === 'dark' ? '#3f4045' : '#d1d5db',
+                      borderRadius: '4px'
                     }}
                   />
                 </div>
               </div>
 
-              <div 
-                className={`absolute ${config.position.includes('bottom') ? 'bottom-4' : 'top-4'} ${config.position.includes('right') ? 'right-4' : 'left-4'} flex items-center justify-center cursor-pointer transition-all ${
-                  config.bubble.animation === 'pulse' ? 'animate-pulse' : 
-                  config.bubble.animation === 'bounce' ? 'animate-bounce' : ''
-                }`}
+              <div
+                className={`absolute ${config.position.includes('bottom') ? 'bottom-4' : 'top-4'} ${config.position.includes('right') ? 'right-4' : 'left-4'} flex items-center justify-center cursor-pointer transition-all ${config.bubble.animation === 'pulse' ? 'animate-pulse' :
+                    config.bubble.animation === 'bounce' ? 'animate-bounce' : ''
+                  }`}
                 style={{
                   width: config.bubble.size,
                   height: config.bubble.size,
@@ -709,8 +721,8 @@ export default function App() {
                 }}
               >
                 {config.bubble.icon === 'custom' && config.bubble.customIconUrl ? (
-                  <img 
-                    src={config.bubble.customIconUrl} 
+                  <img
+                    src={config.bubble.customIconUrl}
                     alt="Custom icon"
                     className="w-3/5 h-3/5 object-contain"
                     onError={(e) => {
@@ -718,10 +730,10 @@ export default function App() {
                     }}
                   />
                 ) : (
-                  <svg 
+                  <svg
                     className="w-1/2 h-1/2"
-                    fill="none" 
-                    stroke={config.bubble.iconColor} 
+                    fill="none"
+                    stroke={config.bubble.iconColor}
                     viewBox="0 0 24 24"
                     strokeWidth={2}
                   >
@@ -741,33 +753,37 @@ export default function App() {
                 )}
               </div>
 
-              <div className="mt-4 text-xs text-center" style={{ color: config.theme === 'dark' ? '#6b7280' : '#9ca3af' }}>
+              <div className="mt-4 text-[10px] text-center font-mono uppercase tracking-wide" style={{ color: config.theme === 'dark' ? '#6b7280' : '#9ca3af' }}>
                 Position: {config.position} | Theme: {config.theme}
               </div>
             </div>
           </div>
 
-          <div className="bg-[var(--bg-bg-base-secondary)] rounded-xl border border-[var(--border-border-neutral-l1)] p-4 sm:p-6">
-            <h2 className="text-lg sm:text-xl font-semibold text-[var(--text-text-default)] mb-4">Integration Code</h2>
-            
-            <div className="flex flex-wrap gap-2 mb-4">
+          <div className="bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)] p-4 sm:p-6 relative">
+            <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--bg-bg-brand)]"></div>
+            <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[var(--bg-bg-brand)]"></div>
+            <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[var(--bg-bg-brand)]"></div>
+            <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--bg-bg-brand)]"></div>
+
+            <h2 className="text-lg sm:text-xl font-bold text-[var(--text-text-default)] mb-4 uppercase tracking-wider">Integration Code</h2>
+
+            <div className="flex flex-wrap gap-px mb-4 bg-[var(--border-border-neutral-l1)] border border-[var(--border-border-neutral-l1)] p-0.5">
               {['cdn', 'npm', 'react'].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab as any)}
-                  className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${
-                    activeTab === tab
+                  className={`px-3 sm:px-4 py-2 text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-all ${activeTab === tab
                       ? 'bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)]'
-                      : 'bg-[var(--bg-bg-overlay-l1)] text-[var(--text-text-secondary)]'
-                  }`}
+                      : 'bg-[var(--bg-bg-base-default)] text-[var(--text-text-secondary)] hover:bg-[var(--bg-bg-overlay-l1)]'
+                    }`}
                 >
-                  {tab.toUpperCase()}
+                  {tab}
                 </button>
               ))}
             </div>
 
             <div className="relative w-full max-w-full overflow-hidden">
-              <pre className="bg-[var(--bg-bg-base-default)] p-3 sm:p-4 rounded-lg overflow-x-auto text-xs sm:text-sm border border-[var(--border-border-neutral-l1)] max-w-full">
+              <pre className="bg-[var(--bg-bg-base-default)] p-3 sm:p-4 overflow-x-auto text-xs sm:text-sm border border-[var(--border-border-neutral-l1)] max-w-full">
                 <code className="text-[var(--text-text-default)] font-mono whitespace-pre break-all sm:break-normal">
                   {activeTab === 'cdn' && generateCDNCode()}
                   {activeTab === 'npm' && generateNPMCode()}
@@ -776,22 +792,22 @@ export default function App() {
               </pre>
               <button
                 onClick={() => {
-                  const code = activeTab === 'cdn' ? generateCDNCode() : 
-                               activeTab === 'npm' ? generateNPMCode() : 
-                               generateReactCode();
+                  const code = activeTab === 'cdn' ? generateCDNCode() :
+                    activeTab === 'npm' ? generateNPMCode() :
+                      generateReactCode();
                   copyCode(code, activeTab);
                 }}
-                className="absolute top-2 right-2 flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-[var(--bg-bg-overlay-l2)] hover:bg-[var(--bg-bg-overlay-l3)] rounded-lg transition-all"
+                className="absolute top-2 right-2 flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-[var(--bg-bg-overlay-l2)] hover:bg-[var(--bg-bg-overlay-l3)] border border-[var(--border-border-neutral-l1)] transition-all"
               >
                 {copiedTab === activeTab ? (
                   <>
                     <Check className="h-3 w-3 sm:h-4 sm:w-4 text-green-500" />
-                    <span className="text-xs sm:text-sm text-green-500 hidden sm:inline">Copied!</span>
+                    <span className="text-[10px] sm:text-xs text-green-500 hidden sm:inline font-mono uppercase tracking-wide">Copied!</span>
                   </>
                 ) : (
                   <>
                     <Copy className="h-3 w-3 sm:h-4 sm:w-4 text-[var(--text-text-secondary)]" />
-                    <span className="text-xs sm:text-sm text-[var(--text-text-secondary)] hidden sm:inline">Copy</span>
+                    <span className="text-[10px] sm:text-xs text-[var(--text-text-secondary)] hidden sm:inline font-mono uppercase tracking-wide">Copy</span>
                   </>
                 )}
               </button>

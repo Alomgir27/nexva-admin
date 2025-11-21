@@ -80,17 +80,22 @@ export default function RegisterPage() {
           </p>
         </div>
 
-        <div className="bg-[var(--bg-bg-overlay-l1)] backdrop-blur-sm p-8 rounded-2xl border border-[var(--border-border-neutral-l1)]">
+        <div className="bg-black/40 backdrop-blur-sm p-8 border border-[var(--border-border-neutral-l1)] relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--bg-bg-brand)]"></div>
+          <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[var(--bg-bg-brand)]"></div>
+          <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[var(--bg-bg-brand)]"></div>
+          <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--bg-bg-brand)]"></div>
+
           {error && (
-            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg flex items-center space-x-3">
+            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 flex items-center space-x-3">
               <AlertCircle className="h-5 w-5 text-red-500" />
-              <p className="text-sm text-red-500">{error}</p>
+              <p className="text-sm text-red-500 font-mono uppercase tracking-wide">{error}</p>
             </div>
           )}
 
           <form onSubmit={handleRegister} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-[var(--text-text-default)] mb-2">
+              <label className="block text-xs font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-wider font-mono">
                 Email
               </label>
               <div className="relative">
@@ -100,14 +105,14 @@ export default function RegisterPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  placeholder="you@example.com"
-                  className="w-full pl-10 pr-4 py-3 bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)] rounded-lg text-[var(--text-text-default)] placeholder:text-[var(--text-text-tertiary)] focus:outline-none focus:border-[var(--bg-bg-brand)] transition-colors"
+                  placeholder="YOU@EXAMPLE.COM"
+                  className="w-full pl-10 pr-4 py-3 bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] placeholder:text-[var(--text-text-tertiary)] focus:outline-none focus:border-[var(--bg-bg-brand)] transition-colors font-mono text-sm"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[var(--text-text-default)] mb-2">
+              <label className="block text-xs font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-wider font-mono">
                 Password
               </label>
               <div className="relative">
@@ -118,16 +123,16 @@ export default function RegisterPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-3 bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)] rounded-lg text-[var(--text-text-default)] placeholder:text-[var(--text-text-tertiary)] focus:outline-none focus:border-[var(--bg-bg-brand)] transition-colors"
+                  className="w-full pl-10 pr-4 py-3 bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] placeholder:text-[var(--text-text-tertiary)] focus:outline-none focus:border-[var(--bg-bg-brand)] transition-colors font-mono text-sm"
                 />
               </div>
-              <p className="text-xs text-[var(--text-text-tertiary)] mt-1">
+              <p className="text-[10px] text-[var(--text-text-tertiary)] mt-1 font-mono uppercase tracking-wide">
                 Must be at least 8 characters
               </p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[var(--text-text-default)] mb-2">
+              <label className="block text-xs font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-wider font-mono">
                 Confirm Password
               </label>
               <div className="relative">
@@ -138,7 +143,7 @@ export default function RegisterPage() {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-3 bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)] rounded-lg text-[var(--text-text-default)] placeholder:text-[var(--text-text-tertiary)] focus:outline-none focus:border-[var(--bg-bg-brand)] transition-colors"
+                  className="w-full pl-10 pr-4 py-3 bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] placeholder:text-[var(--text-text-tertiary)] focus:outline-none focus:border-[var(--bg-bg-brand)] transition-colors font-mono text-sm"
                 />
               </div>
             </div>
@@ -146,16 +151,16 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full px-6 py-3 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg font-semibold hover:bg-[var(--bg-bg-brand-hover)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full px-6 py-3 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] font-bold uppercase tracking-wider font-mono hover:bg-[var(--bg-bg-brand-hover)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "Creating account..." : "Create account"}
             </button>
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-[var(--text-text-secondary)]">
+            <p className="text-xs text-[var(--text-text-secondary)] font-mono uppercase tracking-wide">
               Already have an account?{" "}
-              <Link href="/login" className="text-[var(--bg-bg-brand)] hover:underline font-medium">
+              <Link href="/login" className="text-[var(--bg-bg-brand)] hover:underline font-bold">
                 Sign in
               </Link>
             </p>

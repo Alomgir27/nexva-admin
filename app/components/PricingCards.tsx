@@ -99,88 +99,83 @@ export default function PricingCards({ currentPlan, onSelectPlan, loading }: Pri
 
   return (
     <>
-      <div className="flex justify-center mb-8">
-        <div className="inline-flex items-center bg-[var(--bg-bg-overlay-l1)] border border-[var(--border-border-neutral-l1)] rounded-lg p-1">
+      <div className="flex justify-center mb-12">
+        <div className="inline-flex items-center bg-[var(--bg-bg-overlay-l1)] border border-[var(--border-border-neutral-l1)] p-1">
           <button
             onClick={() => setBillingPeriod('monthly')}
-            className={`px-6 py-2 rounded-md font-medium transition-all ${
-              billingPeriod === 'monthly'
+            className={`px-6 py-2 font-mono uppercase tracking-wider text-xs font-bold transition-all ${billingPeriod === 'monthly'
                 ? 'bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)]'
                 : 'text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)]'
-            }`}
+              }`}
           >
             Monthly
           </button>
           <button
             onClick={() => setBillingPeriod('annual')}
-            className={`px-6 py-2 rounded-md font-medium transition-all relative ${
-              billingPeriod === 'annual'
+            className={`px-6 py-2 font-mono uppercase tracking-wider text-xs font-bold transition-all relative ${billingPeriod === 'annual'
                 ? 'bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)]'
                 : 'text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)]'
-            }`}
+              }`}
           >
             Annual
-            <span className="ml-2 text-xs bg-green-500 text-white px-2 py-0.5 rounded-full">
-              Save 20%
+            <span className="ml-2 text-[10px] bg-green-500 text-white px-1.5 py-0.5 font-mono">
+              -20%
             </span>
           </button>
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-0 border-l border-[var(--border-border-neutral-l1)]">
         {PLANS.map((plan) => {
           const isCurrent = currentPlan === plan.tier;
           const isDisabled = plan.tier === 'free' || isCurrent;
           const price = billingPeriod === 'monthly' ? plan.priceMonthly : plan.priceAnnual;
           const displayPrice = billingPeriod === 'annual' ? (price / 12).toFixed(2) : price.toFixed(2);
           const savings = calculateSavings(plan.priceMonthly, plan.priceAnnual);
-          
+
           return (
             <div
               key={plan.tier}
-              className={`relative bg-[var(--bg-bg-overlay-l1)] border rounded-2xl p-6 flex flex-col ${
-                plan.popular
-                  ? "border-[var(--bg-bg-brand)] shadow-lg"
-                  : "border-[var(--border-border-neutral-l1)]"
-              }`}
+              className={`relative bg-[var(--bg-bg-overlay-l1)] border-r border-b border-t border-[var(--border-border-neutral-l1)] p-8 flex flex-col group hover:bg-[var(--bg-bg-overlay-l2)] transition-colors ${plan.popular ? "bg-[var(--bg-bg-overlay-l2)]" : ""
+                }`}
             >
               {plan.popular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] text-xs font-semibold rounded-full">
-                  Most Popular
-                </div>
+                <div className="absolute top-0 left-0 w-full h-1 bg-[var(--bg-bg-brand)]"></div>
               )}
-              
-              <div className="mb-4">
-                <h3 className="text-xl font-semibold text-[var(--text-text-default)] mb-2">
+
+              <div className="mb-8">
+                <h3 className="text-lg font-bold text-[var(--text-text-default)] mb-4 uppercase tracking-wider">
                   {plan.name}
                 </h3>
                 <div className="flex items-baseline">
-                  <span className="text-4xl font-bold text-[var(--text-text-default)]">
+                  <span className="text-4xl font-bold text-[var(--text-text-default)] font-mono">
                     ${displayPrice}
                   </span>
-                  <span className="text-[var(--text-text-secondary)] ml-2">/month</span>
+                  <span className="text-[var(--text-text-secondary)] ml-2 font-mono text-xs uppercase">/month</span>
                 </div>
                 {billingPeriod === 'annual' && plan.tier !== 'free' && (
-                  <p className="text-sm text-green-500 mt-1">
+                  <p className="text-xs text-green-500 mt-2 font-mono uppercase tracking-wide">
                     ${price.toFixed(2)} billed annually
                   </p>
                 )}
               </div>
 
-              <div className="mb-6">
-                <p className="text-[var(--text-text-secondary)] text-sm">
-                  {typeof plan.chatbotLimit === 'number' 
+              <div className="mb-8 pb-8 border-b border-[var(--border-border-neutral-l1)]">
+                <p className="text-[var(--text-text-secondary)] text-xs font-mono uppercase tracking-wide">
+                  {typeof plan.chatbotLimit === 'number'
                     ? `Up to ${plan.chatbotLimit} chatbot${plan.chatbotLimit > 1 ? 's' : ''}`
                     : `${plan.chatbotLimit} chatbots`
                   }
                 </p>
               </div>
 
-              <ul className="space-y-3 mb-6 flex-1">
+              <ul className="space-y-4 mb-8 flex-1">
                 {plan.features.map((feature, index) => (
-                  <li key={index} className="flex items-start space-x-2">
-                    <Check className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <span className="text-sm text-[var(--text-text-secondary)]">{feature}</span>
+                  <li key={index} className="flex items-start space-x-3">
+                    <div className="w-4 h-4 mt-0.5 border border-green-500/50 bg-green-500/10 flex items-center justify-center">
+                      <Check className="h-3 w-3 text-green-500" />
+                    </div>
+                    <span className="text-xs text-[var(--text-text-secondary)] font-mono uppercase tracking-wide leading-tight">{feature}</span>
                   </li>
                 ))}
               </ul>
@@ -188,15 +183,14 @@ export default function PricingCards({ currentPlan, onSelectPlan, loading }: Pri
               <button
                 onClick={() => onSelectPlan(plan.tier, billingPeriod)}
                 disabled={isDisabled || loading !== null}
-                className={`w-full px-4 py-2 rounded-lg font-medium transition-all ${
-                  isCurrent
-                    ? "bg-[var(--bg-bg-overlay-l2)] text-[var(--text-text-secondary)] cursor-not-allowed"
+                className={`w-full px-4 py-3 font-bold uppercase tracking-wider font-mono text-xs transition-all border ${isCurrent
+                    ? "bg-[var(--bg-bg-overlay-l2)] border-[var(--border-border-neutral-l1)] text-[var(--text-text-secondary)] cursor-not-allowed"
                     : isDisabled
-                    ? "bg-[var(--bg-bg-overlay-l2)] text-[var(--text-text-tertiary)] cursor-not-allowed"
-                    : plan.popular
-                    ? "bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] hover:bg-[var(--bg-bg-brand-hover)]"
-                    : "bg-[var(--bg-bg-overlay-l2)] text-[var(--text-text-default)] hover:bg-[var(--bg-bg-overlay-l3)]"
-                }`}
+                      ? "bg-[var(--bg-bg-overlay-l2)] border-[var(--border-border-neutral-l1)] text-[var(--text-text-tertiary)] cursor-not-allowed"
+                      : plan.popular
+                        ? "bg-[var(--bg-bg-brand)] border-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] hover:bg-[var(--bg-bg-brand-hover)]"
+                        : "bg-transparent border-[var(--text-text-default)] text-[var(--text-text-default)] hover:bg-[var(--text-text-default)] hover:text-[var(--bg-bg-base-default)]"
+                  }`}
               >
                 {loading === plan.tier ? "Processing..." : isCurrent ? "Current Plan" : isDisabled ? "Not Available" : "Upgrade"}
               </button>

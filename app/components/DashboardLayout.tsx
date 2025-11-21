@@ -40,29 +40,32 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="flex flex-col h-full">
           <div className="p-6 border-b border-[var(--border-border-neutral-l1)]">
             <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-              <Image src="/images/img.png" alt="Nexva" width={36} height={36} className="rounded-lg" />
-              <span className="text-xl font-semibold text-[var(--text-text-default)]">Nexva</span>
+              <div className="relative">
+                <div className="absolute inset-0 bg-[var(--bg-bg-brand)]/20 blur-md"></div>
+                <Image src="/images/img.png" alt="Nexva" width={36} height={36} className="relative z-10" />
+              </div>
+              <span className="text-xl font-bold tracking-tighter uppercase text-[var(--text-text-default)]">Nexva</span>
             </Link>
           </div>
 
-          <nav className="flex-1 p-4 space-y-1">
+          <nav className="flex-1 p-0 space-y-px">
             {navItems.map((item) => {
               const isActive = pathname === item.path;
               return (
                 <Link key={item.path} href={item.path} onClick={() => setSidebarOpen(false)}>
-                  <div className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${isActive ? 'bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)]' : 'text-[var(--text-text-secondary)] hover:bg-[var(--bg-bg-overlay-l1)] hover:text-[var(--text-text-default)]'}`}>
+                  <div className={`flex items-center space-x-3 px-6 py-4 transition-all border-l-2 ${isActive ? 'border-[var(--bg-bg-brand)] bg-[var(--bg-bg-brand)]/5 text-[var(--bg-bg-brand)]' : 'border-transparent text-[var(--text-text-secondary)] hover:bg-[var(--bg-bg-overlay-l1)] hover:text-[var(--text-text-default)] hover:border-[var(--text-text-tertiary)]'}`}>
                     {item.icon}
-                    <span className="font-medium">{item.label}</span>
+                    <span className="font-mono text-xs font-bold uppercase tracking-wider">{item.label}</span>
                   </div>
                 </Link>
               );
             })}
           </nav>
 
-          <div className="p-4 border-t border-[var(--border-border-neutral-l1)]">
-            <button onClick={logout} className="flex items-center space-x-3 w-full px-4 py-3 rounded-lg text-[var(--text-text-secondary)] hover:bg-[var(--bg-bg-overlay-l1)] hover:text-[var(--text-text-default)] transition-colors">
+          <div className="p-0 border-t border-[var(--border-border-neutral-l1)]">
+            <button onClick={logout} className="flex items-center space-x-3 w-full px-6 py-4 text-[var(--text-text-secondary)] hover:bg-[var(--bg-bg-overlay-l1)] hover:text-[var(--text-text-default)] transition-colors border-l-2 border-transparent hover:border-[var(--text-text-tertiary)]">
               <LogOut className="h-5 w-5" />
-              <span className="font-medium">Logout</span>
+              <span className="font-mono text-xs font-bold uppercase tracking-wider">Logout</span>
             </button>
           </div>
         </div>

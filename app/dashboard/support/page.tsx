@@ -80,7 +80,7 @@ export default function SupportPage() {
     }
 
     const wsUrl = buildWebSocketUrlWithToken(`/ws/support/${ticketId}`, token);
-    
+
     console.log('[Support WS] Connecting to:', wsUrl);
     wsRef.current = new WebSocket(wsUrl);
 
@@ -91,7 +91,7 @@ export default function SupportPage() {
     wsRef.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
       console.log('[Support WS] Message received:', data);
-      
+
       if (data.type === 'message') {
         fetchTicketDetail(ticketId);
       }
@@ -113,10 +113,10 @@ export default function SupportPage() {
   const fetchTickets = async () => {
     try {
       const token = localStorage.getItem("token");
-      const url = filter === "all" 
+      const url = filter === "all"
         ? API_ENDPOINTS.support.tickets
         : `${API_ENDPOINTS.support.tickets}?status=${filter}`;
-      
+
       const response = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -166,7 +166,7 @@ export default function SupportPage() {
         console.log('[Support WS] Sending message via WebSocket');
         wsRef.current.send(JSON.stringify({ message: message.trim() }));
         setMessage("");
-        
+
         setTimeout(() => fetchTicketDetail(selectedTicket), 200);
       } else {
         console.log('[Support API] WebSocket not ready, using REST API');
@@ -283,22 +283,21 @@ export default function SupportPage() {
   return (
     <div className="h-screen flex flex-col bg-[var(--bg-bg-base-default)]">
       <div className="border-b border-[var(--border-border-neutral-l1)] bg-[var(--bg-bg-base-secondary)] px-6 py-4">
-        <h1 className="text-2xl font-semibold text-[var(--text-text-default)]">Support Tickets</h1>
+        <h1 className="text-2xl font-bold text-[var(--text-text-default)] uppercase tracking-tight">Support Tickets</h1>
       </div>
 
       <div className="flex-1 flex overflow-hidden">
         <div className="w-96 border-r border-[var(--border-border-neutral-l1)] bg-[var(--bg-bg-base-secondary)] flex flex-col">
           <div className="p-4 border-b border-[var(--border-border-neutral-l1)]">
-            <div className="flex space-x-1">
+            <div className="flex space-x-px bg-[var(--border-border-neutral-l1)] border border-[var(--border-border-neutral-l1)] p-0.5">
               {["all", "open", "in_progress", "resolved"].map((status) => (
                 <button
                   key={status}
                   onClick={() => setFilter(status)}
-                  className={`flex-1 px-3 py-2 rounded-lg text-xs font-medium transition-all capitalize ${
-                    filter === status
+                  className={`flex-1 px-3 py-2 text-[10px] font-bold uppercase tracking-wider transition-all ${filter === status
                       ? "bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)]"
                       : "text-[var(--text-text-secondary)] hover:bg-[var(--bg-bg-overlay-l1)]"
-                  }`}
+                    }`}
                 >
                   {status.replace("_", " ")}
                 </button>
@@ -311,24 +310,23 @@ export default function SupportPage() {
               <div
                 key={ticket.id}
                 onClick={() => setSelectedTicket(ticket.id)}
-                className={`p-4 border-b border-[var(--border-border-neutral-l1)] cursor-pointer transition-colors ${
-                  selectedTicket === ticket.id
-                    ? "bg-[var(--bg-bg-overlay-l1)]"
-                    : "hover:bg-[var(--bg-bg-overlay-l1)]"
-                }`}
+                className={`p-4 border-b border-[var(--border-border-neutral-l1)] cursor-pointer transition-colors ${selectedTicket === ticket.id
+                    ? "bg-[var(--bg-bg-overlay-l1)] border-l-2 border-l-[var(--bg-bg-brand)]"
+                    : "hover:bg-[var(--bg-bg-overlay-l1)] border-l-2 border-l-transparent"
+                  }`}
               >
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center space-x-2">
-                    <div className={`w-2 h-2 rounded-full ${getStatusColor(ticket.status)}`} />
-                    <span className="font-medium text-[var(--text-text-default)] text-sm">
+                    <div className={`w-1.5 h-1.5 ${getStatusColor(ticket.status)}`} />
+                    <span className="font-bold text-[var(--text-text-default)] text-xs uppercase tracking-wide font-mono">
                       {ticket.chatbot_name}
                     </span>
                   </div>
-                  <span className="text-xs text-[var(--text-text-tertiary)]">
+                  <span className="text-[10px] text-[var(--text-text-tertiary)] font-mono uppercase tracking-wide">
                     {formatDate(ticket.created_at)}
                   </span>
                 </div>
-                <p className="text-sm text-[var(--text-text-secondary)] line-clamp-2">
+                <p className="text-xs text-[var(--text-text-secondary)] line-clamp-2 font-mono">
                   {ticket.last_message}
                 </p>
               </div>
@@ -336,15 +334,15 @@ export default function SupportPage() {
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col bg-[var(--bg-bg-base-default)]">
+        <div className="flex-1 flex flex-col bg-[var(--bg-bg-base-default)] relative">
           {selectedTicket && ticketDetail ? (
             <>
               <div className="border-b border-[var(--border-border-neutral-l1)] bg-[var(--bg-bg-base-secondary)] px-6 py-4 flex items-center justify-between">
                 <div>
-                  <h2 className="font-semibold text-[var(--text-text-default)]">
+                  <h2 className="font-bold text-[var(--text-text-default)] uppercase tracking-wider text-sm">
                     Ticket #{ticketDetail.ticket.id}
                   </h2>
-                  <p className="text-sm text-[var(--text-text-secondary)]">
+                  <p className="text-xs text-[var(--text-text-secondary)] font-mono uppercase tracking-wide mt-1">
                     {ticketDetail.ticket.chatbot_name}
                   </p>
                 </div>
@@ -352,7 +350,7 @@ export default function SupportPage() {
                   {ticketDetail.ticket.status === "resolved" ? (
                     <button
                       onClick={reopenTicket}
-                      className="flex items-center space-x-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all"
+                      className="flex items-center space-x-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white transition-all font-bold uppercase tracking-wider font-mono text-xs"
                     >
                       <RotateCcw className="h-4 w-4" />
                       <span>Reopen</span>
@@ -360,7 +358,7 @@ export default function SupportPage() {
                   ) : (
                     <button
                       onClick={resolveTicket}
-                      className="flex items-center space-x-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-all"
+                      className="flex items-center space-x-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white transition-all font-bold uppercase tracking-wider font-mono text-xs"
                     >
                       <CheckCircle2 className="h-4 w-4" />
                       <span>Resolve</span>
@@ -376,14 +374,13 @@ export default function SupportPage() {
                     className={`flex ${msg.sender_type === "support" ? "justify-end" : "justify-start"}`}
                   >
                     <div
-                      className={`max-w-md px-4 py-2 rounded-lg ${
-                        msg.sender_type === "support"
-                          ? "bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)]"
-                          : "bg-[var(--bg-bg-overlay-l1)] text-[var(--text-text-default)]"
-                      }`}
+                      className={`max-w-md px-4 py-3 border ${msg.sender_type === "support"
+                          ? "bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] border-[var(--bg-bg-brand)]"
+                          : "bg-[var(--bg-bg-overlay-l1)] text-[var(--text-text-default)] border-[var(--border-border-neutral-l1)]"
+                        }`}
                     >
-                      <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
-                      <p className="text-xs mt-1 opacity-70">{formatTime(msg.created_at)}</p>
+                      <p className="text-xs font-mono whitespace-pre-wrap">{msg.content}</p>
+                      <p className="text-[10px] mt-2 opacity-70 font-mono uppercase tracking-wide text-right">{formatTime(msg.created_at)}</p>
                     </div>
                   </div>
                 ))}
@@ -398,13 +395,13 @@ export default function SupportPage() {
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       onKeyPress={(e) => e.key === "Enter" && !sending && sendMessage()}
-                      placeholder="Type your message..."
-                      className="flex-1 px-4 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] rounded-lg text-[var(--text-text-default)] focus:outline-none focus:border-[var(--bg-bg-brand)]"
+                      placeholder="TYPE YOUR MESSAGE..."
+                      className="flex-1 px-4 py-3 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] focus:outline-none focus:border-[var(--bg-bg-brand)] font-mono text-xs uppercase tracking-wide placeholder:text-[var(--text-text-tertiary)]"
                     />
                     <button
                       onClick={sendMessage}
                       disabled={sending || !message.trim()}
-                      className="px-6 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] disabled:opacity-50 transition-all flex items-center space-x-2"
+                      className="px-6 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] hover:bg-[var(--bg-bg-brand-hover)] disabled:opacity-50 transition-all flex items-center space-x-2 font-bold uppercase tracking-wider font-mono text-xs"
                     >
                       {sending ? <Loader className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
                     </button>
@@ -416,7 +413,7 @@ export default function SupportPage() {
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center">
                 <MessageSquare className="h-16 w-16 text-[var(--text-text-tertiary)] mx-auto mb-4" />
-                <p className="text-[var(--text-text-secondary)]">
+                <p className="text-[var(--text-text-secondary)] font-mono text-sm uppercase tracking-wide">
                   Select a ticket to view conversation
                 </p>
               </div>

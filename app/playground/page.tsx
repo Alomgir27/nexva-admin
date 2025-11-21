@@ -25,7 +25,7 @@ export default function PlaygroundPage() {
   const [activeTab, setActiveTab] = useState<"text" | "voice">("text");
   const [apiKey, setApiKey] = useState("");
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState<Array<{role: string, content: string}>>([]);
+  const [messages, setMessages] = useState<Array<{ role: string, content: string }>>([]);
   const [loading, setLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [supportRequested, setSupportRequested] = useState(false);
@@ -72,7 +72,7 @@ export default function PlaygroundPage() {
       if (recognitionRef.current && recognitionRef.current.recognition) {
         try {
           recognitionRef.current.recognition.stop();
-        } catch (e) {}
+        } catch (e) { }
       }
       if (audioContextRef.current) {
         audioContextRef.current.close();
@@ -87,34 +87,34 @@ export default function PlaygroundPage() {
       const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       const analyser = audioContext.createAnalyser();
       const microphone = audioContext.createMediaStreamSource(stream);
-      
+
       analyser.smoothingTimeConstant = 0.8;
       analyser.fftSize = 512;
       microphone.connect(analyser);
-      
+
       audioContextRef.current = audioContext;
       analyserRef.current = analyser;
-      
+
       const bufferLength = analyser.frequencyBinCount;
       const dataArray = new Uint8Array(bufferLength);
-      
+
       const checkAudioLevel = () => {
         if (!analyserRef.current) return;
-        
+
         analyser.getByteFrequencyData(dataArray);
         const average = dataArray.reduce((a, b) => a + b) / bufferLength;
-        
+
         if (average < 20) {
           setVolumeLevel('low');
         } else {
           setVolumeLevel('good');
         }
-        
+
         if (audioContextRef.current) {
           requestAnimationFrame(checkAudioLevel);
         }
       };
-      
+
       checkAudioLevel();
       return stream;
     } catch (error) {
@@ -145,27 +145,27 @@ export default function PlaygroundPage() {
 
     isPlayingRef.current = true;
     shouldPauseMicRef.current = true;
-    
+
     if (recognitionRef.current?.recognition) {
       try {
         recognitionRef.current.recognition.stop();
-      } catch (e) {}
+      } catch (e) { }
     }
-    
+
     const audioData = audioQueueRef.current.shift()!;
     const audio = audioData.audio;
     const url = audioData.url;
-    
+
     audio.onended = () => {
       URL.revokeObjectURL(url);
       playNextAudio();
     };
-    
+
     audio.onerror = () => {
       URL.revokeObjectURL(url);
       playNextAudio();
     };
-    
+
     audio.play().catch(err => {
       console.error('Audio play failed:', err);
       URL.revokeObjectURL(url);
@@ -177,9 +177,9 @@ export default function PlaygroundPage() {
     const audioUrl = URL.createObjectURL(audioBlob);
     const audio = new Audio(audioUrl);
     audio.setAttribute('sinkId', 'default');
-    
+
     audioQueueRef.current.push({ audio, url: audioUrl });
-    
+
     if (!isPlayingRef.current) {
       playNextAudio();
     }
@@ -195,7 +195,7 @@ export default function PlaygroundPage() {
   const startRealtimeTranscription = async () => {
     try {
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-      
+
       if (!SpeechRecognition) {
         alert('Speech recognition not supported in this browser. Please use Chrome or Edge.');
         return;
@@ -216,7 +216,7 @@ export default function PlaygroundPage() {
       recognition.onstart = () => {
         setIsListening(true);
         setInterimTranscript("");
-        
+
         setMessages((prev) => {
           const newMessages = [...prev, { role: "user", content: "" }];
           tempMessageIndex = newMessages.length - 1;
@@ -226,10 +226,10 @@ export default function PlaygroundPage() {
 
       recognition.onresult = (event: any) => {
         let interimText = "";
-        
+
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const transcript = event.results[i][0].transcript;
-          
+
           if (event.results[i].isFinal) {
             finalTranscript += (finalTranscript ? " " : "") + transcript;
           } else {
@@ -238,15 +238,15 @@ export default function PlaygroundPage() {
         }
 
         const displayText = finalTranscript + (interimText ? " " + interimText : "");
-        
+
         setMessages((prev) =>
-          prev.map((msg, idx) => 
+          prev.map((msg, idx) =>
             idx === tempMessageIndex ? { ...msg, content: displayText } : msg
           )
         );
 
         if (silenceTimer) clearTimeout(silenceTimer);
-        
+
         const fullText = finalTranscript + (interimText ? " " + interimText : "");
         if (fullText.trim()) {
           silenceTimer = setTimeout(() => {
@@ -266,7 +266,7 @@ export default function PlaygroundPage() {
       recognition.onerror = (event: any) => {
         console.error('Speech recognition error:', event.error);
         if (event.error !== 'no-speech' && event.error !== 'aborted') {
-          setMessages((prev) => 
+          setMessages((prev) =>
             prev.filter((_, idx) => idx !== tempMessageIndex)
           );
           alert(`Recognition error: ${event.error}`);
@@ -277,11 +277,11 @@ export default function PlaygroundPage() {
 
       recognition.onend = () => {
         if (silenceTimer) clearTimeout(silenceTimer);
-        
+
         if (!finalTranscript.trim() && tempMessageIndex !== -1) {
           setMessages((prev) => prev.filter((_, idx) => idx !== tempMessageIndex));
         }
-        
+
         setIsListening(false);
         setInterimTranscript("");
         stopAudioMonitoring();
@@ -306,7 +306,7 @@ export default function PlaygroundPage() {
         console.log('Recognition stop error:', e);
       }
     }
-    
+
     setIsListening(false);
     setInterimTranscript("");
     stopAudioMonitoring();
@@ -333,18 +333,31 @@ export default function PlaygroundPage() {
       const ws = new WebSocket(buildWebSocketUrl(`/ws/chat/${apiKey}`));
       let assistantMessage = "";
       let assistantIndex = -1;
-      
+      let hasInitialized = false;
+
       ws.onopen = () => {
+        // Send initialization message first
         ws.send(JSON.stringify({
-          message: textToSend,
-          session_id: "playground-session"
+          session_id: "playground-session",
+          conversation_id: currentConversationId
         }));
       };
 
       ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        
-        if (data.type === 'chunk') {
+
+        if (data.type === 'complete' && !hasInitialized) {
+          // Received init confirmation, now send the actual user message
+          hasInitialized = true;
+          if (data.conversation_id) {
+            setCurrentConversationId(data.conversation_id);
+          }
+          ws.send(JSON.stringify({
+            message: textToSend,
+            top_k: 5,
+            short_answer: false
+          }));
+        } else if (data.type === 'chunk') {
           assistantMessage += data.text;
 
           if (assistantIndex === -1) {
@@ -359,26 +372,30 @@ export default function PlaygroundPage() {
               prev.map((msg, idx) => (idx === idxToUpdate ? { ...msg, content: assistantMessage } : msg))
             );
           }
-        } else if (data.type === 'complete') {
+        } else if (data.type === 'complete' && hasInitialized) {
+          // Response complete
           setLoading(false);
-          if (data.conversation_id) {
-            setCurrentConversationId(data.conversation_id);
-          }
           ws.close();
         } else if (data.type === 'error') {
-          setMessages(prev => [...prev, { 
-            role: "system", 
-            content: `❌ Error: ${data.message || 'Unknown error occurred'}` 
+          setMessages(prev => [...prev, {
+            role: "system",
+            content: `❌ Error: ${data.message || 'Unknown error occurred'}`
           }]);
           setLoading(false);
           ws.close();
+        } else if (data.type === 'history') {
+          // Received conversation history when resuming
+          hasInitialized = true;
+          ws.send(JSON.stringify({
+            message: textToSend
+          }));
         }
       };
 
       ws.onerror = () => {
-        setMessages(prev => [...prev, { 
-          role: "system", 
-          content: "❌ Connection error. Make sure backend is running." 
+        setMessages(prev => [...prev, {
+          role: "system",
+          content: "❌ Connection error. Make sure backend is running."
         }]);
         setLoading(false);
       };
@@ -400,7 +417,7 @@ export default function PlaygroundPage() {
 
     try {
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-      
+
       if (!SpeechRecognition) {
         setAssistantMessages(prev => [...prev, '❌ Speech recognition not supported in this browser. Please use Chrome or Edge.']);
         return;
@@ -414,58 +431,60 @@ export default function PlaygroundPage() {
       recognition.lang = 'en-US';
 
       recognitionRef.current = { recognition };
-      
+
       const ws = new WebSocket(buildWebSocketUrl(`/ws/voice-chat/${apiKey}`));
       wsRef.current = ws;
-      
+
       let currentText = "";
       let isSending = false;
 
       recognition.onstart = () => {
         setIsRecording(true);
         console.log("🎤 START");
-        
+
         if (!introSoundPlayedRef.current) {
           introSoundPlayedRef.current = true;
           if (!introAudio) {
             const audio = new Audio(`${API_BASE_URL}/intro.wav`);
             audio.volume = 0.7;
             setIntroAudio(audio);
-            audio.play().catch(() => {});
+            audio.play().catch(() => { });
           } else {
-            introAudio.play().catch(() => {});
+            introAudio.play().catch(() => { });
           }
         }
       };
 
       recognition.onresult = (event: any) => {
         if (shouldPauseMicRef.current || isSending) return;
-        
+
         let fullText = "";
         for (let i = 0; i < event.results.length; i++) {
           if (event.results[i].isFinal) {
             fullText += event.results[i][0].transcript + " ";
           }
         }
-        
+
         currentText = fullText.trim();
         setCurrentUserInput(currentText);
-        
+
         if (processingTimeoutRef.current) {
           clearTimeout(processingTimeoutRef.current);
         }
-        
+
         if (currentText && !isSending) {
           processingTimeoutRef.current = setTimeout(() => {
             if (currentText && !isSending && ws.readyState === WebSocket.OPEN) {
               isSending = true;
               console.log("📤 SEND:", currentText);
-              
+
               ws.send(JSON.stringify({
                 type: "text_query",
-                text: currentText
+                text: currentText,
+                top_k: 3,
+                short_answer: true
               }));
-              
+
               currentText = "";
               setCurrentUserInput("");
             }
@@ -475,22 +494,22 @@ export default function PlaygroundPage() {
 
       recognition.onerror = (event: any) => {
         console.error('Speech recognition error:', event.error);
-        
+
         if (event.error === 'no-speech') {
           // No speech detected - this is normal, just restart
           return;
         }
-        
+
         if (event.error === 'aborted') {
           // Intentionally stopped
           return;
         }
-        
+
         if (event.error === 'network') {
           console.error('Network error - will retry');
           return;
         }
-        
+
         // For serious errors, try to recover
         console.log('Recognition error, attempting recovery...');
       };
@@ -499,10 +518,10 @@ export default function PlaygroundPage() {
         if (isRecording && recognitionRef.current && !shouldPauseMicRef.current) {
           const now = Date.now();
           const timeSinceLastRestart = now - lastRestartTimeRef.current;
-          
+
           if (timeSinceLastRestart > 300) {
             lastRestartTimeRef.current = now;
-            
+
             setTimeout(() => {
               if (recognitionRef.current && isRecording) {
                 try {
@@ -530,7 +549,7 @@ export default function PlaygroundPage() {
 
       ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        
+
         if (data.type === "response_start") {
           console.log("📝 START");
           setAssistantMessages(prev => [...prev, ""]);
@@ -582,14 +601,14 @@ export default function PlaygroundPage() {
         console.log('Recognition stop error:', e);
       }
     }
-    
+
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify({ type: "stop" }));
       wsRef.current.close();
     }
-    
+
     // Clear audio queue properly
-    audioQueueRef.current.forEach(({audio, url}) => {
+    audioQueueRef.current.forEach(({ audio, url }) => {
       audio.pause();
       URL.revokeObjectURL(url);
     });
@@ -597,7 +616,7 @@ export default function PlaygroundPage() {
     isPlayingRef.current = false;
     shouldPauseMicRef.current = false;
     introSoundPlayedRef.current = false;
-    
+
     setIsRecording(false);
     stopAudioMonitoring();
   };
@@ -651,15 +670,15 @@ export default function PlaygroundPage() {
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-6">
             <div className="flex items-center space-x-3">
-              <Image src="/images/img.png" alt="Nexva" width={32} height={32} className="rounded-lg" />
-              <span className="text-xl font-semibold text-[var(--text-text-default)]">Nexva</span>
+              <Image src="/images/img.png" alt="Nexva" width={32} height={32} className="border border-[var(--border-border-neutral-l1)]" />
+              <span className="text-xl font-bold text-[var(--text-text-default)] uppercase tracking-wider font-mono">Nexva</span>
             </div>
-            <span className="text-[var(--text-text-tertiary)]">/</span>
-            <span className="text-[var(--text-text-secondary)]">Playground</span>
+            <span className="text-[var(--text-text-tertiary)] font-mono">/</span>
+            <span className="text-[var(--text-text-secondary)] font-mono uppercase tracking-wide text-sm">Playground</span>
           </div>
           <Link
             href="/dashboard"
-            className="px-4 py-2 bg-[var(--bg-bg-overlay-l2)] text-[var(--text-text-default)] rounded-lg hover:bg-[var(--bg-bg-overlay-l3)] transition-all"
+            className="px-4 py-2 bg-[var(--bg-bg-overlay-l2)] text-[var(--text-text-default)] border border-[var(--border-border-neutral-l1)] hover:bg-[var(--bg-bg-overlay-l3)] transition-all font-mono text-xs uppercase tracking-wider font-bold"
           >
             Dashboard
           </Link>
@@ -668,24 +687,29 @@ export default function PlaygroundPage() {
 
       <main className="max-w-5xl mx-auto px-6 py-12">
         <div className="mb-8">
-          <h1 className="text-3xl font-semibold text-[var(--text-text-default)] mb-2">Playground</h1>
-          <p className="text-[var(--text-text-secondary)]">Test your chatbot with text or voice</p>
+          <h1 className="text-3xl font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-tight">Playground</h1>
+          <p className="text-[var(--text-text-secondary)] font-mono text-sm">Test your chatbot with text or voice</p>
         </div>
 
-        <div className="bg-[var(--bg-bg-overlay-l1)] rounded-xl border border-[var(--border-border-neutral-l1)] p-6 mb-6">
-          <label className="block text-sm font-medium text-[var(--text-text-default)] mb-2">API Key</label>
+        <div className="bg-[var(--bg-bg-overlay-l1)] border border-[var(--border-border-neutral-l1)] p-6 mb-6 relative">
+          <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--bg-bg-brand)]"></div>
+          <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[var(--bg-bg-brand)]"></div>
+          <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[var(--bg-bg-brand)]"></div>
+          <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--bg-bg-brand)]"></div>
+
+          <label className="block text-xs font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-wider font-mono">API Key</label>
           <div className="flex space-x-2">
             <input
               type="text"
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
-              placeholder="Enter your API key"
-              className="flex-1 px-4 py-2 bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)] rounded-lg text-[var(--text-text-default)] font-mono text-sm focus:outline-none focus:border-[var(--bg-bg-brand)]"
+              placeholder="ENTER YOUR API KEY"
+              className="flex-1 px-4 py-3 bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] font-mono text-xs focus:outline-none focus:border-[var(--bg-bg-brand)] placeholder:text-[var(--text-text-tertiary)]"
             />
             <button
               onClick={saveApiKey}
               disabled={!apiKey.trim()}
-              className="flex items-center space-x-2 px-4 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] disabled:opacity-50 transition-all"
+              className="flex items-center space-x-2 px-6 py-3 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] hover:bg-[var(--bg-bg-brand-hover)] disabled:opacity-50 transition-all font-bold uppercase tracking-wider font-mono text-xs"
             >
               <Save className="h-4 w-4" />
               <span>Save</span>
@@ -693,40 +717,43 @@ export default function PlaygroundPage() {
           </div>
         </div>
 
-        <div className="flex space-x-2 mb-6">
+        <div className="flex space-x-px mb-8 border border-[var(--border-border-neutral-l1)] bg-[var(--border-border-neutral-l1)]">
           <button
             onClick={() => setActiveTab("text")}
-            className={`flex items-center space-x-2 px-6 py-3 rounded-lg transition-all ${
-              activeTab === "text"
-                ? "bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)]"
-                : "bg-[var(--bg-bg-overlay-l1)] text-[var(--text-text-secondary)] hover:bg-[var(--bg-bg-overlay-l2)]"
-            }`}
+            className={`flex-1 flex items-center justify-center space-x-2 px-6 py-4 transition-all font-bold uppercase tracking-wider font-mono text-xs ${activeTab === "text"
+              ? "bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)]"
+              : "bg-[var(--bg-bg-base-secondary)] text-[var(--text-text-secondary)] hover:bg-[var(--bg-bg-overlay-l1)]"
+              }`}
           >
-            <MessageSquare className="h-5 w-5" />
+            <MessageSquare className="h-4 w-4" />
             <span>Text Chat</span>
           </button>
           <button
             onClick={() => setActiveTab("voice")}
-            className={`flex items-center space-x-2 px-6 py-3 rounded-lg transition-all ${
-              activeTab === "voice"
-                ? "bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)]"
-                : "bg-[var(--bg-bg-overlay-l1)] text-[var(--text-text-secondary)] hover:bg-[var(--bg-bg-overlay-l2)]"
-            }`}
+            className={`flex-1 flex items-center justify-center space-x-2 px-6 py-4 transition-all font-bold uppercase tracking-wider font-mono text-xs ${activeTab === "voice"
+              ? "bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)]"
+              : "bg-[var(--bg-bg-base-secondary)] text-[var(--text-text-secondary)] hover:bg-[var(--bg-bg-overlay-l1)]"
+              }`}
           >
-            <Volume2 className="h-5 w-5" />
+            <Volume2 className="h-4 w-4" />
             <span>Voice Chat</span>
           </button>
         </div>
 
         {activeTab === "text" ? (
-          <div className="bg-[var(--bg-bg-overlay-l1)] rounded-xl border border-[var(--border-border-neutral-l1)] p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-[var(--text-text-default)]">Text Chat</h2>
+          <div className="bg-[var(--bg-bg-overlay-l1)] border border-[var(--border-border-neutral-l1)] p-6 relative min-h-[600px] flex flex-col">
+            <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--bg-bg-brand)]"></div>
+            <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[var(--bg-bg-brand)]"></div>
+            <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[var(--bg-bg-brand)]"></div>
+            <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--bg-bg-brand)]"></div>
+
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-lg font-bold text-[var(--text-text-default)] uppercase tracking-wider">Text Chat</h2>
               <div className="flex space-x-2">
                 {!supportRequested && messages.length > 0 && (
                   <button
                     onClick={requestSupport}
-                    className="flex items-center space-x-2 px-3 py-1.5 bg-blue-500 hover:bg-blue-600 rounded-lg text-sm text-white transition-all"
+                    className="flex items-center space-x-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-xs text-white transition-all font-mono uppercase tracking-wide font-bold"
                   >
                     <MessageSquare className="h-3 w-3" />
                     <span>Talk to Human</span>
@@ -734,7 +761,7 @@ export default function PlaygroundPage() {
                 )}
                 <button
                   onClick={clearMessages}
-                  className="flex items-center space-x-2 px-3 py-1.5 bg-[var(--bg-bg-overlay-l2)] hover:bg-[var(--bg-bg-overlay-l3)] rounded-lg text-sm text-[var(--text-text-secondary)] transition-all"
+                  className="flex items-center space-x-2 px-4 py-2 bg-[var(--bg-bg-overlay-l2)] hover:bg-[var(--bg-bg-overlay-l3)] border border-[var(--border-border-neutral-l1)] text-xs text-[var(--text-text-secondary)] transition-all font-mono uppercase tracking-wide font-bold"
                 >
                   <RefreshCw className="h-3 w-3" />
                   <span>Clear</span>
@@ -742,120 +769,119 @@ export default function PlaygroundPage() {
               </div>
             </div>
 
-            <div className="bg-[var(--bg-bg-base-secondary)] rounded-lg p-4 mb-4 h-96 overflow-y-auto">
+            <div className="bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)] p-6 mb-6 flex-1 overflow-y-auto">
               {messages.length === 0 ? (
-                <div className="flex items-center justify-center h-full text-[var(--text-text-tertiary)]">
+                <div className="flex items-center justify-center h-full text-[var(--text-text-tertiary)] font-mono text-sm uppercase tracking-wide">
                   <p>No messages yet. Start chatting!</p>
                 </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {messages.filter(msg => msg.content.trim() !== '' || msg.role === 'user').map((msg, idx) => (
                     <div
                       key={idx}
-                      className={`p-3 rounded-lg ${
-                        msg.role === "user"
-                          ? "bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] ml-12"
-                          : msg.role === "assistant"
-                          ? "bg-[var(--bg-bg-overlay-l2)] text-[var(--text-text-default)] mr-12"
-                          : "bg-[var(--bg-bg-overlay-l1)] text-[var(--text-text-secondary)]"
-                      }`}
+                      className={`p-4 border ${msg.role === "user"
+                        ? "bg-[var(--bg-bg-brand)]/10 border-[var(--bg-bg-brand)] text-[var(--text-text-default)] ml-12"
+                        : msg.role === "assistant"
+                          ? "bg-[var(--bg-bg-overlay-l2)] border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] mr-12"
+                          : "bg-[var(--bg-bg-overlay-l1)] border-[var(--border-border-neutral-l1)] text-[var(--text-text-secondary)]"
+                        }`}
                     >
-                      <div className="text-xs font-medium mb-1 opacity-70">{msg.role}</div>
+                      <div className="text-[10px] font-bold mb-2 opacity-70 uppercase tracking-widest font-mono">{msg.role}</div>
                       {msg.content.trim() === '' && msg.role === 'user' ? (
                         <div className="flex items-center space-x-1">
-                          <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                          <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                          <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                          <div className="w-1.5 h-1.5 bg-[var(--bg-bg-brand)] animate-pulse" style={{ animationDelay: '0ms' }}></div>
+                          <div className="w-1.5 h-1.5 bg-[var(--bg-bg-brand)] animate-pulse" style={{ animationDelay: '150ms' }}></div>
+                          <div className="w-1.5 h-1.5 bg-[var(--bg-bg-brand)] animate-pulse" style={{ animationDelay: '300ms' }}></div>
                         </div>
                       ) : (
-                        <div className={`text-sm max-w-none ${msg.role === "assistant" ? "prose prose-invert" : ""}`}>
-                        {msg.role === "assistant" ? (
-                          <ReactMarkdown
-                            remarkPlugins={[remarkGfm]}
-                            components={{
-                              code({ node, inline, className, children, ...props }: any) {
-                                const match = /language-(\w+)/.exec(className || "");
-                                return !inline && match ? (
-                                  <SyntaxHighlighter
-                                    style={vscDarkPlus}
-                                    language={match[1]}
-                                    PreTag="div"
-                                    className="rounded-lg my-2"
-                                    {...props}
-                                  >
-                                    {String(children).replace(/\n$/, "")}
-                                  </SyntaxHighlighter>
-                                ) : (
-                                  <code className="bg-[var(--bg-bg-base-secondary)] px-1.5 py-0.5 rounded text-xs font-mono" {...props}>
-                                    {children}
-                                  </code>
-                                );
-                              },
-                              a({ node, children, href, ...props }: any) {
-                                return (
-                                  <a
-                                    href={href}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-[var(--bg-bg-brand)] hover:underline hover:text-[var(--bg-bg-brand-hover)] transition-colors"
-                                    {...props}
-                                  >
-                                    {children}
-                                  </a>
-                                );
-                              },
-                              p({ node, children, ...props }: any) {
-                                return <p className="my-2 leading-relaxed" {...props}>{children}</p>;
-                              },
-                              ul({ node, children, ...props }: any) {
-                                return <ul className="my-2 ml-4 list-disc space-y-1" {...props}>{children}</ul>;
-                              },
-                              ol({ node, children, ...props }: any) {
-                                return <ol className="my-2 ml-4 list-decimal space-y-1" {...props}>{children}</ol>;
-                              },
-                              li({ node, children, ...props }: any) {
-                                return <li className="leading-relaxed" {...props}>{children}</li>;
-                              },
-                              h1({ node, children, ...props }: any) {
-                                return <h1 className="text-xl font-semibold mt-4 mb-2" {...props}>{children}</h1>;
-                              },
-                              h2({ node, children, ...props }: any) {
-                                return <h2 className="text-lg font-semibold mt-3 mb-2" {...props}>{children}</h2>;
-                              },
-                              h3({ node, children, ...props }: any) {
-                                return <h3 className="text-base font-semibold mt-2 mb-1" {...props}>{children}</h3>;
-                              },
-                              blockquote({ node, children, ...props }: any) {
-                                return (
-                                  <blockquote 
-                                    className="border-l-3 border-[var(--bg-bg-brand)] pl-4 italic my-3 text-[var(--text-text-secondary)]" 
-                                    {...props}
-                                  >
-                                    {children}
-                                  </blockquote>
-                                );
-                              },
-                              strong({ node, children, ...props }: any) {
-                                return <strong className="font-semibold text-[var(--text-text-default)]" {...props}>{children}</strong>;
-                              },
-                            }}
-                          >
-                            {msg.content}
-                          </ReactMarkdown>
-                        ) : (
-                          <p className="leading-relaxed whitespace-pre-wrap break-words">{msg.content}</p>
-                        )}
+                        <div className={`text-sm font-mono ${msg.role === "assistant" ? "prose prose-invert max-w-none prose-p:font-mono prose-pre:bg-black/50 prose-pre:border prose-pre:border-[var(--border-border-neutral-l1)]" : ""}`}>
+                          {msg.role === "assistant" ? (
+                            <ReactMarkdown
+                              remarkPlugins={[remarkGfm]}
+                              components={{
+                                code({ node, inline, className, children, ...props }: any) {
+                                  const match = /language-(\w+)/.exec(className || "");
+                                  return !inline && match ? (
+                                    <SyntaxHighlighter
+                                      style={vscDarkPlus}
+                                      language={match[1]}
+                                      PreTag="div"
+                                      className="border border-[var(--border-border-neutral-l1)] my-2 !bg-black/50"
+                                      {...props}
+                                    >
+                                      {String(children).replace(/\n$/, "")}
+                                    </SyntaxHighlighter>
+                                  ) : (
+                                    <code className="bg-[var(--bg-bg-base-secondary)] px-1.5 py-0.5 text-xs font-mono border border-[var(--border-border-neutral-l1)]" {...props}>
+                                      {children}
+                                    </code>
+                                  );
+                                },
+                                a({ node, children, href, ...props }: any) {
+                                  return (
+                                    <a
+                                      href={href}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-[var(--bg-bg-brand)] hover:underline hover:text-[var(--bg-bg-brand-hover)] transition-colors"
+                                      {...props}
+                                    >
+                                      {children}
+                                    </a>
+                                  );
+                                },
+                                p({ node, children, ...props }: any) {
+                                  return <p className="my-2 leading-relaxed" {...props}>{children}</p>;
+                                },
+                                ul({ node, children, ...props }: any) {
+                                  return <ul className="my-2 ml-4 list-disc space-y-1 marker:text-[var(--bg-bg-brand)]" {...props}>{children}</ul>;
+                                },
+                                ol({ node, children, ...props }: any) {
+                                  return <ol className="my-2 ml-4 list-decimal space-y-1 marker:text-[var(--bg-bg-brand)]" {...props}>{children}</ol>;
+                                },
+                                li({ node, children, ...props }: any) {
+                                  return <li className="leading-relaxed" {...props}>{children}</li>;
+                                },
+                                h1({ node, children, ...props }: any) {
+                                  return <h1 className="text-lg font-bold mt-4 mb-2 uppercase tracking-wide" {...props}>{children}</h1>;
+                                },
+                                h2({ node, children, ...props }: any) {
+                                  return <h2 className="text-base font-bold mt-3 mb-2 uppercase tracking-wide" {...props}>{children}</h2>;
+                                },
+                                h3({ node, children, ...props }: any) {
+                                  return <h3 className="text-sm font-bold mt-2 mb-1 uppercase tracking-wide" {...props}>{children}</h3>;
+                                },
+                                blockquote({ node, children, ...props }: any) {
+                                  return (
+                                    <blockquote
+                                      className="border-l-2 border-[var(--bg-bg-brand)] pl-4 italic my-3 text-[var(--text-text-secondary)]"
+                                      {...props}
+                                    >
+                                      {children}
+                                    </blockquote>
+                                  );
+                                },
+                                strong({ node, children, ...props }: any) {
+                                  return <strong className="font-bold text-[var(--text-text-default)]" {...props}>{children}</strong>;
+                                },
+                              }}
+                            >
+                              {msg.content}
+                            </ReactMarkdown>
+                          ) : (
+                            <p className="leading-relaxed whitespace-pre-wrap break-words">{msg.content}</p>
+                          )}
                         </div>
                       )}
                     </div>
                   ))}
                   {loading && messages.length > 0 && messages[messages.length - 1].role !== 'assistant' && (
-                    <div className="p-3 rounded-lg bg-[var(--bg-bg-overlay-l2)] text-[var(--text-text-default)] mr-12">
-                      <div className="text-xs font-medium mb-1 opacity-70">assistant</div>
+                    <div className="p-4 border border-[var(--border-border-neutral-l1)] bg-[var(--bg-bg-overlay-l2)] text-[var(--text-text-default)] mr-12">
+                      <div className="text-[10px] font-bold mb-2 opacity-70 uppercase tracking-widest font-mono">assistant</div>
                       <div className="flex items-center space-x-1">
-                        <div className="w-2 h-2 bg-[var(--text-text-tertiary)] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                        <div className="w-2 h-2 bg-[var(--text-text-tertiary)] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                        <div className="w-2 h-2 bg-[var(--text-text-tertiary)] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                        <div className="w-1.5 h-1.5 bg-[var(--text-text-tertiary)] animate-pulse" style={{ animationDelay: '0ms' }}></div>
+                        <div className="w-1.5 h-1.5 bg-[var(--text-text-tertiary)] animate-pulse" style={{ animationDelay: '150ms' }}></div>
+                        <div className="w-1.5 h-1.5 bg-[var(--text-text-tertiary)] animate-pulse" style={{ animationDelay: '300ms' }}></div>
                       </div>
                     </div>
                   )}
@@ -870,28 +896,23 @@ export default function PlaygroundPage() {
                 value={message + (interimTranscript ? ' ' + interimTranscript : '')}
                 onChange={(e) => setMessage(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && !loading && sendTextMessage()}
-                placeholder="Type your message or use voice..."
-                className="flex-1 px-4 py-3 bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)] rounded-lg text-[var(--text-text-default)] focus:outline-none focus:border-[var(--bg-bg-brand)]"
+                placeholder="TYPE YOUR MESSAGE OR USE VOICE..."
+                className="flex-1 px-4 py-3 bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] font-mono text-xs focus:outline-none focus:border-[var(--bg-bg-brand)] placeholder:text-[var(--text-text-tertiary)]"
                 disabled={isListening}
               />
               <button
                 onClick={() => (isListening ? stopRealtimeTranscription() : startRealtimeTranscription())}
-                className={`relative px-4 py-3 rounded-lg transition-all flex items-center justify-center ${
-                  isListening 
-                    ? volumeLevel === 'low'
-                      ? "bg-yellow-500 hover:bg-yellow-600 text-white"
-                      : "bg-red-500 hover:bg-red-600 text-white"
-                    : "bg-[var(--bg-bg-overlay-l2)] hover:bg-[var(--bg-bg-overlay-l3)] text-[var(--text-text-default)]"
-                }`}
+                className={`relative px-4 py-3 transition-all flex items-center justify-center border ${isListening
+                  ? volumeLevel === 'low'
+                    ? "bg-yellow-500/10 border-yellow-500 text-yellow-500 hover:bg-yellow-500/20"
+                    : "bg-red-500/10 border-red-500 text-red-500 hover:bg-red-500/20"
+                  : "bg-[var(--bg-bg-overlay-l2)] border-[var(--border-border-neutral-l1)] hover:bg-[var(--bg-bg-overlay-l3)] text-[var(--text-text-default)]"
+                  }`}
               >
                 {isListening && (
-                  <span className="absolute inset-0 rounded-lg">
-                    <span className={`absolute inset-0 rounded-lg ${
-                      volumeLevel === 'low' ? 'bg-yellow-400' : 'bg-red-400'
-                    } opacity-75 animate-ping`}></span>
-                    <span className={`absolute inset-0 rounded-lg ${
-                      volumeLevel === 'low' ? 'bg-yellow-400' : 'bg-red-400'
-                    } opacity-50`} style={{animation: 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite'}}></span>
+                  <span className="absolute inset-0">
+                    <span className={`absolute inset-0 ${volumeLevel === 'low' ? 'bg-yellow-400' : 'bg-red-400'
+                      } opacity-20 animate-ping`}></span>
                   </span>
                 )}
                 <span className="relative z-10">
@@ -902,40 +923,45 @@ export default function PlaygroundPage() {
                 id="send-button"
                 onClick={() => sendTextMessage()}
                 disabled={loading || !message.trim()}
-                className="px-6 py-3 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] disabled:opacity-50 transition-all flex items-center space-x-2"
+                className="px-6 py-3 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] hover:bg-[var(--bg-bg-brand-hover)] disabled:opacity-50 transition-all flex items-center space-x-2 font-bold uppercase tracking-wider font-mono text-xs"
               >
-                {loading ? <Loader className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
-                <span>{loading ? "Sending..." : "Send"}</span>
+                {loading ? <Loader className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                <span>{loading ? "SENDING..." : "SEND"}</span>
               </button>
             </div>
           </div>
         ) : (
-          <div className="bg-[var(--bg-bg-overlay-l1)] rounded-xl border border-[var(--border-border-neutral-l1)] p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-[var(--text-text-default)]">Voice Chat</h2>
+          <div className="bg-[var(--bg-bg-overlay-l1)] border border-[var(--border-border-neutral-l1)] p-6 relative min-h-[600px] flex flex-col">
+            <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--bg-bg-brand)]"></div>
+            <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[var(--bg-bg-brand)]"></div>
+            <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[var(--bg-bg-brand)]"></div>
+            <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--bg-bg-brand)]"></div>
+
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-lg font-bold text-[var(--text-text-default)] uppercase tracking-wider">Voice Chat</h2>
               <button
                 onClick={clearMessages}
-                className="flex items-center space-x-2 px-3 py-1.5 bg-[var(--bg-bg-overlay-l2)] hover:bg-[var(--bg-bg-overlay-l3)] rounded-lg text-sm text-[var(--text-text-secondary)] transition-all"
+                className="flex items-center space-x-2 px-4 py-2 bg-[var(--bg-bg-overlay-l2)] hover:bg-[var(--bg-bg-overlay-l3)] border border-[var(--border-border-neutral-l1)] text-xs text-[var(--text-text-secondary)] transition-all font-mono uppercase tracking-wide font-bold"
               >
                 <RefreshCw className="h-3 w-3" />
                 <span>Clear</span>
               </button>
             </div>
 
-            <div className="bg-[var(--bg-bg-base-secondary)] rounded-lg p-4 mb-4 h-96 overflow-y-auto">
+            <div className="bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)] p-6 mb-6 flex-1 overflow-y-auto">
               {/* Assistant responses with spacing between paragraphs */}
               {assistantMessages.length > 0 && (
                 <div className="space-y-6 mb-6">
                   {assistantMessages.map((content, idx) => (
                     <div key={idx}>
                       {idx > 0 && (
-                        <div className="border-t-2 border-[var(--border-border-neutral-l1)] mb-6"></div>
+                        <div className="border-t border-[var(--border-border-neutral-l1)] mb-6"></div>
                       )}
-                      <div className="space-y-2 bg-[var(--bg-bg-overlay-l1)] p-4 rounded-lg">
-                        <div className="text-xs font-medium text-[var(--text-text-secondary)]">
+                      <div className="space-y-2 bg-[var(--bg-bg-overlay-l1)] border border-[var(--border-border-neutral-l1)] p-4">
+                        <div className="text-[10px] font-bold text-[var(--text-text-secondary)] uppercase tracking-widest font-mono">
                           assistant • Response {idx + 1}
                         </div>
-                        <div className="text-sm text-[var(--text-text-default)] whitespace-pre-wrap">
+                        <div className="text-sm text-[var(--text-text-default)] whitespace-pre-wrap font-mono">
                           {content}
                         </div>
                       </div>
@@ -943,41 +969,41 @@ export default function PlaygroundPage() {
                   ))}
                 </div>
               )}
-              
+
               {/* Typing indicator */}
               {isAssistantTyping && (
                 <div className="space-y-2 mb-6">
-                  <div className="text-xs font-medium text-[var(--text-text-secondary)]">
+                  <div className="text-[10px] font-bold text-[var(--text-text-secondary)] uppercase tracking-widest font-mono">
                     assistant
                   </div>
                   <div className="flex items-center space-x-1">
-                    <div className="w-2 h-2 bg-[var(--text-text-secondary)] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                    <div className="w-2 h-2 bg-[var(--text-text-secondary)] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                    <div className="w-2 h-2 bg-[var(--text-text-secondary)] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                    <div className="w-1.5 h-1.5 bg-[var(--text-text-secondary)] animate-pulse" style={{ animationDelay: '0ms' }}></div>
+                    <div className="w-1.5 h-1.5 bg-[var(--text-text-secondary)] animate-pulse" style={{ animationDelay: '150ms' }}></div>
+                    <div className="w-1.5 h-1.5 bg-[var(--text-text-secondary)] animate-pulse" style={{ animationDelay: '300ms' }}></div>
                   </div>
                 </div>
               )}
-              
+
               {/* Empty state */}
               {!currentUserInput && assistantMessages.length === 0 && !isAssistantTyping && (
                 <div className="flex flex-col items-center justify-center h-full text-center">
-                  <p className="text-lg font-medium text-[var(--text-text-default)] mb-2">
+                  <p className="text-lg font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-wide">
                     {isRecording ? "Listening..." : "Click microphone below to start"}
                   </p>
-                  <p className="text-sm text-[var(--text-text-tertiary)]">
+                  <p className="text-xs text-[var(--text-text-tertiary)] font-mono uppercase tracking-wider">
                     Real-time speech recognition
                   </p>
                 </div>
               )}
-              
+
               <div ref={voiceMessagesEndRef} />
             </div>
 
             {/* User text - floating display */}
             {currentUserInput && (
               <div className="mb-4 flex justify-center">
-                <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl px-4 py-3 shadow-lg max-w-md">
-                  <p className="text-sm text-[var(--text-text-default)] whitespace-pre-wrap leading-relaxed">
+                <div className="bg-black/80 backdrop-blur-sm border border-[var(--bg-bg-brand)] px-6 py-4 shadow-lg max-w-md">
+                  <p className="text-sm text-[var(--text-text-default)] whitespace-pre-wrap leading-relaxed font-mono">
                     {currentUserInput}
                   </p>
                 </div>
@@ -987,33 +1013,30 @@ export default function PlaygroundPage() {
             <div className="flex justify-center">{/* Mic button */}
               <button
                 onClick={isRecording ? stopVoiceChat : startVoiceChat}
-                className={`relative w-20 h-20 rounded-full flex items-center justify-center transition-all shadow-lg ${
-                  isRecording
-                    ? volumeLevel === 'low'
-                      ? "bg-yellow-500 hover:bg-yellow-600"
-                      : "bg-red-500 hover:bg-red-600"
-                    : "bg-[var(--bg-bg-brand)] hover:bg-[var(--bg-bg-brand-hover)]"
-                }`}
+                className={`relative w-20 h-20 flex items-center justify-center transition-all shadow-lg border ${isRecording
+                  ? volumeLevel === 'low'
+                    ? "bg-yellow-500/10 border-yellow-500 text-yellow-500 hover:bg-yellow-500/20"
+                    : "bg-red-500/10 border-red-500 text-red-500 hover:bg-red-500/20"
+                  : "bg-[var(--bg-bg-brand)]/10 border-[var(--bg-bg-brand)] text-[var(--bg-bg-brand)] hover:bg-[var(--bg-bg-brand)]/20"
+                  }`}
               >
                 {isRecording && (
-                  <span className="absolute inset-0 rounded-full">
-                    <span className={`absolute inset-0 rounded-full ${
-                      volumeLevel === 'low' ? 'bg-yellow-400' : 'bg-red-400'
-                    } opacity-75 animate-ping`}></span>
-                    <span className={`absolute inset-0 rounded-full ${
-                      volumeLevel === 'low' ? 'bg-yellow-400' : 'bg-red-400'
-                    } opacity-50`} style={{animation: 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite'}}></span>
+                  <span className="absolute inset-0">
+                    <span className={`absolute inset-0 ${volumeLevel === 'low' ? 'bg-yellow-400' : 'bg-red-400'
+                      } opacity-20 animate-ping`}></span>
+                    <span className={`absolute inset-0 ${volumeLevel === 'low' ? 'bg-yellow-400' : 'bg-red-400'
+                      } opacity-10`} style={{ animation: 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}></span>
                   </span>
                 )}
                 <span className="relative z-10">
-                  <Mic className="h-10 w-10 text-[var(--text-text-onbrand)]" />
+                  <Mic className="h-8 w-8" />
                 </span>
               </button>
             </div>
 
-            <div className="mt-4 p-4 bg-[var(--bg-bg-base-secondary)] rounded-lg">
-              <div className="flex items-center justify-center space-x-2 text-xs text-[var(--text-text-tertiary)]">
-                <div className={`w-2 h-2 rounded-full ${isRecording ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
+            <div className="mt-6 p-4 bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)]">
+              <div className="flex items-center justify-center space-x-3 text-xs text-[var(--text-text-tertiary)] font-mono uppercase tracking-wider">
+                <div className={`w-1.5 h-1.5 ${isRecording ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
                 <p className="text-center">
                   {isRecording ? (shouldPauseMicRef.current ? 'AI speaking' : 'Listening') : 'Click mic to start'}
                 </p>

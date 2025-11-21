@@ -59,11 +59,11 @@ export default function DomainsPage() {
     if (selectedChatbot) {
       fetchDomains(selectedChatbot);
       fetchSupportTeam(selectedChatbot);
-      
+
       const interval = setInterval(() => {
         fetchDomainsForPolling(selectedChatbot);
       }, 5000);
-      
+
       return () => clearInterval(interval);
     }
   }, [selectedChatbot]);
@@ -206,11 +206,11 @@ export default function DomainsPage() {
     return (
       <div className="p-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-semibold text-[var(--text-text-default)] mb-2">Domains</h1>
-          <p className="text-[var(--text-text-secondary)]">Loading domains...</p>
+          <h1 className="text-3xl font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-tight">Domains</h1>
+          <p className="text-[var(--text-text-secondary)] font-mono text-sm">Loading domains...</p>
         </div>
         <div className="animate-pulse">
-          <div className="bg-[var(--bg-bg-overlay-l1)] rounded-xl border border-[var(--border-border-neutral-l1)] p-6 h-40"></div>
+          <div className="bg-[var(--bg-bg-overlay-l1)] border border-[var(--border-border-neutral-l1)] p-6 h-40"></div>
         </div>
       </div>
     );
@@ -219,25 +219,30 @@ export default function DomainsPage() {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-semibold text-[var(--text-text-default)] mb-2">Domains</h1>
-        <p className="text-[var(--text-text-secondary)]">Manage scraped domains for your chatbots</p>
+        <h1 className="text-3xl font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-tight">Domains</h1>
+        <p className="text-[var(--text-text-secondary)] font-mono text-sm">Manage scraped domains for your chatbots</p>
       </div>
 
       {chatbots.length === 0 ? (
-        <div className="bg-[var(--bg-bg-overlay-l1)] rounded-xl border border-[var(--border-border-neutral-l1)] p-12 text-center">
+        <div className="bg-[var(--bg-bg-overlay-l1)] border border-[var(--border-border-neutral-l1)] p-12 text-center">
           <Globe className="h-12 w-12 text-[var(--text-text-tertiary)] mx-auto mb-4" />
-          <p className="text-[var(--text-text-secondary)] mb-4">Create a chatbot first to add domains</p>
+          <p className="text-[var(--text-text-secondary)] mb-4 font-mono text-sm uppercase tracking-wide">Create a chatbot first to add domains</p>
         </div>
       ) : (
         <>
-          <div className="bg-[var(--bg-bg-overlay-l1)] rounded-xl border border-[var(--border-border-neutral-l1)] p-6 mb-6">
+          <div className="bg-[var(--bg-bg-overlay-l1)] border border-[var(--border-border-neutral-l1)] p-6 mb-6 relative">
+            <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--bg-bg-brand)]"></div>
+            <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[var(--bg-bg-brand)]"></div>
+            <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[var(--bg-bg-brand)]"></div>
+            <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--bg-bg-brand)]"></div>
+
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-[var(--text-text-default)]">Select Chatbot</h2>
+              <h2 className="text-lg font-bold text-[var(--text-text-default)] uppercase tracking-wider">Select Chatbot</h2>
               <div className="flex space-x-2">
                 <button
                   onClick={() => setShowSupportTeam(!showSupportTeam)}
                   disabled={!selectedChatbot}
-                  className="flex items-center space-x-2 px-4 py-2 bg-[var(--bg-bg-overlay-l2)] text-[var(--text-text-default)] rounded-lg hover:bg-[var(--bg-bg-overlay-l3)] disabled:opacity-50 transition-all"
+                  className="flex items-center space-x-2 px-4 py-2 bg-[var(--bg-bg-overlay-l2)] text-[var(--text-text-default)] border border-[var(--border-border-neutral-l1)] hover:bg-[var(--bg-bg-overlay-l3)] disabled:opacity-50 transition-all font-bold uppercase tracking-wider font-mono text-xs"
                 >
                   <Users className="h-4 w-4" />
                   <span>Support Team ({supportMembers.length})</span>
@@ -245,7 +250,7 @@ export default function DomainsPage() {
                 <button
                   onClick={() => setShowAddDomain(true)}
                   disabled={!selectedChatbot}
-                  className="flex items-center space-x-2 px-4 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] disabled:opacity-50 transition-all"
+                  className="flex items-center space-x-2 px-4 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] hover:bg-[var(--bg-bg-brand-hover)] disabled:opacity-50 transition-all font-bold uppercase tracking-wider font-mono text-xs"
                 >
                   <Plus className="h-4 w-4" />
                   <span>Add Domain</span>
@@ -257,11 +262,10 @@ export default function DomainsPage() {
                 <button
                   key={chatbot.id}
                   onClick={() => setSelectedChatbot(chatbot.id)}
-                  className={`px-4 py-2 rounded-lg transition-all ${
-                    selectedChatbot === chatbot.id
-                      ? "bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)]"
-                      : "bg-[var(--bg-bg-overlay-l2)] text-[var(--text-text-secondary)] hover:bg-[var(--bg-bg-overlay-l3)]"
-                  }`}
+                  className={`px-4 py-2 transition-all font-mono text-xs uppercase tracking-wider font-bold border ${selectedChatbot === chatbot.id
+                    ? "bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] border-[var(--bg-bg-brand)]"
+                    : "bg-[var(--bg-bg-overlay-l2)] text-[var(--text-text-secondary)] border-[var(--border-border-neutral-l1)] hover:bg-[var(--bg-bg-overlay-l3)]"
+                    }`}
                 >
                   {chatbot.name}
                 </button>
@@ -270,14 +274,19 @@ export default function DomainsPage() {
           </div>
 
           {showSupportTeam && selectedChatbot && (
-            <div className="bg-[var(--bg-bg-overlay-l1)] rounded-xl border border-[var(--border-border-neutral-l1)] p-6 mb-6">
+            <div className="bg-[var(--bg-bg-overlay-l1)] border border-[var(--border-border-neutral-l1)] p-6 mb-6 relative">
+              <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--bg-bg-brand)]"></div>
+              <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[var(--bg-bg-brand)]"></div>
+              <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[var(--bg-bg-brand)]"></div>
+              <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--bg-bg-brand)]"></div>
+
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-[var(--text-text-default)]">
+                <h2 className="text-lg font-bold text-[var(--text-text-default)] uppercase tracking-wider">
                   Support Team
                 </h2>
                 <button
                   onClick={() => setShowInviteSupport(true)}
-                  className="flex items-center space-x-2 px-4 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all"
+                  className="flex items-center space-x-2 px-4 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] hover:bg-[var(--bg-bg-brand-hover)] transition-all font-bold uppercase tracking-wider font-mono text-xs"
                 >
                   <Plus className="h-4 w-4" />
                   <span>Invite Member</span>
@@ -287,7 +296,7 @@ export default function DomainsPage() {
               {supportMembers.length === 0 ? (
                 <div className="text-center py-8">
                   <Users className="h-12 w-12 text-[var(--text-text-tertiary)] mx-auto mb-3" />
-                  <p className="text-[var(--text-text-secondary)]">
+                  <p className="text-[var(--text-text-secondary)] font-mono text-sm uppercase tracking-wide">
                     No support team members yet
                   </p>
                 </div>
@@ -296,19 +305,19 @@ export default function DomainsPage() {
                   {supportMembers.map((member) => (
                     <div
                       key={member.id}
-                      className="flex items-center justify-between p-4 bg-[var(--bg-bg-base-secondary)] rounded-lg"
+                      className="flex items-center justify-between p-4 bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)]"
                     >
                       <div>
-                        <p className="font-medium text-[var(--text-text-default)]">
+                        <p className="font-bold text-[var(--text-text-default)] text-sm uppercase tracking-wide font-mono">
                           {member.name}
                         </p>
-                        <p className="text-sm text-[var(--text-text-secondary)]">
+                        <p className="text-xs text-[var(--text-text-secondary)] font-mono">
                           {member.email}
                         </p>
                       </div>
                       <button
                         onClick={() => removeSupportMember(member.id)}
-                        className="p-2 text-red-500 hover:bg-red-500/10 rounded transition-all"
+                        className="p-2 text-red-500 hover:bg-red-500/10 transition-all"
                         title="Remove Member"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -320,25 +329,25 @@ export default function DomainsPage() {
             </div>
           )}
 
-          <div className="bg-[var(--bg-bg-overlay-l1)] rounded-xl border border-[var(--border-border-neutral-l1)] overflow-hidden">
+          <div className="bg-[var(--bg-bg-overlay-l1)] border border-[var(--border-border-neutral-l1)] overflow-hidden">
             <div className="p-6 border-b border-[var(--border-border-neutral-l1)]">
-              <h2 className="text-lg font-semibold text-[var(--text-text-default)]">Domain List</h2>
+              <h2 className="text-lg font-bold text-[var(--text-text-default)] uppercase tracking-wider">Domain List</h2>
             </div>
             {domains.length === 0 ? (
               <div className="p-12 text-center">
                 <Globe className="h-12 w-12 text-[var(--text-text-tertiary)] mx-auto mb-4" />
-                <p className="text-[var(--text-text-secondary)]">No domains added yet</p>
+                <p className="text-[var(--text-text-secondary)] font-mono text-sm uppercase tracking-wide">No domains added yet</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead className="bg-[var(--bg-bg-base-secondary)]">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-text-secondary)] uppercase tracking-wider">Domain</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-text-secondary)] uppercase tracking-wider">Status</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-text-secondary)] uppercase tracking-wider">Pages</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-text-secondary)] uppercase tracking-wider">Last Scraped</th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-[var(--text-text-secondary)] uppercase tracking-wider">Actions</th>
+                      <th className="px-6 py-3 text-left text-[10px] font-bold text-[var(--text-text-secondary)] uppercase tracking-widest font-mono">Domain</th>
+                      <th className="px-6 py-3 text-left text-[10px] font-bold text-[var(--text-text-secondary)] uppercase tracking-widest font-mono">Status</th>
+                      <th className="px-6 py-3 text-left text-[10px] font-bold text-[var(--text-text-secondary)] uppercase tracking-widest font-mono">Pages</th>
+                      <th className="px-6 py-3 text-left text-[10px] font-bold text-[var(--text-text-secondary)] uppercase tracking-widest font-mono">Last Scraped</th>
+                      <th className="px-6 py-3 text-right text-[10px] font-bold text-[var(--text-text-secondary)] uppercase tracking-widest font-mono">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[var(--border-border-neutral-l1)]">
@@ -349,33 +358,33 @@ export default function DomainsPage() {
                             href={domain.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center space-x-2 text-[var(--text-text-default)] hover:text-[var(--bg-bg-brand)]"
+                            className="flex items-center space-x-2 text-[var(--text-text-default)] hover:text-[var(--bg-bg-brand)] font-mono text-xs"
                           >
                             <span>{domain.url}</span>
                             <ExternalLink className="h-3 w-3" />
                           </a>
                         </td>
                         <td className="px-6 py-4">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(domain.status)}`}>
+                          <span className={`inline-flex items-center px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide font-mono border ${getStatusColor(domain.status).replace('bg-', 'border-').replace('/10', '/20')} ${getStatusColor(domain.status)}`}>
                             {domain.status === "scraping" && <Loader className="h-3 w-3 mr-1 animate-spin" />}
                             {domain.status}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-[var(--text-text-default)]">{domain.pages_scraped}</td>
-                        <td className="px-6 py-4 text-[var(--text-text-secondary)] text-sm">
-                          {domain.last_scraped_at ? new Date(domain.last_scraped_at).toLocaleString() : 'Never'}
+                        <td className="px-6 py-4 text-[var(--text-text-default)] font-mono text-xs">{domain.pages_scraped}</td>
+                        <td className="px-6 py-4 text-[var(--text-text-secondary)] text-xs font-mono">
+                          {domain.last_scraped_at ? new Date(domain.last_scraped_at).toLocaleString() : 'NEVER'}
                         </td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex items-center justify-end gap-2">
                             <Link href={`/dashboard/pages?domain=${domain.id}&url=${encodeURIComponent(domain.url)}`}>
-                              <button className="px-3 py-1 text-sm bg-[var(--bg-bg-overlay-l2)] hover:bg-[var(--bg-bg-overlay-l3)] rounded text-[var(--text-text-secondary)] transition-all">
+                              <button className="px-3 py-1 text-[10px] bg-[var(--bg-bg-overlay-l2)] hover:bg-[var(--bg-bg-overlay-l3)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-secondary)] transition-all font-bold uppercase tracking-wider font-mono">
                                 View Pages
                               </button>
                             </Link>
                             <button
                               onClick={() => setDomainToDelete({ id: domain.id, url: domain.url })}
                               disabled={deletingDomain === domain.id}
-                              className="p-2 text-red-500 hover:bg-red-500/10 rounded transition-all disabled:opacity-50"
+                              className="p-2 text-red-500 hover:bg-red-500/10 transition-all disabled:opacity-50"
                               title="Delete Domain"
                             >
                               {deletingDomain === domain.id ? (

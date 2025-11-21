@@ -128,88 +128,114 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-8">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold text-[var(--text-text-default)]">Overview</h1>
+    <div className="w-full p-6 lg:p-8">
+      <div className="mb-8 flex items-center justify-between border-b border-[var(--border-border-neutral-l1)] pb-6">
+        <div>
+          <h1 className="text-3xl font-bold text-[var(--text-text-default)] mb-1 uppercase tracking-tight">Command Center</h1>
+          <p className="text-[var(--text-text-secondary)] font-mono text-sm">// SYSTEM OVERVIEW</p>
+        </div>
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 text-xs font-mono text-[var(--bg-bg-brand)] bg-[var(--bg-bg-brand)]/10 px-3 py-1 border border-[var(--bg-bg-brand)]/20">
+            <div className="w-1.5 h-1.5 bg-[var(--bg-bg-brand)] animate-pulse"></div>
+            <span>SYSTEM ONLINE</span>
+          </div>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          <div className="bg-[var(--bg-bg-overlay-l1)] rounded-lg p-6">
-            <div className="flex items-center justify-between mb-5">
-              <h2 className="text-base font-medium text-[var(--text-text-default)]">System Status</h2>
-              <span className="text-xs text-[var(--text-text-secondary)]">All systems operational</span>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-8">
+          {/* Quick Stats */}
+          <div className="border border-[var(--border-border-neutral-l1)] bg-black/40 backdrop-blur-sm p-8 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--bg-bg-brand)]"></div>
+            <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[var(--bg-bg-brand)]"></div>
+            <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[var(--bg-bg-brand)]"></div>
+            <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--bg-bg-brand)]"></div>
+
+            <h2 className="text-lg font-bold text-[var(--text-text-default)] mb-6 flex items-center uppercase tracking-wider">
+              <TrendingUp className="w-5 h-5 mr-3 text-[var(--bg-bg-brand)]" />
+              Telemetry
+            </h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-px bg-[var(--border-border-neutral-l1)] border border-[var(--border-border-neutral-l1)]">
+              <div className="p-4 bg-[var(--bg-bg-base-default)] hover:bg-[var(--bg-bg-overlay-l1)] transition-colors group">
+                <div className="text-3xl font-bold text-[var(--text-text-default)] mb-1 font-mono group-hover:text-[var(--bg-bg-brand)] transition-colors">{stats.totalChatbots}</div>
+                <div className="text-[10px] font-mono text-[var(--text-text-tertiary)] uppercase tracking-widest">Chatbots</div>
+              </div>
+              <div className="p-4 bg-[var(--bg-bg-base-default)] hover:bg-[var(--bg-bg-overlay-l1)] transition-colors group">
+                <div className="text-3xl font-bold text-[var(--text-text-default)] mb-1 font-mono group-hover:text-[var(--bg-bg-brand)] transition-colors">{stats.totalDomains}</div>
+                <div className="text-[10px] font-mono text-[var(--text-text-tertiary)] uppercase tracking-widest">Domains</div>
+              </div>
+              <div className="p-4 bg-[var(--bg-bg-base-default)] hover:bg-[var(--bg-bg-overlay-l1)] transition-colors group">
+                <div className="text-3xl font-bold text-[var(--text-text-default)] mb-1 font-mono group-hover:text-[var(--bg-bg-brand)] transition-colors">{stats.totalPages.toLocaleString()}</div>
+                <div className="text-[10px] font-mono text-[var(--text-text-tertiary)] uppercase tracking-widest">Pages</div>
+              </div>
+              <div className="p-4 bg-[var(--bg-bg-base-default)] hover:bg-[var(--bg-bg-overlay-l1)] transition-colors group">
+                <div className="text-3xl font-bold text-[var(--bg-bg-brand)] mb-1 font-mono">{stats.totalCustomers.toLocaleString()}</div>
+                <div className="text-[10px] font-mono text-[var(--text-text-tertiary)] uppercase tracking-widest">Customers</div>
+              </div>
+              <div className="p-4 bg-[var(--bg-bg-base-default)] hover:bg-[var(--bg-bg-overlay-l1)] transition-colors group">
+                <div className="text-3xl font-bold text-[var(--text-text-default)] mb-1 font-mono group-hover:text-[var(--bg-bg-brand)] transition-colors">{stats.totalConversations.toLocaleString()}</div>
+                <div className="text-[10px] font-mono text-[var(--text-text-tertiary)] uppercase tracking-widest">Chats</div>
+              </div>
             </div>
-            <div className="space-y-3">
+          </div>
+
+          {/* System Status */}
+          <div className="border border-[var(--border-border-neutral-l1)] bg-black/40 backdrop-blur-sm p-8">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-lg font-bold text-[var(--text-text-default)] flex items-center uppercase tracking-wider">
+                <Server className="w-5 h-5 mr-3 text-[var(--bg-bg-brand)]" />
+                System Status
+              </h2>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
               {[
-                { name: "API Server", icon: Server, status: "Running", color: "green" },
-                { name: "Vector Search", icon: Database, status: "Healthy", color: "green" },
-                { name: "AI Model", icon: Cpu, status: "Ready", color: "green" },
-                { name: "Data Storage", icon: Database, status: "Connected", color: "green" }
+                { name: "API Server", icon: Server, status: "Running", color: "green", latency: "45ms" },
+                { name: "Vector Search", icon: Database, status: "Healthy", color: "green", latency: "12ms" },
+                { name: "AI Model", icon: Cpu, status: "Ready", color: "green", latency: "Idle" },
+                { name: "Data Storage", icon: Database, status: "Connected", color: "green", latency: "Stable" }
               ].map((service) => (
-                <div key={service.name} className="flex items-center justify-between py-2">
+                <div key={service.name} className="flex items-center justify-between p-4 border border-[var(--border-border-neutral-l1)] bg-[var(--bg-bg-base-default)] hover:border-[var(--bg-bg-brand)]/50 transition-colors">
                   <div className="flex items-center gap-3">
-                    <service.icon className="w-4 h-4 text-[var(--text-text-secondary)]" strokeWidth={2} />
-                    <span className="text-sm text-[var(--text-text-default)]">{service.name}</span>
+                    <div className="p-2 bg-[var(--bg-bg-overlay-l1)] border border-[var(--border-border-neutral-l1)]">
+                      <service.icon className="w-4 h-4 text-[var(--text-text-secondary)]" strokeWidth={2} />
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-[var(--text-text-default)] uppercase tracking-wide">{service.name}</div>
+                      <div className="text-[10px] font-mono text-[var(--text-text-tertiary)]">LATENCY: {service.latency}</div>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-green-400 rounded-full" />
-                    <span className="text-xs text-[var(--text-text-secondary)]">{service.status}</span>
+                  <div className="flex items-center gap-2 px-2 py-1 bg-green-500/10 border border-green-500/20">
+                    <div className="w-1.5 h-1.5 bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.5)]" />
+                    <span className="text-[10px] font-mono font-bold text-green-400 uppercase">{service.status}</span>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="bg-[var(--bg-bg-overlay-l1)] rounded-lg p-6">
-            <h2 className="text-base font-medium text-[var(--text-text-default)] mb-5">Quick Stats</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
-              <div>
-                <div className="text-2xl font-semibold text-[var(--text-text-default)] mb-1">{stats.totalChatbots}</div>
-                <div className="text-xs text-[var(--text-text-secondary)]">Chatbots</div>
-              </div>
-              <div>
-                <div className="text-2xl font-semibold text-[var(--text-text-default)] mb-1">{stats.totalDomains}</div>
-                <div className="text-xs text-[var(--text-text-secondary)]">Domains</div>
-              </div>
-              <div>
-                <div className="text-2xl font-semibold text-[var(--text-text-default)] mb-1">{stats.totalPages.toLocaleString()}</div>
-                <div className="text-xs text-[var(--text-text-secondary)]">Pages</div>
-              </div>
-              <div>
-                <div className="text-2xl font-semibold text-[var(--bg-bg-brand)] mb-1">{stats.totalCustomers.toLocaleString()}</div>
-                <div className="text-xs text-[var(--text-text-secondary)]">Unique Customers</div>
-              </div>
-              <div>
-                <div className="text-2xl font-semibold text-[var(--text-text-default)] mb-1">{stats.totalConversations.toLocaleString()}</div>
-                <div className="text-xs text-[var(--text-text-secondary)]">Conversations</div>
-              </div>
-            </div>
-          </div>
-
           {chatbotStats.length > 0 && (
-            <div className="bg-[var(--bg-bg-overlay-l1)] rounded-lg p-6">
-              <div className="flex items-center space-x-2 mb-5">
+            <div className="border border-[var(--border-border-neutral-l1)] bg-black/40 backdrop-blur-sm p-8">
+              <div className="flex items-center space-x-3 mb-6">
                 <Users className="h-5 w-5 text-[var(--bg-bg-brand)]" />
-                <h2 className="text-base font-medium text-[var(--text-text-default)]">Chatbot Statistics</h2>
+                <h2 className="text-lg font-bold text-[var(--text-text-default)] uppercase tracking-wider">Active Agents</h2>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-[var(--bg-bg-base-secondary)]">
-                    <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-[var(--text-text-secondary)] uppercase">Chatbot</th>
-                      <th className="px-4 py-3 text-right text-xs font-medium text-[var(--text-text-secondary)] uppercase">Customers</th>
-                      <th className="px-4 py-3 text-right text-xs font-medium text-[var(--text-text-secondary)] uppercase">Conversations</th>
-                      <th className="px-4 py-3 text-right text-xs font-medium text-[var(--text-text-secondary)] uppercase">Messages</th>
+                  <thead>
+                    <tr className="border-b border-[var(--border-border-neutral-l1)]">
+                      <th className="px-4 py-3 text-left text-[10px] font-mono font-bold text-[var(--text-text-tertiary)] uppercase tracking-widest">Agent ID</th>
+                      <th className="px-4 py-3 text-right text-[10px] font-mono font-bold text-[var(--text-text-tertiary)] uppercase tracking-widest">Users</th>
+                      <th className="px-4 py-3 text-right text-[10px] font-mono font-bold text-[var(--text-text-tertiary)] uppercase tracking-widest">Sessions</th>
+                      <th className="px-4 py-3 text-right text-[10px] font-mono font-bold text-[var(--text-text-tertiary)] uppercase tracking-widest">Msgs</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[var(--border-border-neutral-l1)]">
                     {chatbotStats.map((stat) => (
-                      <tr key={stat.chatbot_id} className="hover:bg-[var(--bg-bg-base-secondary)] transition-colors">
-                        <td className="px-4 py-3 text-sm text-[var(--text-text-default)] font-medium">{stat.chatbot_name}</td>
-                        <td className="px-4 py-3 text-sm text-[var(--bg-bg-brand)] font-semibold text-right">{stat.unique_customers.toLocaleString()}</td>
-                        <td className="px-4 py-3 text-sm text-[var(--text-text-default)] text-right">{stat.total_conversations.toLocaleString()}</td>
-                        <td className="px-4 py-3 text-sm text-[var(--text-text-secondary)] text-right">{stat.total_messages.toLocaleString()}</td>
+                      <tr key={stat.chatbot_id} className="group hover:bg-[var(--bg-bg-overlay-l1)] transition-colors">
+                        <td className="px-4 py-4 text-sm text-[var(--text-text-default)] font-mono font-medium group-hover:text-[var(--bg-bg-brand)] transition-colors">{stat.chatbot_name}</td>
+                        <td className="px-4 py-4 text-sm text-[var(--text-text-default)] font-mono text-right">{stat.unique_customers.toLocaleString()}</td>
+                        <td className="px-4 py-4 text-sm text-[var(--text-text-default)] font-mono text-right">{stat.total_conversations.toLocaleString()}</td>
+                        <td className="px-4 py-4 text-sm text-[var(--text-text-secondary)] font-mono text-right">{stat.total_messages.toLocaleString()}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -219,38 +245,40 @@ export default function Dashboard() {
           )}
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-8">
           {subscription && (
-            <div className={`bg-[var(--bg-bg-overlay-l1)] rounded-lg p-6 border ${subscription.plan_tier === 'free' ? 'border-[var(--bg-bg-brand)]' : 'border-[var(--border-border-neutral-l1)]'}`}>
-              <div className="flex items-center justify-between mb-4">
+            <div className={`border border-[var(--border-border-neutral-l1)] bg-black/40 backdrop-blur-sm p-8 relative overflow-hidden ${subscription.plan_tier === 'free' ? 'border-[var(--bg-bg-brand)]' : ''}`}>
+              {subscription.plan_tier === 'free' && (
+                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-[var(--bg-bg-brand)]/10 to-transparent"></div>
+              )}
+
+              <div className="flex items-center justify-between mb-8 relative z-10">
                 <div className="flex items-center space-x-2">
-                  <CreditCard className="h-5 w-5 text-[var(--text-text-secondary)]" />
-                  <h2 className="text-base font-medium text-[var(--text-text-default)]">Subscription</h2>
+                  <CreditCard className="h-5 w-5 text-[var(--bg-bg-brand)]" />
+                  <h2 className="text-lg font-bold text-[var(--text-text-default)] uppercase tracking-wider">Subscription</h2>
                 </div>
-                <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${
-                  subscription.plan_tier === 'free' 
-                    ? 'bg-gray-500/10 text-gray-500'
-                    : 'bg-[var(--bg-bg-brand)]/10 text-[var(--bg-bg-brand)]'
-                }`}>
-                  {subscription.plan_tier}
+                <span className={`px-3 py-1 text-[10px] font-mono font-bold uppercase tracking-widest border ${subscription.plan_tier === 'free'
+                    ? 'bg-[var(--bg-bg-overlay-l2)] text-[var(--text-text-secondary)] border-[var(--border-border-neutral-l1)]'
+                    : 'bg-[var(--bg-bg-brand)]/10 text-[var(--bg-bg-brand)] border-[var(--bg-bg-brand)]/20'
+                  }`}>
+                  {subscription.plan_tier} TIER
                 </span>
               </div>
-              
-              <div className="mb-4">
+
+              <div className="mb-8 relative z-10">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-[var(--text-text-secondary)]">Chatbots Used</span>
-                  <span className="text-sm font-semibold text-[var(--text-text-default)]">
-                    {subscription.chatbot_count}/{subscription.chatbot_limit === -1 ? '∞' : subscription.chatbot_limit}
+                  <span className="text-xs font-mono text-[var(--text-text-secondary)] uppercase tracking-wider">Usage</span>
+                  <span className="text-sm font-mono text-[var(--text-text-default)]">
+                    {subscription.chatbot_count} <span className="text-[var(--text-text-tertiary)]">/</span> {subscription.chatbot_limit === -1 ? '∞' : subscription.chatbot_limit}
                   </span>
                 </div>
                 {subscription.chatbot_limit !== -1 && (
-                  <div className="w-full bg-[var(--bg-bg-base-secondary)] rounded-full h-2">
+                  <div className="w-full bg-[var(--bg-bg-base-secondary)] h-1 overflow-hidden">
                     <div
-                      className={`h-2 rounded-full transition-all ${
-                        (subscription.chatbot_count / subscription.chatbot_limit) >= 0.9 
-                          ? 'bg-yellow-500' 
+                      className={`h-full transition-all duration-1000 ease-out ${(subscription.chatbot_count / subscription.chatbot_limit) >= 0.9
+                          ? 'bg-yellow-500'
                           : 'bg-[var(--bg-bg-brand)]'
-                      }`}
+                        }`}
                       style={{
                         width: `${Math.min((subscription.chatbot_count / subscription.chatbot_limit) * 100, 100)}%`
                       }}
@@ -261,52 +289,58 @@ export default function Dashboard() {
 
               {subscription.plan_tier === 'free' && (
                 <Link href="/dashboard/billing">
-                  <button className="w-full px-4 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all font-medium flex items-center justify-center space-x-2">
-                    <span>Upgrade Plan</span>
+                  <button className="w-full px-4 py-3 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] hover:bg-[var(--bg-bg-brand-hover)] transition-all font-bold font-mono text-sm uppercase tracking-wider flex items-center justify-center space-x-2 shadow-[0_0_20px_rgba(50,240,140,0.2)] hover:shadow-[0_0_30px_rgba(50,240,140,0.3)]">
+                    <span>Upgrade System</span>
                     <ArrowRight className="h-4 w-4" />
                   </button>
                 </Link>
               )}
-              
+
               {subscription.plan_tier !== 'free' && (
                 <Link href="/dashboard/billing">
-                  <button className="w-full px-4 py-2 bg-[var(--bg-bg-overlay-l2)] text-[var(--text-text-default)] rounded-lg hover:bg-[var(--bg-bg-overlay-l3)] transition-all text-sm">
-                    Manage Subscription
+                  <button className="w-full px-4 py-3 bg-transparent border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] hover:bg-[var(--bg-bg-overlay-l1)] transition-all font-mono text-sm uppercase tracking-wider">
+                    Manage Access
                   </button>
                 </Link>
               )}
             </div>
           )}
-          
-          <div className="bg-[var(--bg-bg-overlay-l1)] rounded-lg p-6">
-            <h2 className="text-base font-medium text-[var(--text-text-default)] mb-4">Getting Started</h2>
+
+          <div className="border border-[var(--border-border-neutral-l1)] bg-black/40 backdrop-blur-sm p-8">
+            <h2 className="text-lg font-bold text-[var(--text-text-default)] mb-6 uppercase tracking-wider">Quick Actions</h2>
             <div className="space-y-4">
-              <div>
-                <div className="text-sm text-[var(--text-text-default)] mb-1">1. Create a chatbot</div>
-                <p className="text-xs text-[var(--text-text-secondary)]">Start by creating your first AI chatbot</p>
+              <div className="relative pl-6 border-l border-[var(--border-border-neutral-l1)]">
+                <div className="absolute -left-[1px] top-0 w-2 h-2 bg-[var(--bg-bg-brand)] shadow-[0_0_10px_rgba(50,240,140,0.5)]"></div>
+                <div className="text-sm font-bold text-[var(--text-text-default)] mb-1 uppercase tracking-wide">1. Create Agent</div>
+                <p className="text-xs text-[var(--text-text-secondary)] font-mono">Initialize new AI instance</p>
               </div>
-              <div>
-                <div className="text-sm text-[var(--text-text-default)] mb-1">2. Add domains</div>
-                <p className="text-xs text-[var(--text-text-secondary)]">Import content from your website</p>
+              <div className="relative pl-6 border-l border-[var(--border-border-neutral-l1)]">
+                <div className="absolute -left-[1px] top-0 w-2 h-2 border border-[var(--text-text-tertiary)] bg-[var(--bg-bg-base-default)]"></div>
+                <div className="text-sm font-bold text-[var(--text-text-default)] mb-1 uppercase tracking-wide">2. Ingest Data</div>
+                <p className="text-xs text-[var(--text-text-secondary)] font-mono">Upload knowledge base</p>
               </div>
-              <div>
-                <div className="text-sm text-[var(--text-text-default)] mb-1">3. Train & Deploy</div>
-                <p className="text-xs text-[var(--text-text-secondary)]">Let AI learn and start answering</p>
+              <div className="relative pl-6 border-l border-[var(--border-border-neutral-l1)]">
+                <div className="absolute -left-[1px] top-0 w-2 h-2 border border-[var(--text-text-tertiary)] bg-[var(--bg-bg-base-default)]"></div>
+                <div className="text-sm font-bold text-[var(--text-text-default)] mb-1 uppercase tracking-wide">3. Deploy</div>
+                <p className="text-xs text-[var(--text-text-secondary)] font-mono">Launch to production</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-[var(--bg-bg-overlay-l1)] rounded-lg p-6">
-            <h2 className="text-base font-medium text-[var(--text-text-default)] mb-4">Resources</h2>
-            <div className="space-y-3">
-              <a href="/docs" className="block text-sm text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors">
-                Documentation →
+          <div className="border border-[var(--border-border-neutral-l1)] bg-black/40 backdrop-blur-sm p-8">
+            <h2 className="text-lg font-bold text-[var(--text-text-default)] mb-4 uppercase tracking-wider">Docs & API</h2>
+            <div className="space-y-2">
+              <a href="/docs" className="group flex items-center justify-between p-3 border border-transparent hover:border-[var(--bg-bg-brand)] hover:bg-[var(--bg-bg-brand)]/5 transition-all">
+                <span className="text-sm font-mono text-[var(--text-text-secondary)] group-hover:text-[var(--bg-bg-brand)] transition-colors uppercase tracking-wide">Documentation</span>
+                <ArrowRight className="w-4 h-4 text-[var(--text-text-tertiary)] group-hover:text-[var(--bg-bg-brand)] transition-colors" />
               </a>
-              <a href="/playground" className="block text-sm text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors">
-                Playground →
+              <a href="/playground" className="group flex items-center justify-between p-3 border border-transparent hover:border-[var(--bg-bg-brand)] hover:bg-[var(--bg-bg-brand)]/5 transition-all">
+                <span className="text-sm font-mono text-[var(--text-text-secondary)] group-hover:text-[var(--bg-bg-brand)] transition-colors uppercase tracking-wide">Playground</span>
+                <ArrowRight className="w-4 h-4 text-[var(--text-text-tertiary)] group-hover:text-[var(--bg-bg-brand)] transition-colors" />
               </a>
-              <a href="/dashboard/tokens" className="block text-sm text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors">
-                API Tokens →
+              <a href="/dashboard/tokens" className="group flex items-center justify-between p-3 border border-transparent hover:border-[var(--bg-bg-brand)] hover:bg-[var(--bg-bg-brand)]/5 transition-all">
+                <span className="text-sm font-mono text-[var(--text-text-secondary)] group-hover:text-[var(--bg-bg-brand)] transition-colors uppercase tracking-wide">API Tokens</span>
+                <ArrowRight className="w-4 h-4 text-[var(--text-text-tertiary)] group-hover:text-[var(--bg-bg-brand)] transition-colors" />
               </a>
             </div>
           </div>

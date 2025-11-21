@@ -98,28 +98,28 @@ function ScrapedPagesContent() {
           </div>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
             <div className="flex items-center gap-1 bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)] rounded-lg p-1">
-            <button
-              onClick={() => setViewMode("table")}
-              className={`p-2 rounded transition-colors ${viewMode === "table" ? "bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)]" : "text-[var(--text-text-secondary)] hover:bg-[var(--bg-bg-overlay-l1)]"}`}
-              title="Table View"
-            >
-              <Table className="h-4 w-4" />
-            </button>
-            <button
-              onClick={() => setViewMode("grid")}
-              className={`p-2 rounded transition-colors ${viewMode === "grid" ? "bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)]" : "text-[var(--text-text-secondary)] hover:bg-[var(--bg-bg-overlay-l1)]"}`}
-              title="Grid View"
-            >
-              <LayoutGrid className="h-4 w-4" />
-            </button>
-            <button
-              onClick={() => setViewMode("list")}
-              className={`p-2 rounded transition-colors ${viewMode === "list" ? "bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)]" : "text-[var(--text-text-secondary)] hover:bg-[var(--bg-bg-overlay-l1)]"}`}
-              title="List View"
-            >
-              <List className="h-4 w-4" />
-            </button>
-          </div>
+              <button
+                onClick={() => setViewMode("table")}
+                className={`p-2 rounded transition-colors ${viewMode === "table" ? "bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)]" : "text-[var(--text-text-secondary)] hover:bg-[var(--bg-bg-overlay-l1)]"}`}
+                title="Table View"
+              >
+                <Table className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => setViewMode("grid")}
+                className={`p-2 rounded transition-colors ${viewMode === "grid" ? "bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)]" : "text-[var(--text-text-secondary)] hover:bg-[var(--bg-bg-overlay-l1)]"}`}
+                title="Grid View"
+              >
+                <LayoutGrid className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => setViewMode("list")}
+                className={`p-2 rounded transition-colors ${viewMode === "list" ? "bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)]" : "text-[var(--text-text-secondary)] hover:bg-[var(--bg-bg-overlay-l1)]"}`}
+                title="List View"
+              >
+                <List className="h-4 w-4" />
+              </button>
+            </div>
             {domainId && (
               <button
                 onClick={() => setShowUploadModal(true)}
@@ -147,15 +147,15 @@ function ScrapedPagesContent() {
                   <tr>
                     <th className="px-4 py-3 text-left text-xs font-medium text-[var(--text-text-secondary)] uppercase">Title</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-[var(--text-text-secondary)] uppercase">URL</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-[var(--text-text-secondary)] uppercase">Tags</th>
+
                     <th className="px-4 py-3 text-left text-xs font-medium text-[var(--text-text-secondary)] uppercase">Words</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-[var(--text-text-secondary)] uppercase">Preview</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[var(--border-border-neutral-l1)]">
                   {filteredPages.map((page) => (
-                    <tr 
-                      key={page.id} 
+                    <tr
+                      key={page.id}
                       onClick={() => setSelectedPage(page)}
                       className="hover:bg-[var(--bg-bg-base-secondary)] transition-colors cursor-pointer"
                     >
@@ -173,20 +173,7 @@ function ScrapedPagesContent() {
                           <ExternalLink className="h-3 w-3 flex-shrink-0" />
                         </a>
                       </td>
-                      <td className="px-4 py-3">
-                        {page.tags && page.tags.length > 0 ? (
-                          <div className="flex items-center gap-1">
-                            <span className="inline-block px-2 py-0.5 bg-[var(--bg-bg-brand)]/10 text-[var(--bg-bg-brand)] text-xs rounded-full">
-                              {page.tags[0]}
-                            </span>
-                            {page.tags.length > 1 && (
-                              <span className="text-xs text-[var(--text-text-tertiary)]">+{page.tags.length - 1}</span>
-                            )}
-                          </div>
-                        ) : (
-                          <span className="text-xs text-[var(--text-text-tertiary)]">—</span>
-                        )}
-                      </td>
+
                       <td className="px-4 py-3 text-sm text-[var(--text-text-secondary)] whitespace-nowrap">
                         {page.word_count.toLocaleString()}
                       </td>

@@ -86,7 +86,7 @@ export default function TokensPage() {
 
   const createChatbot = async () => {
     if (!newChatbotName.trim()) return;
-    
+
     if (subscription) {
       const canCreate = subscription.chatbot_limit === -1 || subscription.chatbot_count < subscription.chatbot_limit;
       if (!canCreate) {
@@ -94,7 +94,7 @@ export default function TokensPage() {
         return;
       }
     }
-    
+
     setCreating(true);
     setError("");
     try {
@@ -107,7 +107,7 @@ export default function TokensPage() {
         },
         body: JSON.stringify({ name: newChatbotName }),
       });
-      
+
       if (response.status === 403) {
         setShowUpgrade(true);
       } else if (response.ok) {
@@ -133,7 +133,7 @@ export default function TokensPage() {
 
   const deleteChatbot = async () => {
     if (!chatbotToDelete) return;
-    
+
     setDeleting(true);
     try {
       const token = localStorage.getItem("token");
@@ -141,7 +141,7 @@ export default function TokensPage() {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
-      
+
       if (response.ok) {
         setChatbotToDelete(null);
         await fetchData();
@@ -157,11 +157,11 @@ export default function TokensPage() {
     return (
       <div className="p-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-semibold text-[var(--text-text-default)] mb-2">API Tokens</h1>
-          <p className="text-[var(--text-text-secondary)]">Loading tokens...</p>
+          <h1 className="text-3xl font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-tight">API Tokens</h1>
+          <p className="text-[var(--text-text-secondary)] font-mono text-sm">Loading tokens...</p>
         </div>
         <div className="animate-pulse">
-          <div className="bg-[var(--bg-bg-overlay-l1)] rounded-xl border border-[var(--border-border-neutral-l1)] p-6 h-40"></div>
+          <div className="bg-[var(--bg-bg-overlay-l1)] border border-[var(--border-border-neutral-l1)] p-6 h-40"></div>
         </div>
       </div>
     );
@@ -170,24 +170,29 @@ export default function TokensPage() {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-semibold text-[var(--text-text-default)] mb-2">API Tokens</h1>
-        <p className="text-[var(--text-text-secondary)]">Create and manage your chatbot API keys</p>
+        <h1 className="text-3xl font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-tight">API Tokens</h1>
+        <p className="text-[var(--text-text-secondary)] font-mono text-sm">Create and manage your chatbot API keys</p>
       </div>
 
       {subscription && (
-        <div className="bg-[var(--bg-bg-overlay-l1)] rounded-xl border border-[var(--border-border-neutral-l1)] p-4 mb-6">
+        <div className="bg-[var(--bg-bg-overlay-l1)] border border-[var(--border-border-neutral-l1)] p-4 mb-6 relative">
+          <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--bg-bg-brand)]"></div>
+          <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[var(--bg-bg-brand)]"></div>
+          <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[var(--bg-bg-brand)]"></div>
+          <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--bg-bg-brand)]"></div>
+
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-[var(--text-text-secondary)]">Chatbot Usage</p>
-              <p className="text-lg font-semibold text-[var(--text-text-default)]">
+              <p className="text-xs text-[var(--text-text-secondary)] font-mono uppercase tracking-wide">Chatbot Usage</p>
+              <p className="text-lg font-bold text-[var(--text-text-default)] uppercase tracking-wider">
                 {subscription.chatbot_count}/{subscription.chatbot_limit === -1 ? '∞' : subscription.chatbot_limit} chatbots
               </p>
             </div>
             {subscription.chatbot_limit !== -1 && (
               <div className="w-1/2">
-                <div className="w-full bg-[var(--bg-bg-base-secondary)] rounded-full h-2">
+                <div className="w-full bg-[var(--bg-bg-base-secondary)] h-2 border border-[var(--border-border-neutral-l1)]">
                   <div
-                    className="bg-[var(--bg-bg-brand)] h-2 rounded-full transition-all"
+                    className="bg-[var(--bg-bg-brand)] h-full transition-all"
                     style={{
                       width: `${Math.min((subscription.chatbot_count / subscription.chatbot_limit) * 100, 100)}%`
                     }}
@@ -200,26 +205,31 @@ export default function TokensPage() {
       )}
 
       {error && (
-        <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg flex items-center space-x-2">
+        <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 flex items-center space-x-2">
           <AlertCircle className="h-4 w-4 text-red-500" />
-          <p className="text-sm text-red-500">{error}</p>
+          <p className="text-sm text-red-500 font-mono">{error}</p>
         </div>
       )}
 
-      <div className="bg-[var(--bg-bg-overlay-l1)] rounded-xl border border-[var(--border-border-neutral-l1)] p-6 mb-6">
-        <h2 className="text-lg font-semibold text-[var(--text-text-default)] mb-4">Create New Token</h2>
+      <div className="bg-[var(--bg-bg-overlay-l1)] border border-[var(--border-border-neutral-l1)] p-6 mb-6 relative">
+        <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--bg-bg-brand)]"></div>
+        <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[var(--bg-bg-brand)]"></div>
+        <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[var(--bg-bg-brand)]"></div>
+        <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--bg-bg-brand)]"></div>
+
+        <h2 className="text-lg font-bold text-[var(--text-text-default)] mb-4 uppercase tracking-wider">Create New Token</h2>
         <div className="flex space-x-3">
           <input
             type="text"
             value={newChatbotName}
             onChange={(e) => setNewChatbotName(e.target.value)}
-            placeholder="Enter chatbot name"
-            className="flex-1 px-4 py-2 bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)] rounded-lg text-[var(--text-text-default)] focus:outline-none focus:border-[var(--bg-bg-brand)]"
+            placeholder="ENTER CHATBOT NAME"
+            className="flex-1 px-4 py-3 bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] focus:outline-none focus:border-[var(--bg-bg-brand)] font-mono text-xs uppercase tracking-wide placeholder:text-[var(--text-text-tertiary)]"
           />
           <button
             onClick={createChatbot}
             disabled={creating || !newChatbotName.trim()}
-            className="px-6 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] disabled:opacity-50 flex items-center space-x-2"
+            className="px-6 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] hover:bg-[var(--bg-bg-brand-hover)] disabled:opacity-50 flex items-center space-x-2 font-bold uppercase tracking-wider font-mono text-xs transition-all"
           >
             {creating ? <Loader className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
             <span>Create</span>
@@ -227,30 +237,35 @@ export default function TokensPage() {
         </div>
       </div>
 
-      <div className="bg-[var(--bg-bg-overlay-l1)] rounded-xl border border-[var(--border-border-neutral-l1)] p-6">
-        <h2 className="text-lg font-semibold text-[var(--text-text-default)] mb-4">Your Tokens</h2>
+      <div className="bg-[var(--bg-bg-overlay-l1)] border border-[var(--border-border-neutral-l1)] p-6 relative">
+        <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--bg-bg-brand)]"></div>
+        <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[var(--bg-bg-brand)]"></div>
+        <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[var(--bg-bg-brand)]"></div>
+        <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--bg-bg-brand)]"></div>
+
+        <h2 className="text-lg font-bold text-[var(--text-text-default)] mb-4 uppercase tracking-wider">Your Tokens</h2>
         {chatbots.length === 0 ? (
           <div className="text-center py-12">
             <Key className="h-12 w-12 text-[var(--text-text-tertiary)] mx-auto mb-4" />
-            <p className="text-[var(--text-text-secondary)]">No tokens created yet</p>
+            <p className="text-[var(--text-text-secondary)] font-mono text-sm uppercase tracking-wide">No tokens created yet</p>
           </div>
         ) : (
           <div className="space-y-3">
             {chatbots.map((chatbot) => (
-              <div key={chatbot.id} className="p-4 bg-[var(--bg-bg-base-secondary)] rounded-lg border border-[var(--border-border-neutral-l1)]">
+              <div key={chatbot.id} className="p-4 bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)]">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-[var(--text-text-default)] font-semibold">{chatbot.name}</h3>
-                  <span className="text-xs text-[var(--text-text-tertiary)]">
+                  <h3 className="text-[var(--text-text-default)] font-bold uppercase tracking-wide text-sm font-mono">{chatbot.name}</h3>
+                  <span className="text-[10px] text-[var(--text-text-tertiary)] font-mono uppercase tracking-wide">
                     {new Date(chatbot.created_at).toLocaleDateString()}
                   </span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <code className="flex-1 px-3 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] rounded text-sm font-mono text-[var(--text-text-default)] overflow-x-auto">
+                  <code className="flex-1 px-3 py-2 bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] text-xs font-mono text-[var(--text-text-default)] overflow-x-auto">
                     {chatbot.api_key}
                   </code>
                   <button
                     onClick={() => copyApiKey(chatbot.api_key)}
-                    className="p-2 bg-[var(--bg-bg-overlay-l2)] hover:bg-[var(--bg-bg-overlay-l3)] rounded transition-all"
+                    className="p-2 bg-[var(--bg-bg-overlay-l2)] hover:bg-[var(--bg-bg-overlay-l3)] border border-[var(--border-border-neutral-l1)] transition-all"
                   >
                     {copiedKey === chatbot.api_key ? (
                       <Check className="h-4 w-4 text-[var(--bg-bg-brand)]" />
@@ -260,7 +275,7 @@ export default function TokensPage() {
                   </button>
                   <button
                     onClick={() => setChatbotToDelete(chatbot)}
-                    className="p-2 bg-red-500/10 hover:bg-red-500/20 rounded transition-all"
+                    className="p-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 transition-all"
                     title="Delete chatbot"
                   >
                     <Trash2 className="h-4 w-4 text-red-500" />

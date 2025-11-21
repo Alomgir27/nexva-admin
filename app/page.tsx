@@ -2,14 +2,9 @@
 
 import { MessageSquare, BarChart3, Settings, Check, ChevronDown, Copy, User, Loader, Layers, Cpu, Sparkles } from "lucide-react";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { API_ENDPOINTS } from "@/app/config/api";
-
-const ThreeJSBackground = dynamic(() => import('./components/ThreeJSBackground'), { 
-  ssr: false 
-});
 
 export default function Home() {
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'yearly'>('monthly');
@@ -46,11 +41,11 @@ export default function Home() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token} `,
         },
-        body: JSON.stringify({ 
-          plan_tier: planTier, 
-          billing_period: billingPeriod === 'yearly' ? 'annual' : 'monthly' 
+        body: JSON.stringify({
+          plan_tier: planTier,
+          billing_period: billingPeriod === 'yearly' ? 'annual' : 'monthly'
         }),
       });
 
@@ -79,12 +74,12 @@ export default function Home() {
         'Customize colors and position via attributes',
         'No build step required'
       ],
-      code: `<script 
-  src="https://cdn.nexva.ai/widget.js"
-  data-api-key="YOUR_API_KEY"
-  data-position="bottom-right"
-  data-primary-color="#32f08c">
-</script>`
+      code: `< script
+src = "https://cdn.nexva.ai/widget.js"
+data - api - key="YOUR_API_KEY"
+data - position="bottom-right"
+data - primary - color="#32f08c" >
+</script > `
     },
     {
       key: 'react',
@@ -100,7 +95,7 @@ export default function Home() {
 
 export default function App() {
   return (
-    <NexvaChat 
+    <NexvaChat
       config={{
         apiKey: "YOUR_API_KEY",
         position: "bottom-right",
@@ -108,7 +103,7 @@ export default function App() {
       }}
     />
   );
-}`
+} `
     },
     {
       key: 'next',
@@ -137,7 +132,7 @@ export default function RootLayout({ children }) {
       </body>
     </html>
   );
-}`
+} `
     }
   ];
 
@@ -169,74 +164,68 @@ export default function RootLayout({ children }) {
     setCopiedIntegration(key);
     setTimeout(() => setCopiedIntegration(null), 2000);
   };
-  
+
   return (
     <div className="min-h-screen overflow-x-hidden">
       <nav className="border-b border-[var(--border-border-neutral-l1)] sticky top-0 z-50 backdrop-blur-sm bg-[var(--bg-bg-base-default)]/90">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2 sm:space-x-3">
-              <div className="relative">
-                <div className="absolute inset-0 bg-[var(--bg-bg-brand)] opacity-20 blur-xl rounded-full" />
-                <Image
-                  src="/images/img.png"
-                  alt="Nexva Logo"
-                  width={28}
-                  height={28}
-                  className="relative z-10 rounded-lg sm:w-8 sm:h-8"
-                />
-              </div>
-              <span className="text-lg sm:text-xl font-semibold text-[var(--text-text-default)]">Nexva</span>
+        <div className="w-full px-4 sm:px-6 lg:px-12">
+          <div className="flex justify-between items-center h-20">
+            <div className="flex items-center">
+              <Link href="/" className="flex items-center space-x-3">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-[var(--bg-bg-brand)]/20 blur-md"></div>
+                  <Image src="/images/img.png" alt="Nexva" width={32} height={32} className="relative z-10" />
+                </div>
+                <span className="text-xl font-bold tracking-tighter uppercase text-[var(--text-text-default)]">Nexva</span>
+              </Link>
             </div>
-            <div className="hidden md:flex items-center space-x-6">
-              <Link href="#features" className="text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors">
+
+            <div className="hidden md:flex items-center space-x-8">
+              <Link href="#features" className="text-sm font-mono uppercase tracking-wider text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors">
                 Features
               </Link>
-              <Link href="#pricing" className="text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors">
+              <Link href="#pricing" className="text-sm font-mono uppercase tracking-wider text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors">
                 Pricing
               </Link>
-              <Link href="/docs" className="text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors">
-                Docs
-              </Link>
-              <Link href="/playground" className="text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors">
+              <Link href="/playground" className="text-sm font-mono uppercase tracking-wider text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors">
                 Playground
               </Link>
-              
+
               {isAuthenticated ? (
                 <Link
                   href="/dashboard"
-                  className="flex items-center space-x-2 px-5 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all font-medium"
+                  className="flex items-center space-x-2 px-6 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] font-bold uppercase tracking-wider font-mono hover:bg-[var(--bg-bg-brand-hover)] transition-all text-xs"
                 >
                   <User className="h-4 w-4" />
                   <span>Dashboard</span>
                 </Link>
               ) : (
-                <>
-                  <Link href="/login" className="text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors">
+                <div className="flex items-center space-x-0 border border-[var(--border-border-neutral-l1)]">
+                  <Link href="/login" className="px-6 py-2 text-xs font-bold uppercase tracking-wider font-mono text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] hover:bg-[var(--bg-bg-overlay-l1)] transition-colors border-r border-[var(--border-border-neutral-l1)]">
                     Sign in
                   </Link>
                   <Link
                     href="/register"
-                    className="px-5 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all font-medium"
+                    className="px-6 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] font-bold uppercase tracking-wider font-mono hover:bg-[var(--bg-bg-brand-hover)] transition-all text-xs"
                   >
                     Get Started
                   </Link>
-                </>
+                </div>
               )}
             </div>
-            
+
             <div className="flex md:hidden items-center space-x-2">
               {isAuthenticated ? (
                 <Link
                   href="/dashboard"
-                  className="flex items-center px-3 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all font-medium text-sm"
+                  className="flex items-center px-4 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] font-bold uppercase tracking-wider font-mono hover:bg-[var(--bg-bg-brand-hover)] transition-all text-xs"
                 >
                   <User className="h-4 w-4" />
                 </Link>
               ) : (
                 <Link
                   href="/register"
-                  className="px-3 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all font-medium text-sm"
+                  className="px-4 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] font-bold uppercase tracking-wider font-mono hover:bg-[var(--bg-bg-brand-hover)] transition-all text-xs"
                 >
                   Start
                 </Link>
@@ -246,84 +235,78 @@ export default function RootLayout({ children }) {
         </div>
       </nav>
 
-      <main>
-        <section className="relative max-w-7xl mx-auto px-6 lg:px-8 pt-24 pb-20 min-h-screen flex items-center">
-          {/* Top Right Decoration */}
-          <div className="absolute top-20 right-10 w-64 h-64 opacity-10">
-            <div className="absolute inset-0 border-2 border-[var(--bg-bg-brand)] rounded-full animate-ping" style={{ animationDuration: '3s' }} />
-            <div className="absolute inset-4 border-2 border-[var(--bg-bg-brand)] rounded-full" />
-            <div className="absolute inset-8 border border-[var(--bg-bg-brand)] rounded-full" />
+      <main className="w-full">
+        <section className="relative w-full min-h-screen flex items-center tech-grid border-b border-[var(--border-border-neutral-l1)]">
+          {/* Top Right Decoration - Sharp & Technical */}
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] opacity-20 pointer-events-none overflow-hidden">
+            <div className="absolute top-0 right-0 w-full h-px bg-gradient-to-l from-[var(--bg-bg-brand)] to-transparent" />
+            <div className="absolute top-0 right-0 h-full w-px bg-gradient-to-b from-[var(--bg-bg-brand)] to-transparent" />
+            <div className="absolute top-20 right-20 w-32 h-32 border border-[var(--bg-bg-brand)]/30" />
+            <div className="absolute top-10 right-10 w-64 h-64 border border-[var(--bg-bg-brand)]/10" />
           </div>
 
-          {/* Bottom Left Decoration */}
-          <div className="absolute bottom-20 left-10 w-48 h-48 opacity-10">
-            <div className="absolute inset-0 bg-[var(--bg-bg-brand)] rounded-lg rotate-45" />
-            <div className="absolute inset-4 border-2 border-[var(--bg-bg-brand)] rounded-lg rotate-45" />
-          </div>
+          <div className="w-full px-4 sm:px-6 lg:px-12 grid lg:grid-cols-2 gap-16 items-center relative z-10">
+            <div className="space-y-8 pt-20">
+              <div className="inline-flex items-center space-x-2 px-3 py-1 bg-[var(--bg-bg-brand)]/10 border-l-2 border-[var(--bg-bg-brand)] mb-4">
+                <span className="text-sm font-mono text-[var(--bg-bg-brand)] uppercase tracking-widest">v1.0 System Online</span>
+              </div>
 
-          <div className="grid lg:grid-cols-2 gap-16 items-center w-full relative z-10">
-            <div className="space-y-6">
-              <h1 className="text-5xl lg:text-6xl font-semibold text-[var(--text-text-default)] leading-[1.1]">
-                <span className="text-[var(--bg-bg-brand)]">AI Chat</span> for Your <span className="text-[var(--bg-bg-brand)]">Website</span>
+              <h1 className="text-6xl lg:text-8xl font-bold text-[var(--text-text-default)] leading-[0.9] tracking-tighter">
+                AI CHAT <br />
+                <span className="text-gradient-brand">DEPLOYED.</span>
               </h1>
-              <p className="text-xl text-[var(--text-text-secondary)] leading-relaxed">
-                Deploy intelligent AI chatbots in minutes. Powered by self-hosted AI with voice support and advanced RAG technology.
+
+              <p className="text-xl text-[var(--text-text-secondary)] leading-relaxed max-w-lg font-light">
+                Deploy intelligent AI chatbots in minutes. Self-hosted. Voice-enabled. RAG-powered.
               </p>
-              <div className="flex space-x-4 pt-4">
+
+              <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-0 pt-8">
                 <Link
                   href="/dashboard"
-                  className="px-7 py-3 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all font-medium"
+                  className="px-8 py-4 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] hover:bg-[var(--bg-bg-brand-hover)] transition-all font-bold text-lg uppercase tracking-wider border border-[var(--bg-bg-brand)] hover:shadow-[0_0_20px_rgba(50,240,140,0.3)]"
                 >
-                  Get Started Free
+                  Initialize System
                 </Link>
-                <button className="px-7 py-3 bg-[var(--bg-bg-overlay-l2)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] rounded-lg hover:bg-[var(--bg-bg-overlay-l3)] transition-all">
+                <button className="px-8 py-4 bg-transparent border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] hover:bg-[var(--bg-bg-overlay-l1)] hover:border-[var(--text-text-default)] transition-all font-medium text-lg uppercase tracking-wider sm:border-l-0">
                   View Demo
                 </button>
               </div>
-              <div className="flex items-center space-x-10 pt-6">
+
+              <div className="grid grid-cols-3 gap-8 pt-12 border-t border-[var(--border-border-neutral-l1)]">
                 <div>
-                  <div className="text-3xl font-semibold text-[var(--text-text-default)]">1,200+</div>
-                  <div className="text-sm text-[var(--text-text-tertiary)]">Active Chatbots</div>
+                  <div className="text-3xl font-bold text-[var(--text-text-default)] font-mono">1.2K+</div>
+                  <div className="text-xs text-[var(--text-text-tertiary)] uppercase tracking-widest mt-1">Active Bots</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-semibold text-[var(--text-text-default)]">50K+</div>
-                  <div className="text-sm text-[var(--text-text-tertiary)]">Conversations</div>
+                  <div className="text-3xl font-bold text-[var(--text-text-default)] font-mono">50K+</div>
+                  <div className="text-xs text-[var(--text-text-tertiary)] uppercase tracking-widest mt-1">Sessions</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-semibold text-[var(--text-text-default)]">0.8s</div>
-                  <div className="text-sm text-[var(--text-text-tertiary)]">Avg Response</div>
+                  <div className="text-3xl font-bold text-[var(--text-text-default)] font-mono">0.8s</div>
+                  <div className="text-xs text-[var(--text-text-tertiary)] uppercase tracking-widest mt-1">Latency</div>
                 </div>
               </div>
             </div>
-            
-            {/* Right Side - NEXVA Text with Three.js */}
-            <div className="relative flex items-center justify-center min-h-[300px] sm:min-h-[400px]">
-              <div className="absolute inset-0 opacity-30">
-                <ThreeJSBackground />
-              </div>
+
+            {/* Right Side - Technical Visual */}
+            <div className="relative flex items-center justify-center min-h-[500px] border-l border-[var(--border-border-neutral-l1)] bg-[var(--bg-bg-overlay-l1)]/30 backdrop-blur-sm">
+              <div className="absolute inset-0 opacity-40 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
               <div className="relative z-10 text-center">
-                <h2 
-                  className="text-[5rem] sm:text-[8rem] lg:text-[10rem] font-black uppercase leading-none select-none mb-4 sm:mb-8"
+                <h2
+                  className="text-[6rem] sm:text-[10rem] lg:text-[12rem] font-black uppercase leading-none select-none mb-8"
                   style={{
-                    color: 'var(--bg-bg-brand)',
+                    color: 'transparent',
                     WebkitTextStroke: '1px var(--bg-bg-brand)',
-                    textShadow: '0 0 30px rgba(50, 240, 140, 0.4)',
-                    letterSpacing: '0.05em',
+                    letterSpacing: '-0.05em',
                   }}
                 >
                   NEXVA
                 </h2>
 
-                {/* Bottom accent with version */}
-                <div className="flex items-center justify-center space-x-3 sm:space-x-6">
+                <div className="flex items-center justify-center space-x-6 bg-black/80 border border-[var(--border-border-neutral-l1)] py-2 px-8 inline-flex mx-auto backdrop-blur-md">
                   <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-[var(--bg-bg-brand)] rounded-full animate-pulse" />
-                    <span className="text-[10px] sm:text-xs font-mono text-[var(--text-text-tertiary)] tracking-wider">AI POWERED</span>
-                  </div>
-                  <div className="h-4 w-px bg-[var(--border-border-neutral-l1)]" />
-                  <div className="flex items-center space-x-2">
-                    <span className="text-[10px] sm:text-xs font-mono text-[var(--text-text-tertiary)] tracking-wider">v1.0</span>
-                    <div className="w-2 h-2 bg-[var(--bg-bg-brand)] rounded-full animate-pulse" style={{ animationDelay: '0.5s' }} />
+                    <div className="w-1.5 h-1.5 bg-[var(--bg-bg-brand)] animate-pulse" />
+                    <span className="text-xs font-mono text-[var(--bg-bg-brand)] tracking-widest">SYSTEM READY</span>
                   </div>
                 </div>
               </div>
@@ -331,359 +314,321 @@ export default function RootLayout({ children }) {
           </div>
         </section>
 
-        <section className="py-24 bg-[var(--bg-bg-base-secondary)]" id="workflow">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-semibold text-[var(--text-text-default)] mb-4">
-                See the entire workflow in three steps
+        <section className="py-0 bg-black relative border-b border-[var(--border-border-neutral-l1)]" id="workflow">
+          <div className="w-full grid md:grid-cols-4">
+            <div className="md:col-span-1 p-12 border-r border-[var(--border-border-neutral-l1)] flex flex-col justify-center">
+              <h2 className="text-4xl font-bold text-[var(--text-text-default)] mb-4 leading-tight">
+                SYSTEM <br /><span className="text-[var(--bg-bg-brand)]">WORKFLOW</span>
               </h2>
-              <p className="text-lg text-[var(--text-text-secondary)] max-w-3xl mx-auto">
-                No long onboarding calls or complex dev work. Connect your data, let Nexva process it, and go live the same day.
+              <p className="text-sm text-[var(--text-text-secondary)] font-mono mt-4">
+                // AUTOMATED DEPLOYMENT PIPELINE
+                <br />
+                // ZERO CONFIGURATION REQUIRED
               </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
-              {workflowSteps.map((step, index) => {
-                const Icon = step.icon;
-                return (
-                  <div
-                    key={step.title}
-                    className="bg-[var(--bg-bg-base-default)] border border-[var(--border-border-neutral-l1)] rounded-2xl p-6 shadow-lg"
-                  >
-                    <div className="flex items-center justify-between mb-6">
-                      <span className="text-xs font-mono tracking-[0.2em] text-[var(--text-text-tertiary)]">
-                        {step.badge}
-                      </span>
-                      <div className="w-10 h-10 rounded-full bg-[var(--bg-bg-brand)]/10 flex items-center justify-center text-[var(--bg-bg-brand)]">
-                        <Icon className="h-5 w-5" />
-                      </div>
-                    </div>
-                    <h3 className="text-2xl font-semibold text-[var(--text-text-default)] mb-3">
-                      {step.title}
-                    </h3>
-                    <p className="text-[var(--text-text-secondary)] leading-relaxed">
-                      {step.description}
-                    </p>
-                    <div className="mt-6 h-1 w-full bg-[var(--bg-bg-overlay-l2)] rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-[var(--bg-bg-brand)] transition-all"
-                        style={{ width: `${(index + 1) * 33.33}%` }}
-                      ></div>
-                    </div>
+            {workflowSteps.map((step, index) => {
+              const Icon = step.icon;
+              return (
+                <div
+                  key={step.title}
+                  className="group relative p-12 border-r border-[var(--border-border-neutral-l1)] hover:bg-[var(--bg-bg-overlay-l1)] transition-colors duration-300 last:border-r-0"
+                >
+                  <div className="absolute top-6 right-6 text-xs font-mono text-[var(--text-text-tertiary)] opacity-50">
+                    0{index + 1}
                   </div>
-                );
-              })}
-            </div>
+
+                  <div className="mb-8">
+                    <Icon className="h-8 w-8 text-[var(--bg-bg-brand)]" />
+                  </div>
+
+                  <h3 className="text-xl font-bold text-[var(--text-text-default)] mb-4 uppercase tracking-wide">
+                    {step.title}
+                  </h3>
+
+                  <p className="text-[var(--text-text-secondary)] text-sm leading-relaxed mb-8">
+                    {step.description}
+                  </p>
+
+                  <div className="absolute bottom-0 left-0 w-full h-0.5 bg-[var(--bg-bg-brand)] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+                </div>
+              );
+            })}
           </div>
         </section>
 
-        <section id="features" className="py-24">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <div className="text-center mb-20">
-              <h2 className="text-4xl font-semibold text-[var(--text-text-default)] mb-4">
-                Everything you need to get started
+        <section id="features" className="py-24 relative border-b border-[var(--border-border-neutral-l1)]">
+          <div className="w-full px-4 sm:px-6 lg:px-12">
+            <div className="text-left mb-20 border-l-2 border-[var(--bg-bg-brand)] pl-6">
+              <h2 className="text-4xl font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-tight">
+                Core Capabilities
               </h2>
-              <p className="text-lg text-[var(--text-text-secondary)]">
-                Powerful features to enhance your customer engagement
+              <p className="text-lg text-[var(--text-text-secondary)] font-mono">
+                // ADVANCED FEATURE SET
               </p>
             </div>
 
-            <div className="grid lg:grid-cols-3 gap-16">
+            <div className="grid lg:grid-cols-3 border-t border-l border-[var(--border-border-neutral-l1)]">
               {/* Feature 1 */}
-              <div className="group">
-                <div className="flex items-center space-x-4 mb-6">
-                  <div className="w-2 h-16 bg-[var(--bg-bg-brand)] rounded-full"></div>
-                  <div>
-                    <span className="text-xs font-mono text-[var(--text-text-tertiary)] uppercase tracking-wider">Feature 01</span>
-                    <h3 className="text-2xl font-semibold text-[var(--text-text-default)] mt-1">
-                      Real-time Streaming
-                    </h3>
+              <div className="group p-12 border-r border-b border-[var(--border-border-neutral-l1)] hover:bg-[var(--bg-bg-overlay-l1)] transition-colors relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-1 h-0 bg-[var(--bg-bg-brand)] group-hover:h-full transition-all duration-500" />
+
+                <div className="flex items-center space-x-4 mb-8">
+                  <div className="w-12 h-12 bg-[var(--bg-bg-brand)]/10 flex items-center justify-center border border-[var(--bg-bg-brand)]/20">
+                    <MessageSquare className="h-6 w-6 text-[var(--bg-bg-brand)]" />
                   </div>
+                  <span className="text-xs font-mono text-[var(--text-text-tertiary)] uppercase tracking-widest">Module 01</span>
                 </div>
-                
-                <p className="text-[var(--text-text-secondary)] leading-relaxed text-lg mb-6 pl-6">
-                  Instant streaming responses with real-time WebSocket connections. Context-aware AI conversations with advanced RAG architecture for accurate and relevant answers.
+
+                <h3 className="text-2xl font-bold text-[var(--text-text-default)] mb-4 uppercase">
+                  Real-time Streaming
+                </h3>
+
+                <p className="text-[var(--text-text-secondary)] leading-relaxed text-sm mb-8">
+                  Instant streaming responses via WebSocket. Context-aware AI conversations with advanced RAG architecture.
                 </p>
 
-                <div className="pl-6 flex items-center space-x-3">
-                  <MessageSquare className="h-5 w-5 text-[var(--bg-bg-brand)]" />
-                  <span className="text-sm text-[var(--text-text-tertiary)]">Instant responses</span>
+                <div className="flex items-center space-x-2 text-[var(--bg-bg-brand)] text-xs font-mono uppercase tracking-wider">
+                  <span>Status: Active</span>
+                  <div className="w-1.5 h-1.5 bg-[var(--bg-bg-brand)] animate-pulse" />
                 </div>
               </div>
 
               {/* Feature 2 */}
-              <div className="group">
-                <div className="flex items-center space-x-4 mb-6">
-                  <div className="w-2 h-16 bg-[var(--bg-bg-brand)] rounded-full"></div>
-                  <div>
-                    <span className="text-xs font-mono text-[var(--text-text-tertiary)] uppercase tracking-wider">Feature 02</span>
-                    <h3 className="text-2xl font-semibold text-[var(--text-text-default)] mt-1">
-                      Intelligent Search
-                    </h3>
+              <div className="group p-12 border-r border-b border-[var(--border-border-neutral-l1)] hover:bg-[var(--bg-bg-overlay-l1)] transition-colors relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-1 h-0 bg-[var(--bg-bg-brand)] group-hover:h-full transition-all duration-500" />
+
+                <div className="flex items-center space-x-4 mb-8">
+                  <div className="w-12 h-12 bg-[var(--bg-bg-brand)]/10 flex items-center justify-center border border-[var(--bg-bg-brand)]/20">
+                    <BarChart3 className="h-6 w-6 text-[var(--bg-bg-brand)]" />
                   </div>
+                  <span className="text-xs font-mono text-[var(--text-text-tertiary)] uppercase tracking-widest">Module 02</span>
                 </div>
-                
-                <p className="text-[var(--text-text-secondary)] leading-relaxed text-lg mb-6 pl-6">
-                  Enterprise-grade semantic search with AI-powered context understanding. Combines intelligent content analysis with keyword matching for precise and relevant information retrieval.
+
+                <h3 className="text-2xl font-bold text-[var(--text-text-default)] mb-4 uppercase">
+                  Intelligent Search
+                </h3>
+
+                <p className="text-[var(--text-text-secondary)] leading-relaxed text-sm mb-8">
+                  Enterprise-grade semantic search. AI-powered context understanding with hybrid keyword matching.
                 </p>
 
-                <div className="pl-6 flex items-center space-x-3">
-                  <BarChart3 className="h-5 w-5 text-[var(--bg-bg-brand)]" />
-                  <span className="text-sm text-[var(--text-text-tertiary)]">Smart search</span>
+                <div className="flex items-center space-x-2 text-[var(--bg-bg-brand)] text-xs font-mono uppercase tracking-wider">
+                  <span>Status: Active</span>
+                  <div className="w-1.5 h-1.5 bg-[var(--bg-bg-brand)] animate-pulse" />
                 </div>
               </div>
 
               {/* Feature 3 */}
-              <div className="group">
-                <div className="flex items-center space-x-4 mb-6">
-                  <div className="w-2 h-16 bg-[var(--bg-bg-brand)] rounded-full"></div>
-                  <div>
-                    <span className="text-xs font-mono text-[var(--text-text-tertiary)] uppercase tracking-wider">Feature 03</span>
-                    <h3 className="text-2xl font-semibold text-[var(--text-text-default)] mt-1">
-                      Voice Enabled
-                    </h3>
+              <div className="group p-12 border-r border-b border-[var(--border-border-neutral-l1)] hover:bg-[var(--bg-bg-overlay-l1)] transition-colors relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-1 h-0 bg-[var(--bg-bg-brand)] group-hover:h-full transition-all duration-500" />
+
+                <div className="flex items-center space-x-4 mb-8">
+                  <div className="w-12 h-12 bg-[var(--bg-bg-brand)]/10 flex items-center justify-center border border-[var(--bg-bg-brand)]/20">
+                    <Settings className="h-6 w-6 text-[var(--bg-bg-brand)]" />
                   </div>
+                  <span className="text-xs font-mono text-[var(--text-text-tertiary)] uppercase tracking-widest">Module 03</span>
                 </div>
-                
-                <p className="text-[var(--text-text-secondary)] leading-relaxed text-lg mb-6 pl-6">
-                  Natural voice conversations with crystal-clear audio quality. Talk to your chatbot with real-time speech recognition and lifelike voice responses in multiple accents.
+
+                <h3 className="text-2xl font-bold text-[var(--text-text-default)] mb-4 uppercase">
+                  Voice Enabled
+                </h3>
+
+                <p className="text-[var(--text-text-secondary)] leading-relaxed text-sm mb-8">
+                  Natural voice conversations. Crystal-clear audio quality with real-time speech recognition.
                 </p>
 
-                <div className="pl-6 flex items-center space-x-3">
-                  <Settings className="h-5 w-5 text-[var(--bg-bg-brand)]" />
-                  <span className="text-sm text-[var(--text-text-tertiary)]">Voice chat</span>
+                <div className="flex items-center space-x-2 text-[var(--bg-bg-brand)] text-xs font-mono uppercase tracking-wider">
+                  <span>Status: Active</span>
+                  <div className="w-1.5 h-1.5 bg-[var(--bg-bg-brand)] animate-pulse" />
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        <section id="pricing" className="py-24 bg-[var(--bg-bg-base-secondary)]">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-semibold text-[var(--text-text-default)] mb-4">
-                Simple, transparent pricing
-              </h2>
-              <p className="text-lg text-[var(--text-text-secondary)] mb-8">
-                Choose the perfect plan for your business
-              </p>
-            </div>
+        <section id="pricing" className="py-24 bg-black relative border-b border-[var(--border-border-neutral-l1)]">
+          <div className="w-full px-4 sm:px-6 lg:px-12 relative z-10">
+            <div className="flex flex-col md:flex-row justify-between items-end mb-16 border-b border-[var(--border-border-neutral-l1)] pb-8">
+              <div>
+                <h2 className="text-4xl font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-tight">
+                  System Access
+                </h2>
+                <p className="text-lg text-[var(--text-text-secondary)] font-mono">
+                  // SELECT TIER
+                </p>
+              </div>
 
-            <div className="flex justify-center mb-8">
-              <div className="inline-flex items-center bg-[var(--bg-bg-overlay-l1)] border border-[var(--border-border-neutral-l1)] rounded-lg p-1">
+              <div className="flex items-center space-x-4 mt-8 md:mt-0">
                 <button
                   onClick={() => setBillingPeriod('monthly')}
-                  className={`px-6 py-2 rounded-md font-medium transition-all ${
-                    billingPeriod === 'monthly'
-                      ? 'bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)]'
-                      : 'text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)]'
-                  }`}
+                  className={`px - 6 py - 2 text - sm font - mono uppercase tracking - wider border transition - all ${billingPeriod === 'monthly'
+                    ? 'bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] border-[var(--bg-bg-brand)]'
+                    : 'text-[var(--text-text-secondary)] border-[var(--border-border-neutral-l1)] hover:border-[var(--text-text-default)]'
+                    } `}
                 >
                   Monthly
                 </button>
                 <button
                   onClick={() => setBillingPeriod('yearly')}
-                  className={`px-6 py-2 rounded-md font-medium transition-all ${
-                    billingPeriod === 'yearly'
-                      ? 'bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)]'
-                      : 'text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)]'
-                  }`}
+                  className={`px - 6 py - 2 text - sm font - mono uppercase tracking - wider border transition - all ${billingPeriod === 'yearly'
+                    ? 'bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] border-[var(--bg-bg-brand)]'
+                    : 'text-[var(--text-text-secondary)] border-[var(--border-border-neutral-l1)] hover:border-[var(--text-text-default)]'
+                    } `}
                 >
-                  Yearly
-                  <span className="ml-2 text-xs bg-green-500 text-white px-2 py-0.5 rounded-full">
-                    Save 20%
-                  </span>
+                  Yearly [-20%]
                 </button>
               </div>
             </div>
 
-            <div className="grid lg:grid-cols-4 gap-8">
-              <div className="bg-[var(--bg-bg-base-default)] rounded-xl border border-[var(--border-border-neutral-l1)] p-8">
-                <h3 className="text-2xl font-semibold text-[var(--text-text-default)] mb-2">Free</h3>
-                <div className="mb-6">
-                  <span className="text-4xl font-bold text-[var(--text-text-default)]">$0</span>
-                  <span className="text-[var(--text-text-secondary)]">/month</span>
+            <div className="grid lg:grid-cols-4 gap-0 border-l border-[var(--border-border-neutral-l1)]">
+              {/* Free Plan */}
+              <div className="p-8 border-r border-b border-t border-[var(--border-border-neutral-l1)] hover:bg-[var(--bg-bg-overlay-l1)] transition-colors group">
+                <h3 className="text-xl font-bold text-[var(--text-text-default)] mb-2 uppercase">Free</h3>
+                <div className="mb-8">
+                  <span className="text-4xl font-bold text-[var(--text-text-default)] font-mono">$0</span>
+                  <span className="text-[var(--text-text-secondary)] font-mono text-sm">/MO</span>
                 </div>
-                <ul className="space-y-3 mb-8">
+                <ul className="space-y-4 mb-8">
                   <li className="flex items-start">
-                    <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">1 chatbot</span>
+                    <Check className="h-4 w-4 text-[var(--bg-bg-brand)] mr-3 mt-1" />
+                    <span className="text-[var(--text-text-secondary)] text-sm">1 chatbot</span>
                   </li>
                   <li className="flex items-start">
-                    <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">Unlimited domains</span>
+                    <Check className="h-4 w-4 text-[var(--bg-bg-brand)] mr-3 mt-1" />
+                    <span className="text-[var(--text-text-secondary)] text-sm">Unlimited domains</span>
                   </li>
                   <li className="flex items-start">
-                    <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">Basic support</span>
-                  </li>
-                  <li className="flex items-start">
-                    <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">Web scraping</span>
-                  </li>
-                  <li className="flex items-start">
-                    <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">Document upload</span>
+                    <Check className="h-4 w-4 text-[var(--bg-bg-brand)] mr-3 mt-1" />
+                    <span className="text-[var(--text-text-secondary)] text-sm">Basic support</span>
                   </li>
                 </ul>
                 <button
                   onClick={() => handlePlanClick('free')}
                   disabled={purchasingPlan !== null}
-                  className="w-full py-3 text-center bg-[var(--bg-bg-overlay-l2)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] rounded-lg hover:bg-[var(--bg-bg-overlay-l3)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-3 text-center border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] hover:bg-[var(--text-text-default)] hover:text-black transition-all disabled:opacity-50 disabled:cursor-not-allowed font-mono text-sm uppercase tracking-wider"
                 >
                   {purchasingPlan === 'free' ? (
-                    <Loader className="h-5 w-5 animate-spin mx-auto" />
+                    <Loader className="h-4 w-4 animate-spin mx-auto" />
                   ) : (
-                    isAuthenticated ? "Go to Dashboard" : "Get Started"
+                    isAuthenticated ? "ACCESS DASHBOARD" : "INITIALIZE"
                   )}
                 </button>
               </div>
 
-              <div className="bg-[var(--bg-bg-base-default)] rounded-xl border border-[var(--border-border-neutral-l1)] p-8">
-                <h3 className="text-2xl font-semibold text-[var(--text-text-default)] mb-2">Basic</h3>
-                <div className="mb-6">
+              {/* Basic Plan */}
+              <div className="p-8 border-r border-b border-t border-[var(--border-border-neutral-l1)] hover:bg-[var(--bg-bg-overlay-l1)] transition-colors group">
+                <h3 className="text-xl font-bold text-[var(--text-text-default)] mb-2 uppercase">Basic</h3>
+                <div className="mb-8">
                   <div className="flex items-baseline">
-                    <span className="text-4xl font-bold text-[var(--text-text-default)]">
+                    <span className="text-4xl font-bold text-[var(--text-text-default)] font-mono">
                       ${billingPeriod === 'monthly' ? '9.99' : '7.99'}
                     </span>
-                    <span className="text-[var(--text-text-secondary)] ml-2">/month</span>
+                    <span className="text-[var(--text-text-secondary)] font-mono text-sm ml-1">/MO</span>
                   </div>
-                  {billingPeriod === 'yearly' && (
-                    <p className="text-sm text-green-500 mt-1">
-                      $95.99 billed annually
-                    </p>
-                  )}
                 </div>
-                <ul className="space-y-3 mb-8">
+                <ul className="space-y-4 mb-8">
                   <li className="flex items-start">
-                    <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">5 chatbots</span>
+                    <Check className="h-4 w-4 text-[var(--bg-bg-brand)] mr-3 mt-1" />
+                    <span className="text-[var(--text-text-secondary)] text-sm">5 chatbots</span>
                   </li>
                   <li className="flex items-start">
-                    <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">Unlimited domains</span>
+                    <Check className="h-4 w-4 text-[var(--bg-bg-brand)] mr-3 mt-1" />
+                    <span className="text-[var(--text-text-secondary)] text-sm">Unlimited domains</span>
                   </li>
                   <li className="flex items-start">
-                    <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">Priority support</span>
-                  </li>
-                  <li className="flex items-start">
-                    <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">Custom branding</span>
+                    <Check className="h-4 w-4 text-[var(--bg-bg-brand)] mr-3 mt-1" />
+                    <span className="text-[var(--text-text-secondary)] text-sm">Priority support</span>
                   </li>
                 </ul>
                 <button
                   onClick={() => handlePlanClick('basic')}
                   disabled={purchasingPlan !== null}
-                  className="w-full py-3 text-center bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-3 text-center bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] hover:bg-[var(--bg-bg-brand-hover)] transition-all font-mono text-sm uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {purchasingPlan === 'basic' ? (
-                    <Loader className="h-5 w-5 animate-spin mx-auto" />
+                    <Loader className="h-4 w-4 animate-spin mx-auto" />
                   ) : (
-                    isAuthenticated ? "Upgrade to Basic" : "Get Started"
+                    isAuthenticated ? "UPGRADE SYSTEM" : "INITIALIZE"
                   )}
                 </button>
               </div>
 
-              <div className="bg-[var(--bg-bg-base-default)] rounded-xl border-2 border-[var(--bg-bg-brand)] p-8 relative">
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] px-4 py-1 rounded-full text-sm font-medium">
-                  Popular
+              {/* Pro Plan */}
+              <div className="p-8 border-r border-b border-t border-[var(--bg-bg-brand)] bg-[var(--bg-bg-brand)]/5 relative group">
+                <div className="absolute top-0 right-0 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] px-2 py-1 text-[10px] font-mono uppercase tracking-widest">
+                  RECOMMENDED
                 </div>
-                <h3 className="text-2xl font-semibold text-[var(--text-text-default)] mb-2">Pro</h3>
-                <div className="mb-6">
+                <h3 className="text-xl font-bold text-[var(--text-text-default)] mb-2 uppercase">Pro</h3>
+                <div className="mb-8">
                   <div className="flex items-baseline">
-                    <span className="text-4xl font-bold text-[var(--text-text-default)]">
+                    <span className="text-4xl font-bold text-[var(--text-text-default)] font-mono">
                       ${billingPeriod === 'monthly' ? '24.99' : '19.99'}
                     </span>
-                    <span className="text-[var(--text-text-secondary)] ml-2">/month</span>
+                    <span className="text-[var(--text-text-secondary)] font-mono text-sm ml-1">/MO</span>
                   </div>
-                  {billingPeriod === 'yearly' && (
-                    <p className="text-sm text-green-500 mt-1">
-                      $239.99 billed annually
-                    </p>
-                  )}
                 </div>
-                <ul className="space-y-3 mb-8">
+                <ul className="space-y-4 mb-8">
                   <li className="flex items-start">
-                    <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">15 chatbots</span>
+                    <Check className="h-4 w-4 text-[var(--bg-bg-brand)] mr-3 mt-1" />
+                    <span className="text-[var(--text-text-secondary)] text-sm">15 chatbots</span>
                   </li>
                   <li className="flex items-start">
-                    <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">Unlimited domains</span>
+                    <Check className="h-4 w-4 text-[var(--bg-bg-brand)] mr-3 mt-1" />
+                    <span className="text-[var(--text-text-secondary)] text-sm">Advanced analytics</span>
                   </li>
                   <li className="flex items-start">
-                    <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">Priority support</span>
-                  </li>
-                  <li className="flex items-start">
-                    <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">Advanced analytics</span>
-                  </li>
-                  <li className="flex items-start">
-                    <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">API access</span>
+                    <Check className="h-4 w-4 text-[var(--bg-bg-brand)] mr-3 mt-1" />
+                    <span className="text-[var(--text-text-secondary)] text-sm">API access</span>
                   </li>
                 </ul>
                 <button
                   onClick={() => handlePlanClick('pro')}
                   disabled={purchasingPlan !== null}
-                  className="w-full py-3 text-center bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-3 text-center bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] hover:bg-[var(--bg-bg-brand-hover)] transition-all font-bold font-mono text-sm uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(50,240,140,0.2)]"
                 >
                   {purchasingPlan === 'pro' ? (
-                    <Loader className="h-5 w-5 animate-spin mx-auto" />
+                    <Loader className="h-4 w-4 animate-spin mx-auto" />
                   ) : (
-                    isAuthenticated ? "Upgrade to Pro" : "Get Started"
+                    isAuthenticated ? "UPGRADE SYSTEM" : "INITIALIZE"
                   )}
                 </button>
               </div>
 
-              <div className="bg-[var(--bg-bg-base-default)] rounded-xl border border-[var(--border-border-neutral-l1)] p-8">
-                <h3 className="text-2xl font-semibold text-[var(--text-text-default)] mb-2">Enterprise</h3>
-                <div className="mb-6">
+              {/* Enterprise Plan */}
+              <div className="p-8 border-r border-b border-t border-[var(--border-border-neutral-l1)] hover:bg-[var(--bg-bg-overlay-l1)] transition-colors group">
+                <h3 className="text-xl font-bold text-[var(--text-text-default)] mb-2 uppercase">Enterprise</h3>
+                <div className="mb-8">
                   <div className="flex items-baseline">
-                    <span className="text-4xl font-bold text-[var(--text-text-default)]">
+                    <span className="text-4xl font-bold text-[var(--text-text-default)] font-mono">
                       ${billingPeriod === 'monthly' ? '49.99' : '39.99'}
                     </span>
-                    <span className="text-[var(--text-text-secondary)] ml-2">/month</span>
+                    <span className="text-[var(--text-text-secondary)] font-mono text-sm ml-1">/MO</span>
                   </div>
-                  {billingPeriod === 'yearly' && (
-                    <p className="text-sm text-green-500 mt-1">
-                      $479.99 billed annually
-                    </p>
-                  )}
                 </div>
-                <ul className="space-y-3 mb-8">
+                <ul className="space-y-4 mb-8">
                   <li className="flex items-start">
-                    <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">Unlimited chatbots</span>
+                    <Check className="h-4 w-4 text-[var(--bg-bg-brand)] mr-3 mt-1" />
+                    <span className="text-[var(--text-text-secondary)] text-sm">Unlimited chatbots</span>
                   </li>
                   <li className="flex items-start">
-                    <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">Unlimited domains</span>
+                    <Check className="h-4 w-4 text-[var(--bg-bg-brand)] mr-3 mt-1" />
+                    <span className="text-[var(--text-text-secondary)] text-sm">White-label</span>
                   </li>
                   <li className="flex items-start">
-                    <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">24/7 dedicated support</span>
-                  </li>
-                  <li className="flex items-start">
-                    <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">White-label solution</span>
-                  </li>
-                  <li className="flex items-start">
-                    <Check className="h-5 w-5 text-[var(--bg-bg-brand)] mr-3 mt-0.5" />
-                    <span className="text-[var(--text-text-secondary)]">Custom integrations</span>
+                    <Check className="h-4 w-4 text-[var(--bg-bg-brand)] mr-3 mt-1" />
+                    <span className="text-[var(--text-text-secondary)] text-sm">Custom integrations</span>
                   </li>
                 </ul>
                 <button
                   onClick={() => handlePlanClick('enterprise')}
                   disabled={purchasingPlan !== null}
-                  className="w-full py-3 text-center bg-[var(--bg-bg-overlay-l2)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] rounded-lg hover:bg-[var(--bg-bg-overlay-l3)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-3 text-center border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] hover:bg-[var(--text-text-default)] hover:text-black transition-all disabled:opacity-50 disabled:cursor-not-allowed font-mono text-sm uppercase tracking-wider"
                 >
                   {purchasingPlan === 'enterprise' ? (
-                    <Loader className="h-5 w-5 animate-spin mx-auto" />
+                    <Loader className="h-4 w-4 animate-spin mx-auto" />
                   ) : (
-                    isAuthenticated ? "Upgrade to Enterprise" : "Get Started"
+                    isAuthenticated ? "UPGRADE SYSTEM" : "INITIALIZE"
                   )}
                 </button>
               </div>
@@ -691,94 +636,95 @@ export default function RootLayout({ children }) {
           </div>
         </section>
 
-        <section id="integration-section" className="py-24 bg-[var(--bg-bg-base-secondary)]">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-semibold text-[var(--text-text-default)] mb-4">
-                Integrate in Minutes
-              </h2>
-              <p className="text-lg text-[var(--text-text-secondary)] max-w-3xl mx-auto">
-                Switch between your preferred integration style. One component controls the entire experience.
-              </p>
-            </div>
+        <section id="integration-section" className="py-24 bg-[var(--bg-bg-base-secondary)] border-b border-[var(--border-border-neutral-l1)]">
+          <div className="w-full px-4 sm:px-6 lg:px-12">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-0 border border-[var(--border-border-neutral-l1)]">
+              <div className="p-12 border-r border-[var(--border-border-neutral-l1)]">
+                <h2 className="text-4xl font-bold text-[var(--text-text-default)] mb-4 uppercase tracking-tight">
+                  Integration
+                </h2>
+                <p className="text-lg text-[var(--text-text-secondary)] font-mono mb-12">
+                  // DEPLOYMENT OPTIONS
+                </p>
 
-            <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-8 lg:gap-12 items-start">
-              <div className="space-y-8">
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-4 mb-12">
                   {integrationOptions.map((option) => (
                     <button
                       key={option.key}
                       onClick={() => setActiveIntegrationKey(option.key)}
-                      className={`px-5 py-2 rounded-lg border transition-all ${
-                        activeIntegrationKey === option.key
-                          ? 'bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] border-[var(--bg-bg-brand)]'
-                          : 'bg-[var(--bg-bg-overlay-l2)] text-[var(--text-text-secondary)] border-[var(--border-border-neutral-l1)] hover:text-[var(--text-text-default)]'
-                      }`}
+                      className={`px - 6 py - 3 text - sm font - mono uppercase tracking - wider border transition - all ${activeIntegrationKey === option.key
+                        ? 'bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] border-[var(--bg-bg-brand)]'
+                        : 'bg-transparent text-[var(--text-text-secondary)] border-[var(--border-border-neutral-l1)] hover:border-[var(--text-text-default)]'
+                        } `}
                     >
                       {option.label}
                     </button>
                   ))}
                 </div>
 
-                <div className="bg-[var(--bg-bg-base-default)] rounded-2xl border border-[var(--border-border-neutral-l1)] p-6 sm:p-8 shadow-xl">
-                  <div className="inline-block px-4 py-1 bg-[var(--bg-bg-brand)]/10 border border-[var(--bg-bg-brand)]/20 rounded-full mb-4">
-                    <span className="text-sm font-medium text-[var(--bg-bg-brand)]">
+                <div className="p-8 border border-[var(--border-border-neutral-l1)] bg-black/50">
+                  <div className="inline-block px-3 py-1 bg-[var(--bg-bg-brand)]/10 border border-[var(--bg-bg-brand)]/20 mb-4">
+                    <span className="text-xs font-mono text-[var(--bg-bg-brand)] uppercase tracking-widest">
                       {activeIntegration.label}
                     </span>
                   </div>
-                  <h3 className="text-3xl font-semibold text-[var(--text-text-default)] mb-4">
+                  <h3 className="text-2xl font-bold text-[var(--text-text-default)] mb-4 uppercase">
                     {activeIntegration.title}
                   </h3>
-                  <p className="text-lg text-[var(--text-text-secondary)] leading-relaxed mb-6">
+                  <p className="text-[var(--text-text-secondary)] leading-relaxed mb-6 font-light">
                     {activeIntegration.description}
                   </p>
-                  <ul className="space-y-3">
+                  <ul className="space-y-4">
                     {activeIntegration.highlights.map((highlight) => (
                       <li key={highlight} className="flex items-start space-x-3">
-                        <div className="w-2 h-2 rounded-full bg-[var(--bg-bg-brand)] mt-1.5" />
-                        <span className="text-[var(--text-text-secondary)]">{highlight}</span>
+                        <div className="w-1.5 h-1.5 bg-[var(--bg-bg-brand)] mt-2" />
+                        <span className="text-[var(--text-text-secondary)] font-mono text-sm">{highlight}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
               </div>
 
-              <div className="bg-[var(--bg-bg-base-default)] rounded-2xl border border-[var(--border-border-neutral-l1)] p-5 sm:p-6 shadow-2xl w-full">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs sm:text-sm font-mono text-[var(--text-text-tertiary)]">
-                    {activeIntegration.title}
-                  </span>
+              <div className="p-0 bg-[#0d0e10] flex flex-col">
+                <div className="flex items-center justify-between p-4 border-b border-[var(--border-border-neutral-l1)] bg-black">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 bg-red-500/20 border border-red-500/50"></div>
+                    <div className="w-3 h-3 bg-yellow-500/20 border border-yellow-500/50"></div>
+                    <div className="w-3 h-3 bg-green-500/20 border border-green-500/50"></div>
+                  </div>
                   <button
                     onClick={() => copyIntegrationCode(activeIntegration.code, activeIntegration.key)}
-                    className="flex items-center space-x-2 px-3 py-1.5 bg-[var(--bg-bg-overlay-l2)] hover:bg-[var(--bg-bg-overlay-l3)] rounded-lg transition-all text-xs sm:text-sm"
+                    className="flex items-center space-x-2 px-3 py-1.5 border border-[var(--border-border-neutral-l1)] hover:bg-[var(--bg-bg-overlay-l1)] transition-all text-xs font-mono uppercase tracking-wider"
                   >
                     {copiedIntegration === activeIntegration.key ? (
                       <>
-                        <Check className="h-4 w-4 text-green-500" />
-                        <span className="text-sm text-green-500">Copied!</span>
+                        <Check className="h-3 w-3 text-green-500" />
+                        <span className="text-green-500">Copied</span>
                       </>
                     ) : (
                       <>
-                        <Copy className="h-4 w-4 text-[var(--text-text-secondary)]" />
-                        <span className="text-sm text-[var(--text-text-secondary)]">Copy</span>
+                        <Copy className="h-3 w-3 text-[var(--text-text-secondary)]" />
+                        <span className="text-[var(--text-text-secondary)]">Copy Code</span>
                       </>
                     )}
                   </button>
                 </div>
-                <pre className="bg-[var(--bg-bg-base-secondary)] p-4 rounded-lg overflow-x-auto text-sm sm:text-base w-full">
-                  <code className="text-[var(--text-text-default)] font-mono block whitespace-pre-wrap break-words">
-{activeIntegration.code}
-                  </code>
-                </pre>
+                <div className="flex-1 p-8 overflow-auto">
+                  <pre className="font-mono text-sm leading-relaxed">
+                    <code className="text-[var(--text-text-default)] block whitespace-pre-wrap break-words">
+                      {activeIntegration.code}
+                    </code>
+                  </pre>
+                </div>
               </div>
             </div>
 
             <div className="text-center mt-16">
               <Link
                 href="/docs"
-                className="inline-block px-6 py-3 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all font-medium"
+                className="inline-block px-8 py-4 bg-transparent border border-[var(--bg-bg-brand)] text-[var(--bg-bg-brand)] hover:bg-[var(--bg-bg-brand)] hover:text-[var(--text-text-onbrand)] transition-all font-bold text-lg font-mono uppercase tracking-wider"
               >
-                View Full Documentation
+                View Documentation
               </Link>
             </div>
           </div>
@@ -834,9 +780,8 @@ export default function RootLayout({ children }) {
                       {faq.q}
                     </span>
                     <ChevronDown
-                      className={`h-5 w-5 text-[var(--text-text-secondary)] transition-transform ${
-                        openFaq === index ? 'rotate-180' : ''
-                      }`}
+                      className={`h - 5 w - 5 text - [var(--text - text - secondary)]transition - transform ${openFaq === index ? 'rotate-180' : ''
+                        } `}
                     />
                   </button>
                   {openFaq === index && (
@@ -870,88 +815,89 @@ export default function RootLayout({ children }) {
         </section>
       </main>
 
-      <footer className="relative border-t border-[var(--border-border-neutral-l1)] bg-[var(--bg-bg-base-secondary)] overflow-hidden pb-32 sm:pb-48">
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 sm:gap-12 mb-12 sm:mb-16">
-            <div className="col-span-2 md:col-span-1">
-              <div className="flex items-center space-x-2 sm:space-x-3 mb-4 sm:mb-6">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-[var(--bg-bg-brand)] opacity-20 blur-xl rounded-full" />
-                  <Image
-                    src="/images/img.png"
-                    alt="Nexva Logo"
-                    width={28}
-                    height={28}
-                    className="relative z-10 rounded-lg sm:w-8 sm:h-8"
-                  />
-                </div>
-                <span className="text-xl sm:text-2xl font-semibold text-[var(--text-text-default)]">Nexva</span>
-              </div>
-              <p className="text-sm text-[var(--text-text-tertiary)] leading-relaxed">
-                AI-powered chatbot platform for modern websites
-              </p>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-[var(--text-text-default)] mb-3 sm:mb-4 text-sm sm:text-base">Product</h3>
-              <ul className="space-y-2 sm:space-y-3">
-                <li><Link href="#features" className="text-xs sm:text-sm text-[var(--text-text-tertiary)] hover:text-[var(--bg-bg-brand)] transition-colors">Features</Link></li>
-                <li><Link href="#pricing" className="text-xs sm:text-sm text-[var(--text-text-tertiary)] hover:text-[var(--bg-bg-brand)] transition-colors">Pricing</Link></li>
-                <li><Link href="/docs" className="text-xs sm:text-sm text-[var(--text-text-tertiary)] hover:text-[var(--bg-bg-brand)] transition-colors">Documentation</Link></li>
-                <li><Link href="/dashboard" className="text-xs sm:text-sm text-[var(--text-text-tertiary)] hover:text-[var(--bg-bg-brand)] transition-colors">Dashboard</Link></li>
-                <li><Link href="/playground" className="text-xs sm:text-sm text-[var(--text-text-tertiary)] hover:text-[var(--bg-bg-brand)] transition-colors">Playground</Link></li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-[var(--text-text-default)] mb-3 sm:mb-4 text-sm sm:text-base">Company</h3>
-              <ul className="space-y-2 sm:space-y-3">
-                <li><a href="mailto:hello@nexva.ai" className="text-xs sm:text-sm text-[var(--text-text-tertiary)] hover:text-[var(--bg-bg-brand)] transition-colors">Contact Us</a></li>
-                <li><Link href="/dashboard" className="text-xs sm:text-sm text-[var(--text-text-tertiary)] hover:text-[var(--bg-bg-brand)] transition-colors">Dashboard</Link></li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-[var(--text-text-default)] mb-3 sm:mb-4 text-sm sm:text-base">Support</h3>
-              <ul className="space-y-2 sm:space-y-3">
-                <li><Link href="/docs" className="text-xs sm:text-sm text-[var(--text-text-tertiary)] hover:text-[var(--bg-bg-brand)] transition-colors">Documentation</Link></li>
-                <li><Link href="/playground" className="text-xs sm:text-sm text-[var(--text-text-tertiary)] hover:text-[var(--bg-bg-brand)] transition-colors">Playground</Link></li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="pt-6 sm:pt-8 border-t border-[var(--border-border-neutral-l1)] flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-xs sm:text-sm text-[var(--text-text-tertiary)]">© 2025 Nexva. All rights reserved.</p>
-            <div className="flex space-x-4 sm:space-x-6">
-              <a href="#" className="text-[var(--text-text-tertiary)] hover:text-[var(--bg-bg-brand)] transition-colors">
-                <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"/></svg>
-              </a>
-              <a href="#" className="text-[var(--text-text-tertiary)] hover:text-[var(--bg-bg-brand)] transition-colors">
-                <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
-
-      {/* Fixed NEXVA Text at Bottom */}
-      <div className="fixed bottom-0 left-0 w-full pointer-events-none z-0 overflow-hidden">
-        <div className="relative w-full h-32 sm:h-48 flex items-center justify-center px-4 sm:px-8">
-          <h1 
-            className="text-[clamp(6rem,20vw,20rem)] sm:text-[clamp(10rem,25vw,20rem)] uppercase select-none opacity-20"
+      <footer className="relative border-t border-[var(--border-border-neutral-l1)] bg-[var(--bg-bg-base-secondary)] overflow-hidden">
+        {/* Large NEXVA Text Background */}
+        <div className="absolute bottom-0 left-0 w-full pointer-events-none z-0 overflow-hidden flex justify-center items-end">
+          <h1
+            className="text-[clamp(6rem,25vw,25rem)] leading-[0.75] uppercase select-none opacity-[0.03]"
             style={{
               fontFamily: 'var(--font-family-default)',
               fontWeight: 900,
-              color: 'var(--bg-bg-brand)',
-              WebkitTextStroke: '1px var(--bg-bg-brand)',
-              textShadow: '0 0 20px rgba(50, 240, 140, 0.3)',
-              letterSpacing: '0',
+              color: 'var(--text-text-default)',
+              letterSpacing: '-0.05em',
             }}
           >
             NEXVA
           </h1>
         </div>
-      </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 pt-24 pb-12">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-24">
+            {/* Brand Column */}
+            <div className="md:col-span-4 space-y-8">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-[var(--bg-bg-brand)] flex items-center justify-center">
+                  <span className="font-mono font-bold text-black text-lg">N</span>
+                </div>
+                <span className="text-2xl font-bold tracking-tighter uppercase text-[var(--text-text-default)]">Nexva</span>
+              </div>
+              <p className="text-[var(--text-text-secondary)] leading-relaxed max-w-xs font-light">
+                Next-generation AI chatbot platform. Deploy intelligent, context-aware agents in minutes.
+              </p>
+              <div className="flex space-x-4">
+                <a href="#" className="w-10 h-10 border border-[var(--border-border-neutral-l1)] flex items-center justify-center text-[var(--text-text-secondary)] hover:bg-[var(--bg-bg-brand)] hover:text-black hover:border-[var(--bg-bg-brand)] transition-all">
+                  <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" /></svg>
+                </a>
+                <a href="#" className="w-10 h-10 border border-[var(--border-border-neutral-l1)] flex items-center justify-center text-[var(--text-text-secondary)] hover:bg-[var(--bg-bg-brand)] hover:text-black hover:border-[var(--bg-bg-brand)] transition-all">
+                  <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" /></svg>
+                </a>
+              </div>
+            </div>
+
+            {/* Links Columns */}
+            <div className="md:col-span-8 grid grid-cols-2 sm:grid-cols-3 gap-8">
+              <div>
+                <h3 className="font-mono text-[var(--bg-bg-brand)] text-xs uppercase tracking-widest mb-6">Product</h3>
+                <ul className="space-y-4">
+                  <li><Link href="#features" className="text-sm text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors uppercase tracking-wide font-medium">Features</Link></li>
+                  <li><Link href="#pricing" className="text-sm text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors uppercase tracking-wide font-medium">Pricing</Link></li>
+                  <li><Link href="/docs" className="text-sm text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors uppercase tracking-wide font-medium">Documentation</Link></li>
+                  <li><Link href="/changelog" className="text-sm text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors uppercase tracking-wide font-medium">Changelog</Link></li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-mono text-[var(--bg-bg-brand)] text-xs uppercase tracking-widest mb-6">Company</h3>
+                <ul className="space-y-4">
+                  <li><Link href="/about" className="text-sm text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors uppercase tracking-wide font-medium">About</Link></li>
+                  <li><Link href="/blog" className="text-sm text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors uppercase tracking-wide font-medium">Blog</Link></li>
+                  <li><Link href="/careers" className="text-sm text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors uppercase tracking-wide font-medium">Careers</Link></li>
+                  <li><Link href="/contact" className="text-sm text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors uppercase tracking-wide font-medium">Contact</Link></li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-mono text-[var(--bg-bg-brand)] text-xs uppercase tracking-widest mb-6">Legal</h3>
+                <ul className="space-y-4">
+                  <li><Link href="/privacy" className="text-sm text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors uppercase tracking-wide font-medium">Privacy</Link></li>
+                  <li><Link href="/terms" className="text-sm text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors uppercase tracking-wide font-medium">Terms</Link></li>
+                  <li><Link href="/security" className="text-sm text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] transition-colors uppercase tracking-wide font-medium">Security</Link></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-8 border-t border-[var(--border-border-neutral-l1)] flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-xs font-mono text-[var(--text-text-tertiary)] uppercase tracking-wider">
+              © 2025 Nexva Inc. All systems operational.
+            </p>
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span className="text-xs font-mono text-[var(--text-text-tertiary)] uppercase tracking-wider">System Status: Online</span>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

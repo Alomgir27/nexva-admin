@@ -69,7 +69,7 @@ export default function DocumentsModal({ isOpen, onClose, domainId, domainUrl }:
 
   const deleteDocument = async (documentId: number) => {
     if (!confirm("Are you sure you want to delete this document?")) return;
-    
+
     setDeletingId(documentId);
     try {
       const token = localStorage.getItem("token");
@@ -96,17 +96,22 @@ export default function DocumentsModal({ isOpen, onClose, domainId, domainUrl }:
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-[var(--bg-bg-overlay-l1)] border border-[var(--border-border-neutral-l1)] rounded-2xl p-6 w-full max-w-4xl max-h-[80vh] overflow-hidden flex flex-col">
-        <div className="flex items-center justify-between mb-6">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="bg-[var(--bg-bg-overlay-l1)] border border-[var(--border-border-neutral-l1)] p-8 w-full max-w-4xl max-h-[80vh] overflow-hidden flex flex-col relative">
+        <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--bg-bg-brand)]"></div>
+        <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[var(--bg-bg-brand)]"></div>
+        <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[var(--bg-bg-brand)]"></div>
+        <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--bg-bg-brand)]"></div>
+
+        <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-xl font-semibold text-[var(--text-text-default)]">Documents</h2>
-            <p className="text-sm text-[var(--text-text-secondary)]">{domainUrl}</p>
+            <h2 className="text-lg font-bold text-[var(--text-text-default)] uppercase tracking-wider">Documents</h2>
+            <p className="text-xs text-[var(--text-text-secondary)] font-mono mt-1">{domainUrl}</p>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-3">
             <button
               onClick={() => setShowUpload(true)}
-              className="flex items-center space-x-2 px-4 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all"
+              className="flex items-center space-x-2 px-4 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] font-bold uppercase tracking-wider font-mono hover:bg-[var(--bg-bg-brand-hover)] transition-all text-xs"
             >
               <Upload className="h-4 w-4" />
               <span>Upload</span>
@@ -127,69 +132,68 @@ export default function DocumentsModal({ isOpen, onClose, domainId, domainUrl }:
         ) : documents.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12">
             <FileText className="h-12 w-12 text-[var(--text-text-tertiary)] mb-4" />
-            <p className="text-[var(--text-text-secondary)]">No documents uploaded yet</p>
+            <p className="text-[var(--text-text-secondary)] font-mono uppercase tracking-wide text-xs">No documents uploaded yet</p>
           </div>
         ) : (
-          <div className="overflow-auto flex-1">
+          <div className="overflow-auto flex-1 border border-[var(--border-border-neutral-l1)]">
             <table className="w-full">
-              <thead className="bg-[var(--bg-bg-base-secondary)] sticky top-0">
+              <thead className="bg-[var(--bg-bg-base-secondary)] sticky top-0 border-b border-[var(--border-border-neutral-l1)]">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-[var(--text-text-secondary)] uppercase">File</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-[var(--text-text-secondary)] uppercase">Size</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-[var(--text-text-secondary)] uppercase">Words</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-[var(--text-text-secondary)] uppercase">Status</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-[var(--text-text-secondary)] uppercase">Uploaded</th>
-                  <th className="px-4 py-3 text-right text-xs font-medium text-[var(--text-text-secondary)] uppercase">Actions</th>
+                  <th className="px-4 py-3 text-left text-[10px] font-bold text-[var(--text-text-secondary)] uppercase tracking-widest font-mono">File</th>
+                  <th className="px-4 py-3 text-left text-[10px] font-bold text-[var(--text-text-secondary)] uppercase tracking-widest font-mono">Size</th>
+                  <th className="px-4 py-3 text-left text-[10px] font-bold text-[var(--text-text-secondary)] uppercase tracking-widest font-mono">Words</th>
+                  <th className="px-4 py-3 text-left text-[10px] font-bold text-[var(--text-text-secondary)] uppercase tracking-widest font-mono">Status</th>
+                  <th className="px-4 py-3 text-left text-[10px] font-bold text-[var(--text-text-secondary)] uppercase tracking-widest font-mono">Uploaded</th>
+                  <th className="px-4 py-3 text-right text-[10px] font-bold text-[var(--text-text-secondary)] uppercase tracking-widest font-mono">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border-border-neutral-l1)]">
                 {documents.map((doc) => (
-                  <tr key={doc.id} className="hover:bg-[var(--bg-bg-base-secondary)]">
+                  <tr key={doc.id} className="hover:bg-[var(--bg-bg-base-secondary)] transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center space-x-2">
                         <FileText className="h-4 w-4 text-[var(--text-text-tertiary)]" />
-                        <span className="text-sm text-[var(--text-text-default)]">{doc.filename}</span>
+                        <span className="text-xs text-[var(--text-text-default)] font-mono">{doc.filename}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-sm text-[var(--text-text-secondary)]">
+                    <td className="px-4 py-3 text-xs text-[var(--text-text-secondary)] font-mono">
                       {formatFileSize(doc.file_size)}
                     </td>
-                    <td className="px-4 py-3 text-sm text-[var(--text-text-secondary)]">
+                    <td className="px-4 py-3 text-xs text-[var(--text-text-secondary)] font-mono">
                       {doc.word_count.toLocaleString()}
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex px-2 py-1 rounded-full text-xs ${
-                        doc.status === "completed" 
-                          ? "bg-green-500/10 text-green-500" 
+                      <span className={`inline-flex px-2 py-0.5 text-[10px] font-mono uppercase tracking-wide border ${doc.status === "completed"
+                          ? "bg-green-500/10 text-green-500 border-green-500/20"
                           : doc.status === "processing"
-                          ? "bg-yellow-500/10 text-yellow-500"
-                          : "bg-red-500/10 text-red-500"
-                      }`}>
+                            ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
+                            : "bg-red-500/10 text-red-500 border-red-500/20"
+                        }`}>
                         {doc.status}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-sm text-[var(--text-text-secondary)]">
+                    <td className="px-4 py-3 text-xs text-[var(--text-text-secondary)] font-mono">
                       {new Date(doc.uploaded_at).toLocaleDateString()}
                     </td>
                     <td className="px-4 py-3 text-right">
-                      <div className="flex items-center justify-end space-x-2">
+                      <div className="flex items-center justify-end space-x-1">
                         <button
                           onClick={() => downloadDocument(doc.r2_url, doc.filename)}
-                          className="p-2 text-[var(--text-text-secondary)] hover:bg-[var(--bg-bg-overlay-l2)] rounded transition-all"
+                          className="p-1.5 text-[var(--text-text-secondary)] hover:text-[var(--text-text-default)] hover:bg-[var(--bg-bg-overlay-l2)] transition-all"
                           title="Download"
                         >
-                          <Download className="h-4 w-4" />
+                          <Download className="h-3.5 w-3.5" />
                         </button>
                         <button
                           onClick={() => deleteDocument(doc.id)}
                           disabled={deletingId === doc.id}
-                          className="p-2 text-red-500 hover:bg-red-500/10 rounded transition-all disabled:opacity-50"
+                          className="p-1.5 text-red-500 hover:bg-red-500/10 transition-all disabled:opacity-50"
                           title="Delete"
                         >
                           {deletingId === doc.id ? (
-                            <Loader className="h-4 w-4 animate-spin" />
+                            <Loader className="h-3.5 w-3.5 animate-spin" />
                           ) : (
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="h-3.5 w-3.5" />
                           )}
                         </button>
                       </div>
@@ -202,21 +206,21 @@ export default function DocumentsModal({ isOpen, onClose, domainId, domainUrl }:
         )}
 
         {totalPages > 1 && (
-          <div className="flex items-center justify-between mt-4 pt-4 border-t border-[var(--border-border-neutral-l1)]">
+          <div className="flex items-center justify-between mt-6 pt-4 border-t border-[var(--border-border-neutral-l1)]">
             <button
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="px-4 py-2 bg-[var(--bg-bg-overlay-l2)] text-[var(--text-text-default)] rounded-lg hover:bg-[var(--bg-bg-overlay-l3)] disabled:opacity-50 transition-all"
+              className="px-4 py-2 bg-[var(--bg-bg-overlay-l2)] text-[var(--text-text-default)] font-mono text-xs uppercase tracking-wider hover:bg-[var(--bg-bg-overlay-l3)] disabled:opacity-50 transition-all border border-transparent hover:border-[var(--text-text-tertiary)]"
             >
               Previous
             </button>
-            <span className="text-sm text-[var(--text-text-secondary)]">
+            <span className="text-xs text-[var(--text-text-secondary)] font-mono uppercase tracking-wide">
               Page {page} of {totalPages}
             </span>
             <button
               onClick={() => setPage(p => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="px-4 py-2 bg-[var(--bg-bg-overlay-l2)] text-[var(--text-text-default)] rounded-lg hover:bg-[var(--bg-bg-overlay-l3)] disabled:opacity-50 transition-all"
+              className="px-4 py-2 bg-[var(--bg-bg-overlay-l2)] text-[var(--text-text-default)] font-mono text-xs uppercase tracking-wider hover:bg-[var(--bg-bg-overlay-l3)] disabled:opacity-50 transition-all border border-transparent hover:border-[var(--text-text-tertiary)]"
             >
               Next
             </button>

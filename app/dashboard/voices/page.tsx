@@ -77,7 +77,7 @@ export default function VoicesPage() {
 
     try {
       setPlayingVoice(voiceId);
-      
+
       const response = await fetch(`${API_BASE_URL}/api/voice/generate-speech`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -90,11 +90,11 @@ export default function VoicesPage() {
       if (response.ok) {
         const audioBlob = await response.blob();
         const audioUrl = URL.createObjectURL(audioBlob);
-        
+
         if (audioRef.current) {
           audioRef.current.pause();
         }
-        
+
         audioRef.current = new Audio(audioUrl);
         audioRef.current.playbackRate = 1.15;
         audioRef.current.onended = () => {
@@ -111,7 +111,7 @@ export default function VoicesPage() {
 
   const saveVoiceSelection = async () => {
     if (!selectedChatbot) return;
-    
+
     setSaving(true);
     try {
       const token = localStorage.getItem("token");
@@ -123,7 +123,7 @@ export default function VoicesPage() {
         },
         body: JSON.stringify({ voice_id: currentVoice }),
       });
-      
+
       if (response.ok) {
         const updatedChatbots = chatbots.map(cb =>
           cb.id === selectedChatbot ? { ...cb, voice_id: currentVoice } : cb
@@ -148,23 +148,28 @@ export default function VoicesPage() {
   }
 
   return (
-    <div className="p-6">
-      <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-[var(--text-text-default)]">Voice Selection</h1>
-        <p className="text-[var(--text-text-subtle)] mt-1">
+    <div className="p-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-tight">Voice Selection</h1>
+        <p className="text-[var(--text-text-secondary)] font-mono text-sm">
           Choose from 10 high-quality Kokoro-82M voices (ultra-fast & efficient)
         </p>
       </div>
 
       {chatbots.length === 0 ? (
-        <div className="bg-[var(--bg-bg-overlay-l1)] rounded-xl border border-[var(--border-border-neutral-l1)] p-12 text-center">
-          <h3 className="text-lg font-medium text-[var(--text-text-default)] mb-2">No Chatbots Found</h3>
-          <p className="text-[var(--text-text-subtle)]">Create a chatbot first to select a voice.</p>
+        <div className="bg-[var(--bg-bg-overlay-l1)] border border-[var(--border-border-neutral-l1)] p-12 text-center">
+          <h3 className="text-lg font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-wider">No Chatbots Found</h3>
+          <p className="text-[var(--text-text-secondary)] font-mono text-sm uppercase tracking-wide">Create a chatbot first to select a voice.</p>
         </div>
       ) : (
         <>
-          <div className="bg-[var(--bg-bg-overlay-l1)] rounded-xl border border-[var(--border-border-neutral-l1)] p-6 mb-6">
-            <label className="block text-sm font-medium text-[var(--text-text-default)] mb-2">
+          <div className="bg-[var(--bg-bg-overlay-l1)] border border-[var(--border-border-neutral-l1)] p-6 mb-6 relative">
+            <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--bg-bg-brand)]"></div>
+            <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[var(--bg-bg-brand)]"></div>
+            <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[var(--bg-bg-brand)]"></div>
+            <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--bg-bg-brand)]"></div>
+
+            <label className="block text-xs font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-wider font-mono">
               Select Chatbot
             </label>
             <select
@@ -177,7 +182,7 @@ export default function VoicesPage() {
                   setCurrentVoice(chatbot.voice_id || 'female-1');
                 }
               }}
-              className="w-full px-4 py-2 bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)] rounded-lg text-[var(--text-text-default)] focus:outline-none focus:border-[var(--bg-bg-brand)]"
+              className="w-full px-4 py-3 bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] focus:outline-none focus:border-[var(--bg-bg-brand)] font-mono text-xs uppercase tracking-wide"
             >
               {chatbots.map((chatbot) => (
                 <option key={chatbot.id} value={chatbot.id}>
@@ -187,11 +192,16 @@ export default function VoicesPage() {
             </select>
           </div>
 
-          <div className="bg-[var(--bg-bg-overlay-l1)] rounded-xl border border-[var(--border-border-neutral-l1)] overflow-hidden">
+          <div className="bg-[var(--bg-bg-overlay-l1)] border border-[var(--border-border-neutral-l1)] overflow-hidden relative">
+            <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--bg-bg-brand)]"></div>
+            <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[var(--bg-bg-brand)]"></div>
+            <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[var(--bg-bg-brand)]"></div>
+            <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--bg-bg-brand)]"></div>
+
             <div className="p-6 border-b border-[var(--border-border-neutral-l1)]">
-              <h2 className="text-lg font-medium text-[var(--text-text-default)]">Available Voices</h2>
-              <p className="text-sm text-[var(--text-text-subtle)] mt-1">
-                Selected: {selectedVoiceName}
+              <h2 className="text-lg font-bold text-[var(--text-text-default)] uppercase tracking-wider">Available Voices</h2>
+              <p className="text-xs text-[var(--text-text-secondary)] mt-1 font-mono uppercase tracking-wide">
+                Selected: <span className="text-[var(--bg-bg-brand)]">{selectedVoiceName}</span>
               </p>
             </div>
 
@@ -201,34 +211,32 @@ export default function VoicesPage() {
                   <div
                     key={voice.id}
                     onClick={() => handleVoiceSelect(voice.id)}
-                    className={`relative p-4 rounded-lg border-2 cursor-pointer transition-all ${
-                      currentVoice === voice.id
-                        ? 'border-[var(--bg-bg-brand)] bg-[var(--bg-bg-brand)]/10'
-                        : 'border-[var(--border-border-neutral-l1)] hover:border-[var(--border-border-neutral-l2)]'
-                    }`}
+                    className={`relative p-4 border cursor-pointer transition-all group ${currentVoice === voice.id
+                        ? 'border-[var(--bg-bg-brand)] bg-[var(--bg-bg-brand)]/5'
+                        : 'border-[var(--border-border-neutral-l1)] hover:border-[var(--text-text-tertiary)] hover:bg-[var(--bg-bg-overlay-l2)]'
+                      }`}
                   >
                     {currentVoice === voice.id && (
-                      <div className="absolute top-2 right-2">
-                        <Check className="w-5 h-5 text-[var(--bg-bg-brand)]" />
+                      <div className="absolute top-0 right-0 p-1 bg-[var(--bg-bg-brand)]">
+                        <Check className="w-3 h-3 text-white" />
                       </div>
                     )}
-                    
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className={`p-2 rounded-lg ${
-                        currentVoice === voice.id
-                          ? 'bg-[var(--bg-bg-brand)] text-white'
-                          : 'bg-[var(--bg-bg-base-secondary)] text-[var(--text-text-subtle)]'
-                      }`}>
-                        <Volume2 className="w-5 h-5" />
+
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className={`p-2 border ${currentVoice === voice.id
+                          ? 'bg-[var(--bg-bg-brand)] border-[var(--bg-bg-brand)] text-white'
+                          : 'bg-[var(--bg-bg-base-secondary)] border-[var(--border-border-neutral-l1)] text-[var(--text-text-tertiary)]'
+                        }`}>
+                        <Volume2 className="w-4 h-4" />
                       </div>
                       <div>
-                        <h3 className="font-medium text-[var(--text-text-default)]">{voice.name}</h3>
-                        <p className="text-xs text-[var(--text-text-subtle)]">{voice.gender}</p>
+                        <h3 className="font-bold text-[var(--text-text-default)] uppercase tracking-wider text-xs font-mono">{voice.name}</h3>
+                        <p className="text-[10px] text-[var(--text-text-secondary)] font-mono uppercase tracking-wide">{voice.gender}</p>
                       </div>
                     </div>
-                    
-                    <div className="flex items-center justify-between text-xs mt-2">
-                      <span className="px-2 py-1 rounded bg-[var(--bg-bg-base-secondary)] text-[var(--text-text-subtle)]">
+
+                    <div className="flex items-center justify-between">
+                      <span className="px-2 py-1 bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-secondary)] text-[10px] font-mono uppercase tracking-wide">
                         {voice.accent}
                       </span>
                       <button
@@ -236,12 +244,15 @@ export default function VoicesPage() {
                           e.stopPropagation();
                           playVoiceDemo(voice.id);
                         }}
-                        className="p-2 rounded-lg hover:bg-[var(--bg-bg-base-secondary)] text-[var(--text-text-default)] transition-colors"
+                        className={`p-2 border transition-all ${playingVoice === voice.id
+                            ? 'bg-[var(--bg-bg-brand)] border-[var(--bg-bg-brand)] text-white'
+                            : 'bg-transparent border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] hover:border-[var(--text-text-tertiary)]'
+                          }`}
                       >
                         {playingVoice === voice.id ? (
-                          <Square className="w-4 h-4" />
+                          <Square className="w-3 h-3 fill-current" />
                         ) : (
-                          <Play className="w-4 h-4" />
+                          <Play className="w-3 h-3 fill-current" />
                         )}
                       </button>
                     </div>
@@ -250,21 +261,21 @@ export default function VoicesPage() {
               </div>
             </div>
 
-            <div className="p-6 border-t border-[var(--border-border-neutral-l1)] flex justify-end">
+            <div className="p-6 border-t border-[var(--border-border-neutral-l1)] flex justify-end bg-[var(--bg-bg-base-secondary)]/30">
               <button
                 onClick={saveVoiceSelection}
                 disabled={saving || !selectedChatbot}
-                className="px-6 py-2 bg-[var(--bg-bg-brand)] text-white rounded-lg hover:bg-[var(--bg-bg-brand-hover)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="px-6 py-3 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] hover:bg-[var(--bg-bg-brand-hover)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 font-bold uppercase tracking-wider font-mono text-xs transition-all"
               >
                 {saving ? (
                   <>
-                    <Loader className="w-4 h-4 animate-spin" />
-                    Saving...
+                    <Loader className="w-3 h-3 animate-spin" />
+                    <span>SAVING...</span>
                   </>
                 ) : (
                   <>
-                    <Check className="w-4 h-4" />
-                    Save Voice Selection
+                    <Check className="w-3 h-3" />
+                    <span>SAVE SELECTION</span>
                   </>
                 )}
               </button>

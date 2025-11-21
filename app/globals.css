@@ -59,7 +59,12 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-weight: 600;
   }
 }
@@ -78,7 +83,8 @@
   @apply my-2;
 }
 
-.prose ul, .prose ol {
+.prose ul,
+.prose ol {
   @apply my-2 ml-4;
 }
 
@@ -86,7 +92,10 @@
   @apply my-1;
 }
 
-.prose h1, .prose h2, .prose h3, .prose h4 {
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
   @apply font-semibold mt-4 mb-2;
 }
 
@@ -103,7 +112,7 @@
 }
 
 .prose pre {
-  @apply my-2 rounded-lg overflow-x-auto;
+  @apply my-2 overflow-x-auto;
 }
 
 .prose code {
@@ -142,4 +151,3 @@
 .prose td {
   @apply p-2 border border-[var(--border-border-neutral-l1)];
 }
-

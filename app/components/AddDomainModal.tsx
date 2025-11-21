@@ -38,7 +38,7 @@ export default function AddDomainModal({ isOpen, onClose, chatbotId, onDomainAdd
 
   const handleConfirm = async () => {
     if (isSubmitting) return;
-    
+
     setIsSubmitting(true);
     setLoading(true);
     setError("");
@@ -71,10 +71,15 @@ export default function AddDomainModal({ isOpen, onClose, chatbotId, onDomainAdd
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-[var(--bg-bg-overlay-l1)] border border-[var(--border-border-neutral-l1)] rounded-2xl p-6 w-full max-w-md">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold text-[var(--text-text-default)]">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="bg-[var(--bg-bg-overlay-l1)] border border-[var(--border-border-neutral-l1)] p-8 w-full max-w-md relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--bg-bg-brand)]"></div>
+        <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-[var(--bg-bg-brand)]"></div>
+        <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[var(--bg-bg-brand)]"></div>
+        <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[var(--bg-bg-brand)]"></div>
+
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-lg font-bold text-[var(--text-text-default)] uppercase tracking-wider">
             {showConfirmation ? "Confirm Scraping" : "Add Domain"}
           </h2>
           <button onClick={onClose} className="text-[var(--text-text-tertiary)] hover:text-[var(--text-text-default)]">
@@ -83,16 +88,16 @@ export default function AddDomainModal({ isOpen, onClose, chatbotId, onDomainAdd
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg flex items-center space-x-2">
+          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 flex items-center space-x-3">
             <AlertCircle className="h-4 w-4 text-red-500" />
-            <p className="text-sm text-red-500">{error}</p>
+            <p className="text-xs text-red-500 font-mono uppercase tracking-wide">{error}</p>
           </div>
         )}
 
         {!showConfirmation ? (
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-[var(--text-text-default)] mb-2">
+              <label className="block text-xs font-bold text-[var(--text-text-default)] mb-2 uppercase tracking-wider font-mono">
                 Domain URL
               </label>
               <input
@@ -100,27 +105,27 @@ export default function AddDomainModal({ isOpen, onClose, chatbotId, onDomainAdd
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 required
-                placeholder="https://example.com"
-                className="w-full px-4 py-2 bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)] rounded-lg text-[var(--text-text-default)] focus:outline-none focus:border-[var(--bg-bg-brand)]"
+                placeholder="HTTPS://EXAMPLE.COM"
+                className="w-full px-4 py-3 bg-[var(--bg-bg-base-secondary)] border border-[var(--border-border-neutral-l1)] text-[var(--text-text-default)] focus:outline-none focus:border-[var(--bg-bg-brand)] font-mono text-sm"
               />
-              <p className="text-xs text-[var(--text-text-tertiary)] mt-2">
+              <p className="text-[10px] text-[var(--text-text-tertiary)] mt-2 font-mono uppercase tracking-wide">
                 This will automatically start scraping the domain and all its pages.
               </p>
             </div>
             <button
               type="submit"
-              className="w-full px-4 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all font-medium"
+              className="w-full px-6 py-3 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] font-bold uppercase tracking-wider font-mono hover:bg-[var(--bg-bg-brand-hover)] transition-all"
             >
               Continue
             </button>
           </form>
         ) : (
-          <div className="space-y-4">
-            <div className="p-4 bg-[var(--bg-bg-overlay-l2)] rounded-lg">
-              <p className="text-sm text-[var(--text-text-default)] mb-2">
-                Start scraping <span className="font-mono text-[var(--bg-bg-brand)]">{url}</span>?
+          <div className="space-y-6">
+            <div className="p-4 bg-[var(--bg-bg-overlay-l2)] border border-[var(--border-border-neutral-l1)]">
+              <p className="text-sm text-[var(--text-text-default)] mb-2 font-mono">
+                Start scraping <span className="text-[var(--bg-bg-brand)]">{url}</span>?
               </p>
-              <p className="text-xs text-[var(--text-text-tertiary)]">
+              <p className="text-[10px] text-[var(--text-text-tertiary)] font-mono uppercase tracking-wide">
                 Scraping will start in the background. The modal will close immediately and you can continue working.
               </p>
             </div>
@@ -128,17 +133,17 @@ export default function AddDomainModal({ isOpen, onClose, chatbotId, onDomainAdd
               <button
                 onClick={() => setShowConfirmation(false)}
                 disabled={loading}
-                className="flex-1 px-4 py-2 bg-[var(--bg-bg-overlay-l2)] text-[var(--text-text-default)] rounded-lg hover:bg-[var(--bg-bg-overlay-l3)] transition-all"
+                className="flex-1 px-4 py-3 bg-[var(--bg-bg-overlay-l2)] text-[var(--text-text-default)] font-bold uppercase tracking-wider font-mono hover:bg-[var(--bg-bg-overlay-l3)] transition-all border border-transparent hover:border-[var(--text-text-tertiary)]"
               >
                 Cancel
               </button>
               <button
                 onClick={handleConfirm}
                 disabled={loading}
-                className="flex-1 px-4 py-2 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] rounded-lg hover:bg-[var(--bg-bg-brand-hover)] transition-all font-medium flex items-center justify-center space-x-2 disabled:opacity-50"
+                className="flex-1 px-4 py-3 bg-[var(--bg-bg-brand)] text-[var(--text-text-onbrand)] font-bold uppercase tracking-wider font-mono hover:bg-[var(--bg-bg-brand-hover)] transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
               >
                 {loading && <Loader className="h-4 w-4 animate-spin" />}
-                <span>{loading ? "Adding Domain..." : "Start Scraping"}</span>
+                <span>{loading ? "Adding..." : "Start Scraping"}</span>
               </button>
             </div>
           </div>
