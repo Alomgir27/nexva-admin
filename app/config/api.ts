@@ -2,7 +2,7 @@ const ENV = process.env.NODE_ENV || 'development';
 
 const config = {
   development: {
-    apiUrl: 'http://localhost:8000',
+    apiUrl: 'http://localhost:5000',
   },
   production: {
     apiUrl: 'https://yueihds3xl383a-5000.proxy.runpod.net',
