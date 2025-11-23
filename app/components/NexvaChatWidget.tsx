@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { NexvaChatNext } from 'nexva-react';
 import { API_ENDPOINTS, API_BASE_URL } from "@/app/config/api";
 
-const FALLBACK_API_KEY = "82DGMU7UTmo04VpNPkiS0LrbC2t3ZKdGpF-lq60NFxw";
+const FALLBACK_API_KEY = "mEQlssYHCdT3QSMLFzvtEgJfbzks6gO2mBybadw8dsY";
 
 export default function NexvaChatWidget() {
   const [apiKey, setApiKey] = useState<string>(FALLBACK_API_KEY);
